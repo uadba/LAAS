@@ -17,7 +17,6 @@ public class Pencere extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -1870953358359256864L;
-	private JPanel contentPane;
 
 	/**
 	 * Launch the application.
@@ -41,10 +40,6 @@ public class Pencere extends JFrame {
 	public Pencere() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 647, 502);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 	}
 
 }
