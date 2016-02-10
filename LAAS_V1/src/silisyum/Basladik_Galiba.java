@@ -37,7 +37,7 @@ public Basladik_Galiba(final String title) {
    series.add(30.0, 453.2);
    final XYSeriesCollection data = new XYSeriesCollection(series);
    final JFreeChart chart = ChartFactory.createXYLineChart(
-       "XY Series Demo",
+       "XY  ÜĞİŞIÇÖ Demo",
        "X", 
        "Y", 
        data,
@@ -71,7 +71,7 @@ public Basladik_Galiba(final String title) {
 */
 public static void main(final String[] args) {
 
-   final Basladik_Galiba demo = new Basladik_Galiba("XY Series Demo");
+   final Basladik_Galiba demo = new Basladik_Galiba("Burada bir isim veriliyor galiba");
    demo.pack();
    RefineryUtilities.centerFrameOnScreen(demo);
    demo.setVisible(true);
