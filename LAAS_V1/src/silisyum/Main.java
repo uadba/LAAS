@@ -1,8 +1,6 @@
 package silisyum;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
