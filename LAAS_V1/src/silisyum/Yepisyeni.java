@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Yepisyeni extends JFrame {
 
@@ -40,6 +42,12 @@ public class Yepisyeni extends JFrame {
 		setContentPane(contentPane);
 		
 		JButton btnNewButton = new JButton("New button");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				System.out.println("Tıklatıldı");
+			}
+		});
 		contentPane.add(btnNewButton, BorderLayout.CENTER);
 	}
 
