@@ -76,16 +76,16 @@ public class Multi_01 extends JFrame {
 		@Override
 		protected Void doInBackground() throws Exception {
 			
-			while(true)
+			while(!isCancelled())
 			{					
 				if (calis)
 				{
-					publish(r.nextInt());
-					System.out.println(Boolean.toString(calis));
+					publish(r.nextInt());					
 				}
+				//System.out.println(Boolean.toString(calis));
 			}
 						
-			//return null;
+			return null;
 		}
 		
 		@Override
