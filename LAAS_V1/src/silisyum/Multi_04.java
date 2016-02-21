@@ -48,6 +48,7 @@ public class Multi_04 extends JFrame {
 	 * Create the frame.
 	 */
 	public Multi_04() {
+		setTitle("D\u00F6rt");
 		AlgorithmExecuter ae = new AlgorithmExecuter();
 		ae.execute();
 		

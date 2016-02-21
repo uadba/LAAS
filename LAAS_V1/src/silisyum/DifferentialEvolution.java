@@ -1,5 +1,7 @@
 package silisyum;
 
+import java.util.Random;
+
 public class DifferentialEvolution {
 	
 	public int problemDimension = 10;
@@ -14,14 +16,24 @@ public class DifferentialEvolution {
 		
 		problemDimension = _problemDimension;
 		populationNumber = _populationNumber;
-		members = new double[populationNumber][problemDimension];
-		memberFitness = new double[populationNumber];
 		iterationNumber = _iterationNumber;
 		F = _F;
 		C = _C;
-	
+		createArrays();
+		initialize();
 	}
 	
-	
+	private void createArrays() {
+		members = new double[populationNumber][problemDimension];
+		memberFitness = new double[populationNumber];
+	}
 
+	private void initialize() {
+		Random r = new Random();
+		for (int m = 0; m < populationNumber; m++) {
+			for (int d = 0; d < problemDimension; d++) {
+				members[m][d] = r.nextDouble();
+			}
+		}		
+	}
 }
