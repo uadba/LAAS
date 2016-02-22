@@ -82,7 +82,6 @@ public class Multi_01 extends JFrame {
 				{
 					publish(r.nextInt());					
 				}
-				//System.out.println(Boolean.toString(calis));
 			}
 						
 			return null;
