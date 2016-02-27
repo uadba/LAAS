@@ -6,7 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-class Panel_04 extends JPanel {
+class Panel_05 extends JPanel {
 
     /**
 	 * 
@@ -17,7 +17,7 @@ class Panel_04 extends JPanel {
 	private JLabel view;
 	private Graphics gv;
 	
-	Panel_04() {
+	Panel_05() {
        
         surface = new BufferedImage(545, 275, BufferedImage.TYPE_INT_RGB);
         view = new JLabel(new ImageIcon(surface));
