@@ -102,7 +102,7 @@ public class Cizim extends ApplicationFrame {
         
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
-            "Line Chart Demo 6",      // chart title
+            "Şey olmuş",      // chart title
             "X",                      // x axis label
             "Y",                      // y axis label
             dataset,                  // data
@@ -123,11 +123,11 @@ public class Cizim extends ApplicationFrame {
         plot.setBackgroundPaint(Color.lightGray);
     //    plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
         plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
+        plot.setRangeGridlinePaint(Color.black);
         
         final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesLinesVisible(0, false);
-        renderer.setSeriesShapesVisible(1, false);
+        renderer.setSeriesLinesVisible(0, true);
+        renderer.setSeriesShapesVisible(1, true);
         plot.setRenderer(renderer);
 
         // change the auto tick unit selection to integer units only...

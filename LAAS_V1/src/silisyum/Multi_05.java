@@ -15,6 +15,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 
 public class Multi_05 extends JFrame {
 
@@ -27,6 +29,7 @@ public class Multi_05 extends JFrame {
 	private JTextField min;
 	private JTextField max;
 	private Panel_05 panel;
+	private JPanel panel_2;
 
 	/**
 	 * Launch the application.
@@ -53,40 +56,46 @@ public class Multi_05 extends JFrame {
 		ae.execute();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 590, 484);
+		setBounds(100, 100, 785, 627);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		contentPane.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel_1 = new JPanel();
+		contentPane.add(panel_1);
+		panel_1.setLayout(new BorderLayout(0, 0));
+		
+		panel_2 = new JPanel();
+		panel_1.add(panel_2, BorderLayout.SOUTH);
+		panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		random_displayer = new JTextField();
-		random_displayer.setBounds(244, 346, 86, 20);
-		contentPane.add(random_displayer);
+		panel_2.add(random_displayer);
 		random_displayer.setColumns(10);
 		
+		JToggleButton start_stop = new JToggleButton("Start");
+		panel_2.add(start_stop);
+		
 		min = new JTextField();
+		panel_2.add(min);
 		min.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				ae.st = Integer.parseInt(min.getText());
 			}
 		});
-		min.setBounds(146, 415, 86, 20);
-		contentPane.add(min);
 		min.setColumns(10);
 		
 		max = new JTextField();
+		panel_2.add(max);
 		max.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
 				ae.sp = Integer.parseInt(max.getText());
 			}
 		});
-		max.setBounds(342, 415, 86, 20);
-		contentPane.add(max);
 		max.setColumns(10);
-		
-		JToggleButton start_stop = new JToggleButton("Start");
 		start_stop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(start_stop.isSelected())
@@ -101,13 +110,10 @@ public class Multi_05 extends JFrame {
 					}
 			}
 		});
-		start_stop.setBounds(229, 379, 121, 23);
-		contentPane.add(start_stop);
 		
 		panel = new Panel_05();
+		panel_1.add(panel);
 		panel.setBackground(Color.LIGHT_GRAY);
-		panel.setBounds(10, 11, 554, 285);
-		contentPane.add(panel);
 	}
 	
 	class AlgorithmExecuter extends SwingWorker<Void, Integer>
@@ -132,7 +138,7 @@ public class Multi_05 extends JFrame {
 		protected void process(List<Integer> chunks) {
 			int number = chunks.get(chunks.size()-1);
 			random_displayer.setText(Integer.toString(number));
-			panel.ciz();
+			panel.drawPlot((double) number);
 		}
 	}
 }
