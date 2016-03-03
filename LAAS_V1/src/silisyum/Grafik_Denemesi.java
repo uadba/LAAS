@@ -16,7 +16,6 @@ import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.util.Random;
 import java.awt.event.ActionEvent;
 
 public class Grafik_Denemesi extends JFrame {
@@ -28,7 +27,6 @@ public class Grafik_Denemesi extends JFrame {
 	private JPanel contentPane;
 	private JTextField yazi;	
 	private boolean add_or_update = false; //false:add and true:update
-	private Random r;
 
 	/**
 	 * Launch the application.
@@ -50,7 +48,6 @@ public class Grafik_Denemesi extends JFrame {
 	 * Create the frame.
 	 */
 	public Grafik_Denemesi() {
-		r = new Random();
 				
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 734, 494);
@@ -63,7 +60,10 @@ public class Grafik_Denemesi extends JFrame {
 		JFreeChart grafik = ChartFactory.createXYLineChart("Başlık", "Açı", "Patter (dB)", veri_seti);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		ChartPanel grafikPaneli = new ChartPanel(grafik);
-
+		
+		grafik.getXYPlot().getDomainAxis().setRange(0, 180);
+		grafik.getXYPlot().getRangeAxis().setRange(-100, 0);
+				
 		contentPane.add(grafikPaneli);
 		
 		JPanel panel = new JPanel();
@@ -77,13 +77,17 @@ public class Grafik_Denemesi extends JFrame {
 		JButton btnNewButton = new JButton("New button");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				for(double x=0; x<181; x += 1)
+				ArrayFactor.createPattern();
+				
+				for(int x=0; x<ArrayFactor.numberofSamplePoints; x += 1)
 				{				
 					if(add_or_update) //false:add and true:update
-						seriler.update(x, Math.sin(2*Math.toRadians(x)));
+			
+						seriler.update((double)x, ArrayFactor.pattern_dB[x]);
 					else
-						seriler.add(x, Math.sin(2*Math.toRadians(x)));					
+						seriler.add(x, ArrayFactor.pattern_dB[x]);			
 				}
+				
 				add_or_update = true;
 			}
 		});

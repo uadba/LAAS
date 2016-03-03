@@ -7,7 +7,10 @@ public class ArrayFactor {
 	static double[] a = {1.0, 0.9295, 1.2126, 1.4383, 1.5568, 1.5568, 1.4383, 1.2126, 0.9295, 1.0};
 	static double[] d = {0.5*lambda, 0.5*lambda, 0.5*lambda, 0.5*lambda, 0.5*lambda, 0.5*lambda, 0.5*lambda, 0.5*lambda, 0.5*lambda, 0.5*lambda};
 	static double[] alpha = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	static double[] angle = new double[181];
+	static int numberofSamplePoints = 181;
+	static double[] angle = new double[numberofSamplePoints];
+	static double[] pattern = new double[numberofSamplePoints];
+	static double[] pattern_dB = new double[numberofSamplePoints];
 	
 //	clear; clc;
 //	lambda = 1;
@@ -40,17 +43,21 @@ public class ArrayFactor {
 		double result_img = 0;
 		for (int e = 0; e<10; e++)
 		{
-			result_real = a[e]*Math.exp((beta*d[e]*Math.cos((theta)/180*Math.PI) + alpha[e])*(e));
-			result_img = a[e]*Math.exp((beta*d[e]*Math.cos((theta)/180*Math.PI) + alpha[e])*(e));			
+			result_real = result_real + a[e]*Math.cos((beta*d[e]*Math.cos((theta)/180*Math.PI) + alpha[e])*(e));
+			result_img = result_img + a[e]*Math.sin((beta*d[e]*Math.cos((theta)/180*Math.PI) + alpha[e])*(e));			
 		}
 		result = Math.sqrt(result_real*result_real + result_img*result_img);
+		
+		
 		
 		return result;		
 	}
 	
-	public static void pattern() {
-		for (int i = 0; i < angle.length; i++) {
-			
+	public static void createPattern() {
+		for (int i = 0; i < numberofSamplePoints; i++) {
+			angle[i] = i;
+			pattern[i] = function(angle[i]);
+			pattern_dB[i] = 20*Math.log10(pattern[i]);
 		}
 	}
 }
