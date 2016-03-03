@@ -16,6 +16,7 @@ import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.Random;
 import java.awt.event.ActionEvent;
 
 public class Grafik_Denemesi extends JFrame {
@@ -25,8 +26,9 @@ public class Grafik_Denemesi extends JFrame {
 	 */
 	private static final long serialVersionUID = 208535889565395799L;
 	private JPanel contentPane;
-	private JTextField yazi;
-	private double x = 0.1;
+	private JTextField yazi;	
+	private boolean add_or_update = false; //false:add and true:update
+	private Random r;
 
 	/**
 	 * Launch the application.
@@ -48,6 +50,8 @@ public class Grafik_Denemesi extends JFrame {
 	 * Create the frame.
 	 */
 	public Grafik_Denemesi() {
+		r = new Random();
+				
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 734, 494);
 		contentPane = new JPanel();
@@ -73,11 +77,17 @@ public class Grafik_Denemesi extends JFrame {
 		JButton btnNewButton = new JButton("New button");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				seriler.add(x, Double.parseDouble(yazi.getText()));
-				x = x + 0.1;
+				for(double x=0; x<181; x += 1)
+				{				
+					if(add_or_update) //false:add and true:update
+						seriler.update(x, Math.sin(2*Math.toRadians(x)));
+					else
+						seriler.add(x, Math.sin(2*Math.toRadians(x)));					
+				}
+				add_or_update = true;
 			}
 		});
-		panel.add(btnNewButton);
+		panel.add(btnNewButton);		
 	}
 
 }
