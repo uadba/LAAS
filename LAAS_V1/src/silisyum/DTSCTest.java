@@ -24,7 +24,11 @@ import org.jfree.ui.RefineryUtilities;
 /** @see http://stackoverflow.com/questions/5048852 */
 public class DTSCTest extends ApplicationFrame {
 
-    private static final String TITLE = "Dynamic Series";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2575297223086333833L;
+	private static final String TITLE = "Dynamic Series";
     private static final String START = "Start";
     private static final String STOP = "Stop";
     private static final float MINMAX = 100;
@@ -58,7 +62,7 @@ public class DTSCTest extends ApplicationFrame {
             }
         });
 
-        final JComboBox combo = new JComboBox();
+        final JComboBox<String> combo = new JComboBox<String>();
         combo.addItem("Fast");
         combo.addItem("Slow");
         combo.addActionListener(new ActionListener() {

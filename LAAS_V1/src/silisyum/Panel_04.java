@@ -36,10 +36,10 @@ class Panel_04 extends JPanel {
     	view.repaint();
     }
     
-    private double hesapla(double _theta)
-    {
-    	double result = Math.sin(Math.toRadians(_theta)); 
-    	return result;
-    }    
+//    private double hesapla(double _theta)
+//    {
+//    	double result = Math.sin(Math.toRadians(_theta)); 
+//    	return result;
+//    }    
         
 }
