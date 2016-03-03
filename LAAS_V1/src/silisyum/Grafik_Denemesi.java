@@ -61,8 +61,8 @@ public class Grafik_Denemesi extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		ChartPanel grafikPaneli = new ChartPanel(grafik);
 		
-		grafik.getXYPlot().getDomainAxis().setRange(0, 180);
-		grafik.getXYPlot().getRangeAxis().setRange(-100, 0);
+		grafik.getXYPlot().getDomainAxis().setRange(0, 180); // x axis
+		grafik.getXYPlot().getRangeAxis().setRange(-100, 0); // y axis
 				
 		contentPane.add(grafikPaneli);
 		
