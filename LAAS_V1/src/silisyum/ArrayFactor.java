@@ -54,10 +54,16 @@ public class ArrayFactor {
 	}
 	
 	public static void createPattern() {
-		for (int i = 0; i < numberofSamplePoints; i++) {
+		double biggestOne = function(angle[0]);
+		pattern[0] = function(angle[0]);
+		for (int i = 1; i < numberofSamplePoints; i++) { // Attention please it starts from "1"
 			angle[i] = i;
 			pattern[i] = function(angle[i]);
-			pattern_dB[i] = 20*Math.log10(pattern[i]);
+			if(pattern[i]>biggestOne) biggestOne = pattern[i];
+		}
+		
+		for (int i = 0; i < numberofSamplePoints; i++) {
+			pattern_dB[i] = 20*Math.log10(pattern[i] / biggestOne);
 		}
 	}
 }
