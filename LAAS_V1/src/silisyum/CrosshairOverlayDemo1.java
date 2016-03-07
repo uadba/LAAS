@@ -64,7 +64,7 @@ public class CrosshairOverlayDemo1 extends JFrame implements ChartMouseListener 
     }
 
     private XYDataset createDataset() {
-        XYSeries series = new XYSeries("S1");
+        XYSeries series = new XYSeries("Example");
         for (int x = 0; x < 10; x++) {
             series.add(x, x + Math.random() * 4.0);
         }
