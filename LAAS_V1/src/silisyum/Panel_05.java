@@ -44,9 +44,7 @@ class Panel_05 extends JPanel implements ChartMouseListener {
 		seri = new XYSeries("Burası neresi1 Is it realy here, yes it is");
 		XYSeriesCollection veri_seti = new XYSeriesCollection(seri);
 		JFreeChart grafik = ChartFactory.createXYLineChart("Başlık", "Açı", "Patter (dB)", veri_seti);
-		ChartPanel grafikPaneli = new ChartPanel(grafik);
-		this.add(grafikPaneli);
-		
+				
         this.chartPanel = new ChartPanel(grafik);
         this.chartPanel.addChartMouseListener(this);
         CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
@@ -57,6 +55,8 @@ class Panel_05 extends JPanel implements ChartMouseListener {
         crosshairOverlay.addDomainCrosshair(xCrosshair);
         crosshairOverlay.addRangeCrosshair(yCrosshair);
         chartPanel.addOverlay(crosshairOverlay);
+        
+        this.add(this.chartPanel);
 		
 //        surface = new BufferedImage(545, 275, BufferedImage.TYPE_INT_RGB);
 //        view = new JLabel(new ImageIcon(surface));
