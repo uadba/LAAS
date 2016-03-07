@@ -37,12 +37,16 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	 */
 	private static final long serialVersionUID = 208535889565395799L;
 	private JPanel contentPane;
-	private JTextField yazi;	
+	private JTextField yazi;
+	
+	private XYSeries seriler;	
 	private boolean add_or_update = false; //false:add and true:update
 	
 	private ChartPanel chartPanel;
     private Crosshair xCrosshair;
-    private Crosshair yCrosshair;
+    private Crosshair yCrosshair;    
+    
+    private AntennaArray aA = new AntennaArray(); 
 
 	/**
 	 * Launch the application.
@@ -71,7 +75,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		XYSeries seriler = new XYSeries("Burası neresi1");
+		seriler = new XYSeries("Burası neresi1");
 		XYSeriesCollection veri_seti = new XYSeriesCollection(seriler);
 		JFreeChart grafik = ChartFactory.createXYLineChart("Başlık", "Açı", "Patter (dB)", veri_seti);
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -103,22 +107,43 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		JButton btnNewButton = new JButton("New button");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-				ArrayFactor.createPattern();
 				
-				for(int x=0; x<ArrayFactor.numberofSamplePoints; x += 1)
-				{				
-					if(add_or_update) //false:add and true:update
-			
-						seriler.update((double)x, ArrayFactor.pattern_dB[x]);
-					else
-						seriler.add(x, ArrayFactor.pattern_dB[x]);			
-				}
+				int numberofElements=0;
+				
+			    try{
+			    	numberofElements = Integer.parseInt(yazi.getText());
+			    }catch(NumberFormatException e){
+			        numberofElements = 2;
+			        yazi.setText("2");
+			    }
 
-				add_or_update = true;
+				if (numberofElements<2) { numberofElements = 2; yazi.setText("2"); } 
+				aA.numberofElements = numberofElements;
+				aA.createArrays();
+				aA.initializeArrays();
+				drawPlot();
+
 			}
 		});
 		panel.add(btnNewButton);
+		
+		drawPlot();
+	}
+
+	protected void drawPlot() {
+		aA.createPattern();
+		
+		for(int x=0; x<aA.numberofSamplePoints; x++)
+		{				
+			if(add_or_update) //false:add and true:update
+	
+				seriler.update(aA.angle[x], aA.pattern_dB[x]);
+			else
+				seriler.add(aA.angle[x], aA.pattern_dB[x]);			
+		}
+
+		add_or_update = true;
+		
 	}
 
 	@Override
