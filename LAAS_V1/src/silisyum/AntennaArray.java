@@ -9,7 +9,7 @@ public class AntennaArray {
 	double[] a;
 	double[] d;
 	double[] alpha;
-	int numberofSamplePoints = 3601;
+	int numberofSamplePoints = 361;
 	double[] angle = new double[numberofSamplePoints];
 	double[] pattern = new double[numberofSamplePoints];
 	double[] pattern_dB = new double[numberofSamplePoints];
