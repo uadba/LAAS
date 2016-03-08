@@ -15,14 +15,17 @@ public class DifferentialEvolution {
 	private int R1, R2, R3;
 	private Random r;
 	private int iterationIndex = 0;
+	private double L, H;
 	
-	public DifferentialEvolution(int _problemDimension, int _populationNumber, int _iterationNumber, double _F, double _C) {
+	public DifferentialEvolution(int _problemDimension, int _populationNumber, int _iterationNumber, double _F, double _C, double _L, double _H) {
 		
 		problemDimension = _problemDimension;
 		populationNumber = _populationNumber;
 		iterationNumber = _iterationNumber;
 		F = _F;
 		Cr = _C;
+		L = _L;
+		H = _H;
 		createArrays();
 		initialize();
 		r = new Random();
@@ -38,7 +41,7 @@ public class DifferentialEvolution {
 		Random r = new Random();
 		for (int m = 0; m < populationNumber; m++) {
 			for (int d = 0; d < problemDimension; d++) {
-				members[d][m] = r.nextDouble();
+				members[d][m] = L + (H-L)*r.nextDouble();
 			}
 		}		
 	}
@@ -57,15 +60,25 @@ public class DifferentialEvolution {
 			int ri = r.nextInt(populationNumber);
 			
 			// Construct trial vector
-			for (int i = 0; i < problemDimension; i++) {
-				if(Math.random() < Cr || ri == i) {
-					Xtrial[i] = members[i][R3] + F * (members[i][R2] - members[i][R1]);
+			for (int d = 0; d < problemDimension; d++) {
+				if(r.nextDouble() < Cr || ri == d) {
+					Xtrial[d] = members[d][R3] + F * (members[d][R2] - members[d][R1]);
 				} else {
-					Xtrial[i] = members[i][iterationIndex];
+					Xtrial[d] = members[d][iterationIndex];
 				}
 			}
 			
+			// Check the boundary constraints for the the trial vector
+			for (int d = 0; d < problemDimension; d++) {
+				if(Xtrial[d]<L || Xtrial[d]>H)
+				{
+					Xtrial[d] = L + (H-L)*r.nextDouble();
+				}
+			}
 			
+			// Pick the best individual
+			// between trial and current members
+			double fitnessOfTrial = 5; 
 		}
 		
 		iterationIndex++;
@@ -74,7 +87,7 @@ public class DifferentialEvolution {
 	}
 	
 	public static void main(String[] args) {
-		DifferentialEvolution name = new DifferentialEvolution(5, 70, 200, 0.7, 0.5);
+		DifferentialEvolution name = new DifferentialEvolution(5, 70, 200, 0.7, 0.5, 0, 1);
 		for (int i = 0; i < name.iterationNumber; i++) {
 			name.iterate();
 		}
