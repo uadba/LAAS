@@ -9,6 +9,8 @@ public class DifferentialEvolution {
 	private double[][] members;
 	private double[] memberFitness;
 	private double[] Xtrial;
+	private double[] temp;
+	private int bestMember = -1;
 	public int iterationNumber;
 	private double F;
 	private double Cr;
@@ -16,6 +18,7 @@ public class DifferentialEvolution {
 	private Random r;
 	private int iterationIndex = 0;
 	private double L, H;
+	private Cost c;
 	
 	public DifferentialEvolution(int _problemDimension, int _populationNumber, int _iterationNumber, double _F, double _C, double _L, double _H) {
 		
@@ -28,13 +31,15 @@ public class DifferentialEvolution {
 		H = _H;
 		createArrays();
 		initialize();
-		r = new Random();
+		c = new Cost(problemDimension);
+		r = new Random();		
 	}
 	
 	private void createArrays() {
 		members = new double[problemDimension][populationNumber];
 		memberFitness = new double[populationNumber];
 		Xtrial = new double[problemDimension];
+		temp = new double[problemDimension];
 	}
 
 	private void initialize() {
@@ -42,7 +47,13 @@ public class DifferentialEvolution {
 		for (int m = 0; m < populationNumber; m++) {
 			for (int d = 0; d < problemDimension; d++) {
 				members[d][m] = L + (H-L)*r.nextDouble();
-			}
+				temp[d] = members[d][m];
+			}			
+			memberFitness[m] = c.function(temp);
+			if(bestMember == -1)
+				bestMember = m;
+			else if(memberFitness[m] < bestMember)
+				bestMember = m;
 		}		
 	}
 	
@@ -64,7 +75,7 @@ public class DifferentialEvolution {
 				if(r.nextDouble() < Cr || ri == d) {
 					Xtrial[d] = members[d][R3] + F * (members[d][R2] - members[d][R1]);
 				} else {
-					Xtrial[d] = members[d][iterationIndex];
+					Xtrial[d] = members[d][individual];
 				}
 			}
 			
@@ -78,7 +89,15 @@ public class DifferentialEvolution {
 			
 			// Pick the best individual
 			// between trial and current members
-			double fitnessOfTrial = 5; 
+			double fitnessOfTrial = c.function(Xtrial);
+			if(fitnessOfTrial < memberFitness[individual]) {
+				// Replace the current with Xtrial
+				// Because it is better than the current
+				for (int d = 0; d < problemDimension; d++) {
+					members[d][individual] = Xtrial[d];					
+				}
+				memberFitness[individual] = fitnessOfTrial;						
+			}
 		}
 		
 		iterationIndex++;
