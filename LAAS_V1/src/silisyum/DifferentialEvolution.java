@@ -11,6 +11,7 @@ public class DifferentialEvolution {
 	private double[] Xtrial;
 	private double[] temp;
 	private int bestMember = -1;
+	private double fitnessOfBestMember = 0;
 	public int iterationNumber;
 	private double F;
 	private double Cr;
@@ -19,6 +20,7 @@ public class DifferentialEvolution {
 	private int iterationIndex = 0;
 	private double L, H;
 	private Cost c;
+	private boolean iterationState = true;
 	
 	public DifferentialEvolution(int _problemDimension, int _populationNumber, int _iterationNumber, double _F, double _C, double _L, double _H) {
 		
@@ -50,14 +52,19 @@ public class DifferentialEvolution {
 				temp[d] = members[d][m];
 			}			
 			memberFitness[m] = c.function(temp);
-			if(bestMember == -1)
+			if(bestMember == -1) {
 				bestMember = m;
-			else if(memberFitness[m] < bestMember)
+				fitnessOfBestMember = memberFitness[m];
+			}
+			else if(memberFitness[m] < bestMember) {
 				bestMember = m;
+				fitnessOfBestMember = memberFitness[m];
+			}
+			
 		}		
 	}
 	
-	public int iterate() {
+	public boolean iterate() {
 		
 		for (int individual = 0; individual < populationNumber; individual++) {
 			// You need to modify the following codes so that different
@@ -96,19 +103,26 @@ public class DifferentialEvolution {
 				for (int d = 0; d < problemDimension; d++) {
 					members[d][individual] = Xtrial[d];					
 				}
-				memberFitness[individual] = fitnessOfTrial;						
+				memberFitness[individual] = fitnessOfTrial;				
+			}
+			if(fitnessOfTrial < memberFitness[bestMember]) {
+				bestMember = individual;
+				fitnessOfBestMember = memberFitness[individual];
 			}
 		}
 		
 		iterationIndex++;
 		
-		return 0;
+		if(iterationIndex == iterationNumber)
+			iterationState = false;
+		
+		return iterationState;
 	}
 	
 	public static void main(String[] args) {
 		DifferentialEvolution name = new DifferentialEvolution(5, 70, 200, 0.7, 0.5, 0, 1);
-		for (int i = 0; i < name.iterationNumber; i++) {
-			name.iterate();
+		while (name.iterate()) {
+			System.out.println(name.fitnessOfBestMember);
 		}
 	}
 }
