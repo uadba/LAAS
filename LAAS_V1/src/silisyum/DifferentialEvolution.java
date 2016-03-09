@@ -31,10 +31,10 @@ public class DifferentialEvolution {
 		Cr = _C;
 		L = _L;
 		H = _H;
-		createArrays();
-		initialize();
 		c = new Cost(problemDimension);
 		r = new Random();		
+		createArrays();
+		initialize();
 	}
 	
 	private void createArrays() {
@@ -120,9 +120,14 @@ public class DifferentialEvolution {
 	}
 	
 	public static void main(String[] args) {
-		DifferentialEvolution name = new DifferentialEvolution(5, 70, 200, 0.7, 0.5, 0, 1);
+		DifferentialEvolution name = new DifferentialEvolution(7, 70, 300, 0.7, 0.5, 0, 1);
 		while (name.iterate()) {
 			System.out.println(name.fitnessOfBestMember);
 		}
+		System.out.println("_______________________________");
+		for (int d = 0; d < name.problemDimension; d++) {
+			System.out.println((name.members[d][name.bestMember]));
+		}		
+		
 	}
 }
