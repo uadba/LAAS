@@ -95,7 +95,7 @@ class Panel_05 extends JPanel implements ChartMouseListener {
         double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x);
         this.xCrosshair.setValue(x);
         this.yCrosshair.setValue(y);
-		System.out.println("Event works fine!..");
+		//System.out.println("Event works fine!..");
 	}
     
 //    private double hesapla(double _theta)

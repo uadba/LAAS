@@ -23,11 +23,14 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleEdge;
 
+
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
+import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class Grafik_Testi extends JFrame implements ChartMouseListener{
@@ -47,6 +50,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private Crosshair yCrosshair;    
     
     private AntennaArray aA = new AntennaArray(); 
+    private JButton btnDoIt;
 
 	/**
 	 * Launch the application.
@@ -67,7 +71,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	/**
 	 * Create the frame.
 	 */
-	public Grafik_Testi() {
+	public Grafik_Testi() {		
 				
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 734, 494);
@@ -121,13 +125,25 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 				aA.numberofElements = numberofElements;
 				aA.createArrays();
 				aA.initializeArrays();
-				drawPlot();
 
 			}
 		});
 		panel.add(btnNewButton);
 		
+		btnDoIt = new JButton("Do it");
+		btnDoIt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+			}
+		});
+		panel.add(btnDoIt);
+		
 		drawPlot();
+		
+		AlgorithmExecuter ae = new AlgorithmExecuter();
+		ae.execute();
 	}
 
 	protected void drawPlot() {
@@ -165,5 +181,26 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
         this.yCrosshair.setValue(y);
 		
 	}
-
+	
+	class AlgorithmExecuter extends SwingWorker<Void, Integer>
+	{
+		
+		@Override
+		protected Void doInBackground() throws Exception {
+			while(!isCancelled())
+			{
+				publish(5);				
+			}			
+			return null;
+		}
+		
+		@Override
+		protected void process(List<Integer> chunks) {
+//			int number = chunks.get(chunks.size()-1);
+//			random_displayer.setText(Integer.toString(number));
+//			panel.drawPlot((double) number);
+			drawPlot();
+			
+		}
+	}
 }
