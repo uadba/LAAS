@@ -49,8 +49,10 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
-    private AntennaArray aA = new AntennaArray(); 
+    protected int initialNumberofElements = 7;
+    private AntennaArray aA = new AntennaArray(initialNumberofElements); 
     private JButton btnDoIt;
+	
 
 	/**
 	 * Launch the application.
@@ -107,12 +109,14 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		yazi = new JTextField();
 		panel.add(yazi);
 		yazi.setColumns(10);
-		
+		yazi.setText(Integer.toString(initialNumberofElements));
+
+				
 		JButton btnNewButton = new JButton("New button");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				int numberofElements=0;
+				int numberofElements=initialNumberofElements ;
 				
 			    try{
 			    	numberofElements = Integer.parseInt(yazi.getText());
@@ -139,11 +143,9 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 			}
 		});
 		panel.add(btnDoIt);
-		
-		drawPlot();
-		
+	
 		AlgorithmExecuter ae = new AlgorithmExecuter();
-		ae.execute();
+		ae.execute();		
 	}
 
 	protected void drawPlot() {
@@ -182,20 +184,24 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		
 	}
 	
-	class AlgorithmExecuter extends SwingWorker<Void, Integer>
+	class AlgorithmExecuter extends SwingWorker<Void, Double>
 	{
 		
 		@Override
 		protected Void doInBackground() throws Exception {
 			while(!isCancelled())
 			{
-				publish(5);				
+				DifferentialEvolution name = new DifferentialEvolution(aA.numberofElements, 5000000, 100, 0.7, 0.5, 0, 1, aA);
+				while (name.iterate()) {
+					System.out.println(name.fitnessOfBestMember);
+					publish(name.fitnessOfBestMember);
+				}					
 			}			
 			return null;
 		}
 		
 		@Override
-		protected void process(List<Integer> chunks) {
+		protected void process(List<Double> chunks) {
 //			int number = chunks.get(chunks.size()-1);
 //			random_displayer.setText(Integer.toString(number));
 //			panel.drawPlot((double) number);

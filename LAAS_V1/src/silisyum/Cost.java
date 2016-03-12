@@ -3,9 +3,11 @@ package silisyum;
 public class Cost {
 	
 	private int problemDimension;
+	private AntennaArray aA;
 	
-	public Cost(int _problemDimension) {
+	public Cost(int _problemDimension, AntennaArray _aA) {
 		problemDimension = _problemDimension;
+		aA = _aA;
 	}
 	
 	public double function(double[] theVector) {

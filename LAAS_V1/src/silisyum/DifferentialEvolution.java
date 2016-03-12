@@ -11,7 +11,7 @@ public class DifferentialEvolution {
 	private double[] Xtrial;
 	private double[] temp;
 	private int bestMember = -1;
-	private double fitnessOfBestMember = 0;
+	public double fitnessOfBestMember = 0;
 	public int iterationNumber;
 	private double F;
 	private double Cr;
@@ -22,7 +22,7 @@ public class DifferentialEvolution {
 	private Cost c;
 	private boolean iterationState = true;
 	
-	public DifferentialEvolution(int _problemDimension, int _populationNumber, int _iterationNumber, double _F, double _C, double _L, double _H) {
+	public DifferentialEvolution(int _problemDimension, int _populationNumber, int _iterationNumber, double _F, double _C, double _L, double _H, AntennaArray _aA) {
 		
 		problemDimension = _problemDimension;
 		populationNumber = _populationNumber;
@@ -31,7 +31,7 @@ public class DifferentialEvolution {
 		Cr = _C;
 		L = _L;
 		H = _H;
-		c = new Cost(problemDimension);
+		c = new Cost(problemDimension, _aA);
 		r = new Random();		
 		createArrays();
 		initialize();
@@ -120,14 +120,15 @@ public class DifferentialEvolution {
 	}
 	
 	public static void main(String[] args) {
-		DifferentialEvolution name = new DifferentialEvolution(7, 70, 300, 0.7, 0.5, 0, 1);
-		while (name.iterate()) {
-			System.out.println(name.fitnessOfBestMember);
-		}
-		System.out.println("_______________________________");
-		for (int d = 0; d < name.problemDimension; d++) {
-			System.out.println((name.members[d][name.bestMember]));
-		}		
+//		AntennaArray aA_local = new AntennaArray(5);
+//		DifferentialEvolution name = new DifferentialEvolution(7, 1000000, 100, 0.7, 0.5, 0, 1, aA_local);
+//		while (name.iterate()) {
+//			System.out.println(name.fitnessOfBestMember);
+//		}
+//		System.out.println("_______________________________");
+//		for (int d = 0; d < name.problemDimension; d++) {
+//			System.out.println((name.members[d][name.bestMember]));
+//		}		
 		
 	}
 }

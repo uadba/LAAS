@@ -5,7 +5,7 @@ public class AntennaArray {
 	double lambda = 1;
 	double beta = 2*Math.PI/lambda;
 	//static double[] a = {1.0, 0.9295, 1.2126, 1.4383, 1.5568, 1.5568, 1.4383, 1.2126, 0.9295, 1.0};
-	int numberofElements = 2;
+	int numberofElements;
 	double[] a;
 	double[] d;
 	double[] alpha;
@@ -14,8 +14,9 @@ public class AntennaArray {
 	double[] pattern = new double[numberofSamplePoints];
 	double[] pattern_dB = new double[numberofSamplePoints];
 	
-	public AntennaArray() {
+	public AntennaArray(int _numberofElements) {
 		
+		numberofElements = _numberofElements;
 		createArrays();
 		initializeArrays();
 
