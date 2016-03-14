@@ -49,8 +49,8 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
-    protected int initialNumberofElements = 7;
-    private AntennaArray aA = new AntennaArray(initialNumberofElements); 
+    protected int initialNumberofElements = 10;
+    private AntennaArray aA = new AntennaArray(initialNumberofElements, 361); 
     private JButton btnDoIt;
 	
 
@@ -191,7 +191,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		protected Void doInBackground() throws Exception {
 			while(!isCancelled())
 			{
-				DifferentialEvolution name = new DifferentialEvolution(aA.numberofElements, 5000000, 100, 0.7, 0.5, 0, 1, aA);
+				DifferentialEvolution name = new DifferentialEvolution(aA.numberofElements, 1000, 100, 0.7, 0.5, 0, 1, aA);
 				while (name.iterate()) {
 					System.out.println(name.fitnessOfBestMember);
 					publish(name.fitnessOfBestMember);

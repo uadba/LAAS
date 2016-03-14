@@ -15,8 +15,14 @@ public class Cost {
 		double result = 0;
 		
 		for (int d = 0; d < problemDimension; d++) {
-			result = result + Math.abs(1-Math.pow(5, (theVector[d]- ((double)d)/10))); 
-		}		
+			aA.a[d] = theVector[d]; 
+		}
+		
+		aA.createPattern();
+		
+		for (int n = 0; n < aA.numberofSamplePoints; n++) {
+			 
+		}
 		
 		return result;
 	}

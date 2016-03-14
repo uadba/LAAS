@@ -6,16 +6,17 @@ public class AntennaArray {
 	double beta = 2*Math.PI/lambda;
 	//static double[] a = {1.0, 0.9295, 1.2126, 1.4383, 1.5568, 1.5568, 1.4383, 1.2126, 0.9295, 1.0};
 	int numberofElements;
-	double[] a;
-	double[] d;
-	double[] alpha;
-	int numberofSamplePoints = 361;
-	double[] angle = new double[numberofSamplePoints];
-	double[] pattern = new double[numberofSamplePoints];
-	double[] pattern_dB = new double[numberofSamplePoints];
+	public double[] a;
+	private double[] d;
+	private double[] alpha;
+	public int numberofSamplePoints;
+	public double[] angle = new double[numberofSamplePoints];
+	private double[] pattern = new double[numberofSamplePoints];
+	public double[] pattern_dB = new double[numberofSamplePoints];
 	
-	public AntennaArray(int _numberofElements) {
+	public AntennaArray(int _numberofElements, int _numberofSamplePoints) {
 		
+		numberofSamplePoints = _numberofSamplePoints;
 		numberofElements = _numberofElements;
 		createArrays();
 		initializeArrays();
