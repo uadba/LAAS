@@ -50,7 +50,8 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private Crosshair yCrosshair;    
     
     protected int initialNumberofElements = 10;
-    private AntennaArray aA = new AntennaArray(initialNumberofElements, 361); 
+    private AntennaArray aA = new AntennaArray(initialNumberofElements, 181);
+    DifferentialEvolution mA;
     private JButton btnDoIt;
 	
 
@@ -74,7 +75,9 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	 * Create the frame.
 	 */
 	public Grafik_Testi() {		
-				
+		
+		mA = new DifferentialEvolution(aA.numberofElements, 1000, 100, 0.7, 0.5, 0, 1, aA);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 734, 494);
 		contentPane = new JPanel();
@@ -145,10 +148,16 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		panel.add(btnDoIt);
 	
 		AlgorithmExecuter ae = new AlgorithmExecuter();
-		ae.execute();		
+		ae.execute();	
 	}
 
 	protected void drawPlot() {
+
+		// it should not be a new implementation of AntennaArray class
+		// We don't want to use the same instance which the other thread uses
+		// This new instance can be another member function of this class
+		// Its name may be aA_forPresentation;
+		
 		aA.createPattern();
 		
 		for(int x=0; x<aA.numberofSamplePoints; x++)
@@ -161,12 +170,11 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		}
 
 		add_or_update = true;
-		
+
 	}
 
 	@Override
 	public void chartMouseClicked(ChartMouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -191,10 +199,9 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		protected Void doInBackground() throws Exception {
 			while(!isCancelled())
 			{
-				DifferentialEvolution name = new DifferentialEvolution(aA.numberofElements, 1000, 100, 0.7, 0.5, 0, 1, aA);
-				while (name.iterate()) {
-					System.out.println(name.fitnessOfBestMember);
-					publish(name.fitnessOfBestMember);
+				while (mA.iterate()) {
+					System.out.println(mA.fitnessOfBestMember);
+					publish(mA.fitnessOfBestMember);
 				}					
 			}			
 			return null;

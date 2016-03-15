@@ -118,7 +118,7 @@ public class DifferentialEvolution {
 		
 		return iterationState;
 	}
-	
+
 	public static void main(String[] args) {
 //		AntennaArray aA_local = new AntennaArray(5);
 //		DifferentialEvolution name = new DifferentialEvolution(7, 1000000, 100, 0.7, 0.5, 0, 1, aA_local);
@@ -131,4 +131,5 @@ public class DifferentialEvolution {
 //		}		
 		
 	}
+
 }
