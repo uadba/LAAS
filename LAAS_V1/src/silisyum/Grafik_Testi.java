@@ -78,7 +78,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	 */
 	public Grafik_Testi() {		
 		
-		mA = new DifferentialEvolution(aA.numberofElements, 70, 1000, 0.7, 0.95, 0, 1, aA);
+		mA = new DifferentialEvolution(aA.numberofElements, 70, 2000, 0.7, 0.95, 0, 1, aA);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 734, 494);
