@@ -26,11 +26,16 @@ public class Cost {
 		
 		for (int i = 0; i<90; i++) {
 			double realAngle = 180*((double)i/(aA.numberofSamplePoints-1));
-			if(realAngle >= 55 && realAngle <= 60)
+			if(realAngle <= 80)
 			{
-				double msld = -70;
+				double msld = -27;
 				if(aA.pattern_dB[i] > msld) result += (aA.pattern_dB[i] - msld);
-			}			 
+				if(realAngle >= 55 && realAngle <= 60)
+				{
+					double ndld = -70;
+					if(aA.pattern_dB[i] > ndld) result += (aA.pattern_dB[i] - ndld);
+				}
+			}
 		}
 		
 		return result;
