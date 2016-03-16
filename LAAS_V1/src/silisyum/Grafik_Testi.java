@@ -49,11 +49,13 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
-    protected int initialNumberofElements = 10;
+    private int initialNumberofElements = 20;
+    private int problemDimension = 20;
     private AntennaArray aA = new AntennaArray(initialNumberofElements, 181);
+    private AntennaArray aAforPresentation = new AntennaArray(initialNumberofElements, 181);    
     DifferentialEvolution mA;
     private JButton btnDoIt;
-	
+    private BestValues bV;
 
 	/**
 	 * Launch the application.
@@ -132,6 +134,10 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 				aA.numberofElements = numberofElements;
 				aA.createArrays();
 				aA.initializeArrays();
+				
+				aAforPresentation.numberofElements = numberofElements;
+				aAforPresentation.createArrays();
+				aAforPresentation.initializeArrays();
 
 			}
 		});
@@ -146,9 +152,9 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 			}
 		});
 		panel.add(btnDoIt);
-	
+
 		AlgorithmExecuter ae = new AlgorithmExecuter();
-		ae.execute();	
+		ae.execute();
 	}
 
 	protected void drawPlot() {
@@ -156,17 +162,23 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		// it should not be a new implementation of AntennaArray class
 		// We don't want to use the same instance which the other thread uses
 		// This new instance can be another member function of this class
-		// Its name may be aA_forPresentation;
+		// Its name may be aAforPresentation;
+		// CONSIDER THIS!
 		
-		aA.createPattern();
+				
+		for (int d = 0; d < problemDimension; d++) {
+			aAforPresentation.a[d] = bV.bestAmplitudes[d];
+		}
 		
-		for(int x=0; x<aA.numberofSamplePoints; x++)
+		aAforPresentation.createPattern();
+		
+		for(int x=0; x<aAforPresentation.numberofSamplePoints; x++)
 		{				
 			if(add_or_update) //false:add and true:update
 	
-				seriler.update(aA.angle[x], aA.pattern_dB[x]);
+				seriler.update(aAforPresentation.angle[x], aAforPresentation.pattern_dB[x]);
 			else
-				seriler.add(aA.angle[x], aA.pattern_dB[x]);			
+				seriler.add(aAforPresentation.angle[x], aAforPresentation.pattern_dB[x]);			
 		}
 
 		add_or_update = true;
@@ -192,7 +204,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		
 	}
 	
-	class AlgorithmExecuter extends SwingWorker<Void, Double>
+	class AlgorithmExecuter extends SwingWorker<Void, BestValues>
 	{
 		
 		@Override
@@ -201,17 +213,23 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 			{
 				while (mA.iterate()) {
 					System.out.println(mA.fitnessOfBestMember);
-					publish(mA.fitnessOfBestMember);
+					// You can create a new BestValue class object
+					// with the best values of mA
+					// and then it can be published
+					double[] bestAmplitudes = new double[problemDimension];
+					for (int d = 0; d < problemDimension; d++) {
+						bestAmplitudes[d] = mA.members[d][mA.bestMember];
+					}
+					publish(new BestValues(mA.bestMember, mA.fitnessOfBestMember, bestAmplitudes));
 				}					
 			}			
 			return null;
 		}
 		
 		@Override
-		protected void process(List<Double> chunks) {
-//			int number = chunks.get(chunks.size()-1);
-//			random_displayer.setText(Integer.toString(number));
-//			panel.drawPlot((double) number);
+		protected void process(List<BestValues> chunks) {
+			bV = chunks.get(chunks.size()-1);
+
 			drawPlot();
 			
 		}

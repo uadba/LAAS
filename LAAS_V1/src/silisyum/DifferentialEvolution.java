@@ -6,11 +6,11 @@ public class DifferentialEvolution {
 	
 	private int problemDimension;
 	private int populationNumber;
-	private double[][] members;
+	public double[][] members;
 	private double[] memberFitness;
 	private double[] Xtrial;
 	private double[] temp;
-	private int bestMember = -1;
+	public int bestMember = -1;
 	public double fitnessOfBestMember = 0;
 	public int iterationNumber;
 	private double F;
@@ -35,6 +35,7 @@ public class DifferentialEvolution {
 		r = new Random();		
 		createArrays();
 		initialize();
+
 	}
 	
 	private void createArrays() {
