@@ -28,7 +28,7 @@ public class Cost {
 			double realAngle = 180*((double)i/(aA.numberofSamplePoints-1));
 			if(realAngle <= 80)
 			{
-				double msld = -27;
+				double msld = -30;
 				if(aA.pattern_dB[i] > msld) result += (aA.pattern_dB[i] - msld);
 				if(realAngle >= 55 && realAngle <= 60)
 				{
