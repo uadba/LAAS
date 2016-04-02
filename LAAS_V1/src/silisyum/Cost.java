@@ -15,7 +15,7 @@ public class Cost {
 		double result = 0;
 		
 		for (int d = 0; d < problemDimension; d++) {
-			aA.a[d] = theVector[d]; 
+			aA.alpha[d] = theVector[d]; 
 		}
 		
 		aA.createPattern();
@@ -28,9 +28,9 @@ public class Cost {
 			double realAngle = 180*((double)i/(aA.numberofSamplePoints-1));
 			if(realAngle <= 80)
 			{
-				double msld = -30;
+				double msld = -0;
 				if(aA.pattern_dB[i] > msld) result += (aA.pattern_dB[i] - msld);
-				if(realAngle >= 55 && realAngle <= 60)
+				if(realAngle >= 45 && realAngle <= 49)
 				{
 					double ndld = -70;
 					if(aA.pattern_dB[i] > ndld) result += (aA.pattern_dB[i] - ndld);

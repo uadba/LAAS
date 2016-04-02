@@ -8,7 +8,7 @@ public class AntennaArray {
 	int numberofElements;
 	public double[] a;
 	private double[] d;
-	private double[] alpha;
+	public double[] alpha;
 	public int numberofSamplePoints;
 	public double[] angle = new double[numberofSamplePoints];
 	private double[] pattern = new double[numberofSamplePoints];
