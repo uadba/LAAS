@@ -49,8 +49,8 @@ public class AntennaArray {
 		double result_img = 0;
 		for (int e = 0; e<numberofElements; e++)
 		{
-			result_real = result_real + a[e]*Math.cos((beta*d[e]*Math.cos((theta)/180*Math.PI) + alpha[e])*(e));
-			result_img = result_img + a[e]*Math.sin((beta*d[e]*Math.cos((theta)/180*Math.PI) + alpha[e])*(e));			
+			result_real = result_real + a[e]*Math.cos((beta*d[e]*Math.cos((theta)/180*Math.PI) + (alpha[e])/180*Math.PI)*(e));
+			result_img = result_img + a[e]*Math.sin((beta*d[e]*Math.cos((theta)/180*Math.PI) + (alpha[e])/180*Math.PI)*(e));			
 		}
 		result = Math.sqrt(result_real*result_real + result_img*result_img);
 					
