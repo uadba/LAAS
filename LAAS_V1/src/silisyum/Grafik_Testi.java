@@ -165,9 +165,11 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		// Its name may be aAforPresentation;
 		// CONSIDER THIS!
 		
+		double[] alpha_example = {14.3983, -26.1588, -9.93420, 10.2254, 1.93170, 5.18520, 1.53020, -1.48370, -2.37140, -2.97950, -0.997700, 3.23560, -1.12110, 0.775300, 4.14480, -7.55650, 1.79030, 6.73780, 24.7469, -15.6342};
 				
 		for (int d = 0; d < problemDimension; d++) {
-			aAforPresentation.alpha[d] = bV.bestAmplitudes[d];
+			//aAforPresentation.alpha[d] = bV.bestAmplitudes[d];
+			aAforPresentation.alpha[d] = alpha_example[d];
 		}
 		
 		aAforPresentation.createPattern();
@@ -178,7 +180,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	
 				seriler.update(aAforPresentation.angle[x], aAforPresentation.pattern_dB[x]);
 			else
-				seriler.add(aAforPresentation.angle[x], aAforPresentation.pattern_dB[x]);			
+				seriler.add(aAforPresentation.angle[x], aAforPresentation.pattern_dB[x]);
 		}
 
 		add_or_update = true;
