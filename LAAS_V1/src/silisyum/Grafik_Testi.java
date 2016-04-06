@@ -167,9 +167,8 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		
 				
 		for (int d = 0; d < problemDimension; d++) {
-			//aAforPresentation.alpha[d] = bV.bestAmplitudes[d];
+			aAforPresentation.alpha[d] = bV.bestAmplitudes[d];
 			//aAforPresentation.alpha[d] = alpha_example[d];
-			//aAforPresentation.alpha[d] = 0;
 		}
 		
 		aAforPresentation.createPattern();
