@@ -52,8 +52,9 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private int initialNumberofElements = 20;
     private int problemDimension = 20;
     private AntennaArray aA = new AntennaArray(initialNumberofElements, 181);
-    private AntennaArray aAforPresentation = new AntennaArray(initialNumberofElements, 181);    
+    private AntennaArray aAforPresentation = new AntennaArray(initialNumberofElements, 181);
     private DifferentialEvolution mA;
+    private Mask mask = new Mask();
     private JButton btnDoIt;
     private BestValues bV;
 
@@ -78,7 +79,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	 */
 	public Grafik_Testi() {		
 		
-		mA = new DifferentialEvolution(aA.numberofElements, 70, 2000, 0.7, 0.95, 0, 360, aA);
+		mA = new DifferentialEvolution(aA.numberofElements, 70, 10000, 0.7, 0.95, 0, 360, aA, mask);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 734, 494);

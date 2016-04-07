@@ -22,7 +22,7 @@ public class DifferentialEvolution {
 	private Cost c;
 	private boolean iterationState = true;
 	
-	public DifferentialEvolution(int _problemDimension, int _populationNumber, int _iterationNumber, double _F, double _C, double _L, double _H, AntennaArray _aA) {
+	public DifferentialEvolution(int _problemDimension, int _populationNumber, int _iterationNumber, double _F, double _C, double _L, double _H, AntennaArray _aA, Mask _mask) {
 		
 		problemDimension = _problemDimension;
 		populationNumber = _populationNumber;
@@ -31,7 +31,7 @@ public class DifferentialEvolution {
 		Cr = _C;
 		L = _L;
 		H = _H;
-		c = new Cost(problemDimension, _aA);
+		c = new Cost(problemDimension, _aA, _mask);
 		r = new Random();		
 		createArrays();
 		initialize();

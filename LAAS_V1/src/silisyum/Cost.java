@@ -4,10 +4,12 @@ public class Cost {
 	
 	private int problemDimension;
 	private AntennaArray aA;
+	private Mask mask;
 	
-	public Cost(int _problemDimension, AntennaArray _aA) {
+	public Cost(int _problemDimension, AntennaArray _aA, Mask _mask) {
 		problemDimension = _problemDimension;
 		aA = _aA;
+		mask = _mask;
 	}
 	
 	public double function(double[] theVector) {
@@ -28,22 +30,22 @@ public class Cost {
 			double realAngle = 180*((double)i/(aA.numberofSamplePoints-1));
 			if(realAngle <= 75)
 			{
-				double msld = -20;
-				if(aA.pattern_dB[i] > msld) result += 1*(aA.pattern_dB[i] - msld);
-				if(realAngle >= 45 && realAngle <= 49)
+				double msld = -27;
+				if(aA.pattern_dB[i] > msld) result += 10*(aA.pattern_dB[i] - msld);
+				if(realAngle >= 47 && realAngle <= 49)
 				{
 					double ndld = -70;
-					if(aA.pattern_dB[i] > ndld) result += (aA.pattern_dB[i] - ndld);
+					if(aA.pattern_dB[i] > ndld) result += 1*(aA.pattern_dB[i] - ndld);
 				}
 			}
 			if(realAngle >= 105)
 			{
-				double msld = -20;
-				if(aA.pattern_dB[i] > msld) result += 1*(aA.pattern_dB[i] - msld);
-				if(realAngle >= 45 && realAngle <= 49)
+				double msld = -27;
+				if(aA.pattern_dB[i] > msld) result += 10*(aA.pattern_dB[i] - msld);
+				if(realAngle >= 47 && realAngle <= 49)
 				{
 					double ndld = -0;
-					if(aA.pattern_dB[i] > ndld) result += (aA.pattern_dB[i] - ndld);
+					if(aA.pattern_dB[i] > ndld) result += 1*(aA.pattern_dB[i] - ndld);
 				}
 			}
 		}
