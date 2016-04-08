@@ -38,7 +38,7 @@ public class Cost {
 			{
 				double msld = -0;
 				if(aA.pattern_dB[i] > msld) result += 10*(aA.pattern_dB[i] - msld);
-				if(realAngle >= 45 && realAngle <= 49)
+				if(realAngle >= 47 && realAngle <= 49)
 				{
 					double ndld = -100;
 					if(aA.pattern_dB[i] > ndld) result += 1*(aA.pattern_dB[i] - ndld);

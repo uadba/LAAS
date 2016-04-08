@@ -15,6 +15,7 @@ public class Mask {
 	public class SidelobeLevel {
 		String name;
 		double level;
+		//int numberOfPoints;
 		double[] angles;
 		double[] levels;
 		public SidelobeLevel(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level) {
