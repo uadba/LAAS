@@ -12,7 +12,7 @@ public class Mask {
 		SLL_outers.add(new SidelobeLevel(_name, _startAngle, _stopAngle, _numberOfPoints, _level));
 	}
 	
-	private class SidelobeLevel {
+	public class SidelobeLevel {
 		String name;
 		double level;
 		double[] angles;
@@ -26,13 +26,13 @@ public class Mask {
 			double resolution = (_stopAngle - _startAngle)/(_numberOfPoints - 1); 
 			
 			angles[0] = _startAngle;
+			levels[0] = level;
 			for (int i = 1; i < _numberOfPoints-1; i++) {
 				angles[i] = angles[i-1] + resolution;
 				levels[i] = level;
 			}
-			angles[_numberOfPoints-1] = _stopAngle;
-			
-			
+			angles[_numberOfPoints-1] = _stopAngle;			
+			levels[_numberOfPoints-1] = level;
 		}
 	}
 }

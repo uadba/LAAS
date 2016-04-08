@@ -10,6 +10,13 @@ public class Cost {
 		problemDimension = _problemDimension;
 		aA = _aA;
 		mask = _mask;
+		mask.addNewSLL_outer("SLL_01", 30, 45, 23, -30);
+		
+		for (int i = 0; i < 23; i++) {
+			Mask.SidelobeLevel temp = mask.SLL_outers.get(0);
+			System.out.println(" " + temp.angles[i] + " " + temp.levels[i]);
+			
+		}
 	}
 	
 	public double function(double[] theVector) {

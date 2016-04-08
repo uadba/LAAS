@@ -214,7 +214,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 			while(!isCancelled())
 			{
 				while (mA.iterate()) {
-					System.out.println(mA.fitnessOfBestMember);
+					//System.out.println(mA.fitnessOfBestMember);
 					// You can create a new BestValue class object
 					// with the best values of mA
 					// and then it can be published
