@@ -42,7 +42,8 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	private JPanel contentPane;
 	private JTextField yazi;
 	
-	private XYSeries seriler;	
+	private XYSeries seriler;
+	private XYSeries maskOuter;
 	private boolean add_or_update = false; //false:add and true:update
 	
 	private ChartPanel chartPanel;
@@ -88,7 +89,9 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		setContentPane(contentPane);
 		
 		seriler = new XYSeries("Burası neresi1");
+		maskOuter = new XYSeries("Outer Mask");
 		XYSeriesCollection veri_seti = new XYSeriesCollection(seriler);
+		veri_seti.addSeries(maskOuter);
 		JFreeChart grafik = ChartFactory.createXYLineChart("Başlık", "Açı", "Patter (dB)", veri_seti);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
@@ -177,13 +180,19 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		for(int x=0; x<aAforPresentation.numberofSamplePoints; x++)
 		{				
 			if(add_or_update) //false:add and true:update
-	
+			{
 				seriler.update(aAforPresentation.angle[x], aAforPresentation.pattern_dB[x]);
+			}
 			else
+			{
 				seriler.add(aAforPresentation.angle[x], aAforPresentation.pattern_dB[x]);
-		}
+			}
+		}		
 
-		add_or_update = true;
+		maskOuter.add(60, -30);
+		maskOuter.add(80, -30);
+		
+		add_or_update = true;	
 
 	}
 
@@ -214,7 +223,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 			while(!isCancelled())
 			{
 				while (mA.iterate()) {
-					//System.out.println(mA.fitnessOfBestMember);
+					System.out.println(mA.fitnessOfBestMember);
 					// You can create a new BestValue class object
 					// with the best values of mA
 					// and then it can be published
