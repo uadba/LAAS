@@ -10,7 +10,7 @@ public class Cost {
 		problemDimension = _problemDimension;
 		aA = _aA;
 		mask = _mask;
-		mask.addNewSLL_outer("SLL_01", 30, 45, 23, -40);
+		mask.addNewSLL_outer("SLL_01", 120, 160, 23, -40);
 		
 //		for (int i = 0; i < 23; i++) {
 //			Mask.SidelobeLevel temp = mask.SLL_outers.get(0);
