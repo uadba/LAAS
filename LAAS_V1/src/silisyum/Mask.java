@@ -14,26 +14,23 @@ public class Mask {
 	
 	public class SidelobeLevel {
 		String name;
-		double level;
-		//int numberOfPoints;
 		double[] angles;
 		double[] levels;
 		public SidelobeLevel(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level) {
 			name = _name;
-			level = _level;
 			angles = new double[_numberOfPoints];
 			levels = new double[_numberOfPoints];
 			
 			double resolution = (_stopAngle - _startAngle)/(_numberOfPoints - 1); 
 			
 			angles[0] = _startAngle;
-			levels[0] = level;
+			levels[0] = _level;
 			for (int i = 1; i < _numberOfPoints-1; i++) {
 				angles[i] = angles[i-1] + resolution;
-				levels[i] = level;
+				levels[i] = _level;
 			}
 			angles[_numberOfPoints-1] = _stopAngle;			
-			levels[_numberOfPoints-1] = level;
+			levels[_numberOfPoints-1] = _level;
 		}
 	}
 }
