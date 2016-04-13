@@ -100,8 +100,8 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		contentPane.setLayout(new BorderLayout(0, 0));
 				
 		XYItemRenderer renderer = grafik.getXYPlot().getRenderer();
-		renderer.setSeriesPaint(1, Color.blue);
-		renderer.setSeriesPaint(2, Color.blue);
+//		renderer.setSeriesPaint(1, Color.blue);
+//		renderer.setSeriesPaint(2, Color.blue);
 		
         this.chartPanel = new ChartPanel(grafik);
         this.chartPanel.addChartMouseListener(this);
