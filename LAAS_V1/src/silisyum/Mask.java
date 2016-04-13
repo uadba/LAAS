@@ -12,6 +12,11 @@ public class Mask {
 		SLL_outers.add(new SidelobeLevel(_name, _startAngle, _stopAngle, _numberOfPoints, _level));
 	}
 	
+	public void addNewSLL_inner(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level)
+	{
+		SLL_inners.add(new SidelobeLevel(_name, _startAngle, _stopAngle, _numberOfPoints, _level));
+	}
+	
 	public class SidelobeLevel {
 		String name;
 		double[] angles;

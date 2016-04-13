@@ -18,6 +18,7 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -44,6 +45,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	
 	private XYSeries seriler;
 	private XYSeries maskOuter;
+	private XYSeries maskInner;
 	private boolean add_or_update = false; //false:add and true:update
 	
 	private ChartPanel chartPanel;
@@ -88,12 +90,18 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		seriler = new XYSeries("Burası neresi1");
+		seriler = new XYSeries("Pattern");
 		maskOuter = new XYSeries("Outer Mask");
+		maskInner = new XYSeries("Inner Mask");
 		XYSeriesCollection veri_seti = new XYSeriesCollection(seriler);
 		veri_seti.addSeries(maskOuter);
+		veri_seti.addSeries(maskInner);
 		JFreeChart grafik = ChartFactory.createXYLineChart("Başlık", "Açı", "Patter (dB)", veri_seti);
 		contentPane.setLayout(new BorderLayout(0, 0));
+				
+		XYItemRenderer renderer = grafik.getXYPlot().getRenderer();
+		renderer.setSeriesPaint(1, Color.blue);
+		renderer.setSeriesPaint(2, Color.blue);
 		
         this.chartPanel = new ChartPanel(grafik);
         this.chartPanel.addChartMouseListener(this);
@@ -189,30 +197,57 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 			}
 		}		
 
+		// ------------- Outer Mask --------------------
 		int numberOfSLLOuters = mask.SLL_outers.size(); 
-		Mask.SidelobeLevel SLL;
+		Mask.SidelobeLevel SLL_outer;
 		
 		for (int n = 0; n < numberOfSLLOuters; n++) {
-			SLL = mask.SLL_outers.get(n);
+			SLL_outer = mask.SLL_outers.get(n);
 			if(add_or_update) //false:add and true:update
 			{
-				for (int i = 0; i < SLL.angles.length; i++) {
+				for (int i = 0; i < SLL_outer.angles.length; i++) {
 					if(i==0)
-						maskOuter.update(SLL.angles[i]+0.0000000001, SLL.levels[i]);
+						maskOuter.update(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
 					else
-						maskOuter.update(SLL.angles[i], SLL.levels[i]);	
+						maskOuter.update(SLL_outer.angles[i], SLL_outer.levels[i]);	
 				}
 			}
 			else
 			{
-				for (int i = 0; i < SLL.angles.length; i++) {
+				for (int i = 0; i < SLL_outer.angles.length; i++) {
 					if(i==0)
-						maskOuter.add(SLL.angles[i]+0.0000000001, SLL.levels[i]);
+						maskOuter.add(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
 					else
-						maskOuter.add(SLL.angles[i], SLL.levels[i]);		
+						maskOuter.add(SLL_outer.angles[i], SLL_outer.levels[i]);		
 				}			
 			}		
-		}			
+		}
+		
+		// ------------- Inner Mask --------------------
+		int numberOfSLLInners = mask.SLL_inners.size(); 
+		Mask.SidelobeLevel SLL_inner;
+		
+		for (int n = 0; n < numberOfSLLInners; n++) {
+			SLL_inner = mask.SLL_inners.get(n);
+			if(add_or_update) //false:add and true:update
+			{
+				for (int i = 0; i < SLL_inner.angles.length; i++) {
+					if(i==0)
+						maskInner.update(SLL_inner.angles[i]+0.0000000001, SLL_inner.levels[i]);
+					else
+						maskInner.update(SLL_inner.angles[i], SLL_inner.levels[i]);	
+				}
+			}
+			else
+			{
+				for (int i = 0; i < SLL_inner.angles.length; i++) {
+					if(i==0)
+						maskInner.add(SLL_inner.angles[i]+0.0000000001, SLL_inner.levels[i]);
+					else
+						maskInner.add(SLL_inner.angles[i], SLL_inner.levels[i]);		
+				}			
+			}		
+		}
 		
 		add_or_update = true;	
 
