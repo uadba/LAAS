@@ -11,11 +11,10 @@ public class Cost {
 		aA = _aA;
 		mask = _mask;
 	
-		mask.addNewSLL_outer("SLL_01", 0, 10, 30, -25);
-		mask.addNewSLL_outer("SLL_01", 10, 20, 30, -45);
-		mask.addNewSLL_outer("SLL_01", 20, 60, 30, -30);
-		mask.addNewSLL_outer("SLL_01", 60, 70, 30, -20);
-		//mask.addNewSLL_outer("SLL_02", 130, 160, 23, -40);
+		mask.addNewSLL_outer("SLL_01", 0, 80, 80, -24);
+		mask.addNewSLL_outer("SLL_01", 80, 100, 20, 0);
+		mask.addNewSLL_outer("SLL_01", 100, 180, 80, -24);
+
 		
 //		for (int i = 0; i < mask.SLL_outers.get(0).angles.length; i++) {
 //			Mask.SidelobeLevel temp = mask.SLL_outers.get(0);
@@ -28,7 +27,7 @@ public class Cost {
 		double result = 0;
 		
 		for (int d = 0; d < problemDimension; d++) {
-			aA.alpha[d] = theVector[d]; 
+			aA.alpha[d] = theVector[d];
 		}
 		
 		aA.createPattern();

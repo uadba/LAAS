@@ -46,7 +46,7 @@ public class AntennaArray {
 			a[i] = 1;
 			//a[i] = temp_a[i]; // seeker
 			d[i] = 0.5*lambda;
-			//alpha[i] = 0;
+			alpha[i] = 0;
 			//alpha[i] = temp_alpha[i]; // seeker
 			//alpha[i] = alpha_example[i]; // ismail th
 		}		

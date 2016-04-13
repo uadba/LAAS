@@ -191,18 +191,25 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 
 		int numberOfSLLOuters = mask.SLL_outers.size(); 
 		Mask.SidelobeLevel SLL;
+		
 		for (int n = 0; n < numberOfSLLOuters; n++) {
 			SLL = mask.SLL_outers.get(n);
 			if(add_or_update) //false:add and true:update
 			{
 				for (int i = 0; i < SLL.angles.length; i++) {
-					maskOuter.update(SLL.angles[i], SLL.levels[i]);	
+					if(i==0)
+						maskOuter.update(SLL.angles[i]+0.0000000001, SLL.levels[i]);
+					else
+						maskOuter.update(SLL.angles[i], SLL.levels[i]);	
 				}
 			}
 			else
 			{
 				for (int i = 0; i < SLL.angles.length; i++) {
-					maskOuter.add(SLL.angles[i], SLL.levels[i]);	
+					if(i==0)
+						maskOuter.add(SLL.angles[i]+0.0000000001, SLL.levels[i]);
+					else
+						maskOuter.add(SLL.angles[i], SLL.levels[i]);		
 				}			
 			}		
 		}			
