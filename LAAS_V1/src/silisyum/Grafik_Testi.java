@@ -19,6 +19,7 @@ import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -54,10 +55,10 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     
     private int initialNumberofElements = 20;
     private int problemDimension = 20;
-    private AntennaArray aA = new AntennaArray(initialNumberofElements, 181);
-    private AntennaArray aAforPresentation = new AntennaArray(initialNumberofElements, 181);
-    private DifferentialEvolution mA;
     private Mask mask = new Mask();
+    private AntennaArray aA = new AntennaArray(initialNumberofElements, 181, mask);
+    private AntennaArray aAforPresentation = new AntennaArray(initialNumberofElements, 181, mask);
+    private DifferentialEvolution mA = new DifferentialEvolution(aA.numberofElements, 70, 10000, 0.7, 0.95, 0, 360, aA, mask);
     private JButton btnDoIt;
     private BestValues bV;
 
@@ -81,9 +82,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	 * Create the frame.
 	 */
 	public Grafik_Testi() {		
-		
-		mA = new DifferentialEvolution(aA.numberofElements, 70, 10000, 0.7, 0.95, 0, 360, aA, mask);
-		
+	
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 734, 494);
 		contentPane = new JPanel();
@@ -99,9 +98,13 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		JFreeChart grafik = ChartFactory.createXYLineChart("Başlık", "Açı", "Patter (dB)", veri_seti);
 		contentPane.setLayout(new BorderLayout(0, 0));
 				
-		XYItemRenderer renderer = grafik.getXYPlot().getRenderer();
-//		renderer.setSeriesPaint(1, Color.blue);
-//		renderer.setSeriesPaint(2, Color.blue);
+		XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) grafik.getXYPlot().getRenderer();
+		renderer.setSeriesPaint(0, Color.red);
+		renderer.setSeriesStroke(0, new BasicStroke(0.7f));
+		renderer.setSeriesPaint(1, Color.blue);
+		renderer.setSeriesStroke(1, new BasicStroke(0.5f));
+		renderer.setSeriesPaint(2, new Color(0, 100, 0));
+		renderer.setSeriesStroke(2, new BasicStroke(0.5f));
 		
         this.chartPanel = new ChartPanel(grafik);
         this.chartPanel.addChartMouseListener(this);

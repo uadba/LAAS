@@ -10,14 +10,20 @@ public class AntennaArray {
 	private double[] d;
 	public double[] alpha;
 	public int numberofSamplePoints;
-	public double[] angle = new double[numberofSamplePoints];
+	public double[] angle = new double[numberofSamplePoints];	
 	private double[] pattern = new double[numberofSamplePoints];
 	public double[] pattern_dB = new double[numberofSamplePoints];
+	public double[] angleForOptimization;
+	public double[] patternForOptimization;
+	public double[] patternForOptimization_dB;
+	public double[] levels;
+	private Mask mask;	
 	
-	public AntennaArray(int _numberofElements, int _numberofSamplePoints) {
+	public AntennaArray(int _numberofElements, int _numberofSamplePoints, Mask _mask) {
 		
 		numberofSamplePoints = _numberofSamplePoints;
 		numberofElements = _numberofElements;
+		mask = _mask;
 		createArrays();
 		initializeArrays();
 
@@ -80,5 +86,52 @@ public class AntennaArray {
 		for (int i = 0; i < numberofSamplePoints; i++) {
 			pattern_dB[i] = 20*Math.log10(pattern[i] / biggestOne);
 		}
+	}
+
+	public double createPatternForOptimization() {
+		double result = 0;
+		
+		// Create an array for the all mask values
+		// For this purpose, we have to make a loop.
+		// Then, we set angles into the elements of this array.
+		int numberOfSLLOuters = mask.SLL_outers.size(); 
+		Mask.SidelobeLevel SLL_outer = null;
+		int numberOfAngles = 0;
+		for (int n = 0; n < numberOfSLLOuters; n++) {
+			SLL_outer = mask.SLL_outers.get(n);
+			numberOfAngles += SLL_outer.angles.length;
+		}
+		angleForOptimization = new double[numberOfAngles];
+		patternForOptimization  = new double[numberOfAngles];
+		patternForOptimization_dB = new double[numberOfAngles];
+		levels = new double[numberOfAngles];
+		
+		int i = 0;
+		while (i < angleForOptimization.length) {
+			for (int n = 0; n < numberOfSLLOuters; n++) {
+				SLL_outer = mask.SLL_outers.get(n);
+				for (int j = 0; j < SLL_outer.angles.length; j++) {
+					angleForOptimization[i] = SLL_outer.angles[j];
+					levels[i] = SLL_outer.levels[j];
+					i++;
+				}
+			}
+		}		
+
+		angleForOptimization[0] = 0;
+		double biggestOne = patternFunction(angleForOptimization[0]);
+		patternForOptimization[0] = patternFunction(angleForOptimization[0]);
+		for (int z = 1; z < angleForOptimization.length; z++) { // Attention please it starts from "1"
+			patternForOptimization[z] = patternFunction(angleForOptimization[z]);
+			if(patternForOptimization[z]>biggestOne) biggestOne = patternForOptimization[z];
+		}
+		
+		for (int z = 0; z < angleForOptimization.length; z++) {
+			patternForOptimization_dB[z] = 20*Math.log10(patternForOptimization[z] / biggestOne);
+			if (patternForOptimization_dB[z] > levels[z])
+				result = 1*(patternForOptimization_dB[z] - levels[z]);
+		}
+		
+		return result;
 	}
 }
