@@ -18,7 +18,6 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.xy.XYSeries;
@@ -56,9 +55,10 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private int initialNumberofElements = 20;
     private int problemDimension = 20;
     private Mask mask = new Mask();
-    private AntennaArray aA = new AntennaArray(initialNumberofElements, 181, mask);
-    private AntennaArray aAforPresentation = new AntennaArray(initialNumberofElements, 181, mask);
-    private DifferentialEvolution mA = new DifferentialEvolution(aA.numberofElements, 70, 10000, 0.7, 0.95, 0, 360, aA, mask);
+    private int patterGraphResolution = 721;
+    private AntennaArray aA = new AntennaArray(initialNumberofElements, patterGraphResolution, mask);
+    private AntennaArray aAforPresentation = new AntennaArray(initialNumberofElements, patterGraphResolution, mask);
+    private DifferentialEvolution mA = new DifferentialEvolution(aA.numberofElements, 70, 5000, 0.7, 0.95, 0, 360, aA, mask);
     private JButton btnDoIt;
     private BestValues bV;
 
