@@ -92,16 +92,23 @@ public class AntennaArray {
 	public void createLongArrays() {
 		int numberOfSLLOuters = mask.SLL_outers.size(); 
 		Mask.SidelobeLevel SLL_outer = null;
-		int numberOfAngles = 0;
+		int numberOfAnglesForOuters = 0;
 		for (int n = 0; n < numberOfSLLOuters; n++) {
 			SLL_outer = mask.SLL_outers.get(n);
-			numberOfAngles += SLL_outer.angles.length;
+			numberOfAnglesForOuters += SLL_outer.angles.length;
 		}
-		angleForOptimization = new double[numberOfAngles];
-		patternForOptimization  = new double[numberOfAngles];
-		patternForOptimization_dB = new double[numberOfAngles];
-		levels = new double[numberOfAngles];
-		weights = new double[numberOfAngles];
+		angleForOptimization = new double[numberOfAnglesForOuters];
+		patternForOptimization  = new double[numberOfAnglesForOuters];
+		patternForOptimization_dB = new double[numberOfAnglesForOuters];
+		levels = new double[numberOfAnglesForOuters];
+		weights = new double[numberOfAnglesForOuters];
+		
+		int numberOfSLLInners = mask.SLL_inners.size();
+		Mask.SidelobeLevel SLL_inner = null;
+		int numberOfAnglesForInners = 0;
+		for (int n = 0; n < numberOfSLLOuters; n++) {
+			
+		}
 	}
 
 	public double createPatternForOptimization() {
