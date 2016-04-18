@@ -13,11 +13,16 @@ public class AntennaArray {
 	public double[] angle = new double[numberofSamplePoints];	
 	private double[] pattern = new double[numberofSamplePoints];
 	public double[] pattern_dB = new double[numberofSamplePoints];
-	public double[] angleForOptimization;
-	public double[] patternForOptimization;
-	public double[] patternForOptimization_dB;
-	public double[] levels;
-	public double[] weights;
+	public double[] angleForOptimization_ForOuters;
+	public double[] patternForOptimization_ForOuters;
+	public double[] patternForOptimization_dB_ForOuters;
+	public double[] levels_ForOuters;
+	public double[] weights_ForOuters;
+	public double[] angleForOptimization_ForInners;
+	public double[] patternForOptimization_ForInners;
+	public double[] patternForOptimization_dB_ForInners;
+	public double[] levels_ForInners;
+	public double[] weights_ForInners;
 	private Mask mask;	
 	
 	public AntennaArray(int _numberofElements, int _numberofSamplePoints, Mask _mask) {
@@ -97,18 +102,25 @@ public class AntennaArray {
 			SLL_outer = mask.SLL_outers.get(n);
 			numberOfAnglesForOuters += SLL_outer.angles.length;
 		}
-		angleForOptimization = new double[numberOfAnglesForOuters];
-		patternForOptimization  = new double[numberOfAnglesForOuters];
-		patternForOptimization_dB = new double[numberOfAnglesForOuters];
-		levels = new double[numberOfAnglesForOuters];
-		weights = new double[numberOfAnglesForOuters];
+		angleForOptimization_ForOuters = new double[numberOfAnglesForOuters];
+		patternForOptimization_ForOuters  = new double[numberOfAnglesForOuters];
+		patternForOptimization_dB_ForOuters = new double[numberOfAnglesForOuters];
+		levels_ForOuters = new double[numberOfAnglesForOuters];
+		weights_ForOuters = new double[numberOfAnglesForOuters];
 		
 		int numberOfSLLInners = mask.SLL_inners.size();
 		Mask.SidelobeLevel SLL_inner = null;
 		int numberOfAnglesForInners = 0;
-		for (int n = 0; n < numberOfSLLOuters; n++) {
-			
+		for (int n = 0; n < numberOfSLLInners; n++) {
+			SLL_inner = mask.SLL_inners.get(n);
+			numberOfAnglesForInners += SLL_inner.angles.length;
 		}
+		
+		angleForOptimization_ForInners = new double[numberOfAnglesForInners];
+		patternForOptimization_ForInners  = new double[numberOfAnglesForInners];
+		patternForOptimization_dB_ForInners = new double[numberOfAnglesForInners];
+		levels_ForInners = new double[numberOfAnglesForInners];
+		weights_ForInners = new double[numberOfAnglesForInners];
 	}
 
 	public double createPatternForOptimization() {
@@ -118,33 +130,67 @@ public class AntennaArray {
 		// For this purpose, we have to make a loop.
 		// Then, we set angles into the elements of this array.
 		
+		// ------------ for Outers ------------
 		int numberOfSLLOuters = mask.SLL_outers.size();
 		Mask.SidelobeLevel SLL_outer = null;
 		int i = 0;
-		while (i < angleForOptimization.length) {
+		while (i < angleForOptimization_ForOuters.length) {
 			for (int n = 0; n < numberOfSLLOuters; n++) {
 				SLL_outer = mask.SLL_outers.get(n);
 				for (int j = 0; j < SLL_outer.angles.length; j++) {
-					angleForOptimization[i] = SLL_outer.angles[j];
-					levels[i] = SLL_outer.levels[j];
-					weights[i] = SLL_outer.weights[j];
+					angleForOptimization_ForOuters[i] = SLL_outer.angles[j];
+					levels_ForOuters[i] = SLL_outer.levels[j];
+					weights_ForOuters[i] = SLL_outer.weights[j];
 					i++;
 				}
 			}
-		}		
+		}
 
-		angleForOptimization[0] = 0;
-		double biggestOne = patternFunction(angleForOptimization[0]);
-		patternForOptimization[0] = patternFunction(angleForOptimization[0]);
-		for (int z = 1; z < angleForOptimization.length; z++) { // Attention please it starts from "1"
-			patternForOptimization[z] = patternFunction(angleForOptimization[z]);
-			if(patternForOptimization[z]>biggestOne) biggestOne = patternForOptimization[z];
+		angleForOptimization_ForOuters[0] = 0;
+		double biggestOne_ForOuters = patternFunction(angleForOptimization_ForOuters[0]);
+		patternForOptimization_ForOuters[0] = patternFunction(angleForOptimization_ForOuters[0]);
+		for (int z = 1; z < angleForOptimization_ForOuters.length; z++) { // Attention please it starts from "1"
+			patternForOptimization_ForOuters[z] = patternFunction(angleForOptimization_ForOuters[z]);
+			if(patternForOptimization_ForOuters[z]>biggestOne_ForOuters) biggestOne_ForOuters = patternForOptimization_ForOuters[z];
 		}
 		
-		for (int z = 0; z < angleForOptimization.length; z++) {
-			patternForOptimization_dB[z] = 20*Math.log10(patternForOptimization[z] / biggestOne);
-			if (patternForOptimization_dB[z] > levels[z])
-				result += weights[z]*(patternForOptimization_dB[z] - levels[z]);
+		for (int z = 0; z < angleForOptimization_ForOuters.length; z++) {
+			patternForOptimization_dB_ForOuters[z] = 20*Math.log10(patternForOptimization_ForOuters[z] / biggestOne_ForOuters);
+			if (patternForOptimization_dB_ForOuters[z] > levels_ForOuters[z])
+				result += weights_ForOuters[z]*(patternForOptimization_dB_ForOuters[z] - levels_ForOuters[z]);
+		}
+		
+		// ------------ for Inners ------------
+		int numberOfSLLInners = mask.SLL_inners.size();
+		Mask.SidelobeLevel SLL_inner = null;
+		i = 0;
+		while (i < angleForOptimization_ForInners.length) {
+			for (int n = 0; n < numberOfSLLInners; n++) {
+				SLL_inner = mask.SLL_inners.get(n);
+				for (int j = 0; j < SLL_inner.angles.length; j++) {
+					angleForOptimization_ForInners[i] = SLL_inner.angles[j];
+					levels_ForInners[i] = SLL_inner.levels[j];
+					weights_ForInners[i] = SLL_inner.weights[j];
+					i++;
+				}
+			}
+		}
+		
+		angleForOptimization_ForInners[0] = 0;
+		double biggestOne_ForInners = patternFunction(angleForOptimization_ForInners[0]);
+		patternForOptimization_ForInners[0] = patternFunction(angleForOptimization_ForInners[0]);
+		for (int z = 1; z < angleForOptimization_ForInners.length; z++) { // Attention please it starts from "1"
+			patternForOptimization_ForInners[z] = patternFunction(angleForOptimization_ForInners[z]);
+			if(patternForOptimization_ForInners[z]>biggestOne_ForInners) biggestOne_ForInners = patternForOptimization_ForInners[z];
+		}
+		
+		for (int z = 0; z < angleForOptimization_ForInners.length; z++) {
+			patternForOptimization_dB_ForInners[z] = 20*Math.log10(patternForOptimization_ForInners[z] / biggestOne_ForInners);
+			if (levels_ForInners[z] > patternForOptimization_dB_ForInners[z]) {
+				result += weights_ForInners[z]*(levels_ForInners[z] - patternForOptimization_dB_ForInners[z]);
+				//System.out.println("inner - level:" + levels_ForInners[z] + " dB:" + patternForOptimization_dB_ForInners[z]);
+				System.out.println("inner - result:" + result);
+			}				
 		}
 		
 		return result;
