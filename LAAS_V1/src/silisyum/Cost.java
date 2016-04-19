@@ -21,7 +21,8 @@ public class Cost {
 		mask.addNewSLL_outer("SLL_01", 115, 180, 65, -24, 1);
 				
 		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
-		mask.addNewSLL_inner("SLL_01", 40, 70, 30, -30, 1);
+		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
+		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
 		mask.addNewSLL_inner("SLL_01", 70, 180, 3, -95, 1);
 		
 		aA.createLongArrays();

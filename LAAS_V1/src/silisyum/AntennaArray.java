@@ -175,24 +175,25 @@ public class AntennaArray {
 				}
 			}
 		}
-		
+		//System.out.println("inner - result-1:" + result);
 		angleForOptimization_ForInners[0] = 0;
-		double biggestOne_ForInners = patternFunction(angleForOptimization_ForInners[0]);
+		//double biggestOne_ForInners = patternFunction(angleForOptimization_ForInners[0]);
 		patternForOptimization_ForInners[0] = patternFunction(angleForOptimization_ForInners[0]);
 		for (int z = 1; z < angleForOptimization_ForInners.length; z++) { // Attention please it starts from "1"
 			patternForOptimization_ForInners[z] = patternFunction(angleForOptimization_ForInners[z]);
-			if(patternForOptimization_ForInners[z]>biggestOne_ForInners) biggestOne_ForInners = patternForOptimization_ForInners[z];
+			//if(patternForOptimization_ForInners[z]>biggestOne_ForInners) biggestOne_ForInners = patternForOptimization_ForInners[z];
 		}
 		
 		for (int z = 0; z < angleForOptimization_ForInners.length; z++) {
-			patternForOptimization_dB_ForInners[z] = 20*Math.log10(patternForOptimization_ForInners[z] / biggestOne_ForInners);
+			patternForOptimization_dB_ForInners[z] = 20*Math.log10(patternForOptimization_ForInners[z] / biggestOne_ForOuters);
 			if (levels_ForInners[z] > patternForOptimization_dB_ForInners[z]) {
 				result += weights_ForInners[z]*(levels_ForInners[z] - patternForOptimization_dB_ForInners[z]);
 				//System.out.println("inner - level:" + levels_ForInners[z] + " dB:" + patternForOptimization_dB_ForInners[z]);
-				System.out.println("inner - result:" + result);
-			}				
+				//System.out.println("------------------------------------------inner - result-2:" + result);
+				//System.out.println("angle:" + z);
+			}
 		}
-		
+		//System.out.println("inner - result-2:" + result);		
 		return result;
 	}
 }

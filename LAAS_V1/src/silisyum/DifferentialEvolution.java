@@ -17,7 +17,7 @@ public class DifferentialEvolution {
 	private double Cr;
 	private int R1, R2, R3;
 	private Random r;
-	private int iterationIndex = 0;
+	public int iterationIndex = 0;
 	private double L, H;
 	private Cost c;
 	private boolean iterationState = true;
