@@ -20,9 +20,9 @@ public class Cost {
 //		mask.addNewSLL_outer("SLL_01", 110, 115, 15, -40, 1);
 //		mask.addNewSLL_outer("SLL_01", 115, 180, 65, -24, 1);
 		
-		mask.addNewSLL_outer("SLL_01", 0, 140, 3, 0, 1);
-		mask.addNewSLL_outer("SLL_01", 140, 150, 10, -30, 1);
-		mask.addNewSLL_outer("SLL_01", 150, 180, 3, 0, 1);
+		mask.addNewSLL_outer("SLL_01", 0, 120, 50, -25, 1000);
+		mask.addNewSLL_outer("SLL_01", 120, 150, 30, 0, 1);
+		mask.addNewSLL_outer("SLL_01", 150, 180, 100, -25, 1);
 				
 //		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
 //		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
@@ -31,8 +31,8 @@ public class Cost {
 //		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
 //		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);
 		
-		mask.addNewSLL_inner("SLL_01", 0, 120, 120, -5, 1);
-		mask.addNewSLL_inner("SLL_01", 120, 180, 30, -50, 1);
+//		mask.addNewSLL_inner("SLL_01", 0, 120, 120, -5, 10);
+//		mask.addNewSLL_inner("SLL_01", 120, 180, 50, -50, 1);
 		
 		
 		aA.createLongArrays();
