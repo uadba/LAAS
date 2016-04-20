@@ -50,9 +50,10 @@ public class AntennaArray {
 	
 	public void initializeArrays() {
 		// seeker example nulling at -10 degree
-		double[] temp_a = {0.32561, 0.28558, 0.39104, 0.50461, 0.62034, 0.73147, 0.83102, 0.91243, 0.97010, 1.00000, 1.00000, 0.97010, 0.91243, 0.83102, 0.73147, 0.62034, 0.50461, 0.39104, 0.28558, 0.32561};
+		//double[] temp_a = {0.32561, 0.28558, 0.39104, 0.50461, 0.62034, 0.73147, 0.83102, 0.91243, 0.97010, 1.00000, 1.00000, 0.97010, 0.91243, 0.83102, 0.73147, 0.62034, 0.50461, 0.39104, 0.28558, 0.32561};
 		//double[] temp_alpha = {-3.70782, -7.51205, -4.20985, -1.57898, 0.64605, 2.50538, 2.89041, 2.24520, 1.81287, 0.78319, -0.78319, -1.81287, -2.24520, -2.89041, -2.50538, -0.64605, +1.57898, +4.20985, +7.51205, +3.70782};
-		double[] temp_d= {0.44, 1.25, 2.20, 3.22, 4.42, 4.42, 3.22, 2.20, 1.25, 0.44};
+		//double[] temp_d_10 = {0, 1.2, 2.22, 3.17, 3.98, 4.86, 5.67, 6.62, 7.64, 8.84}; // Khodier 10 elements
+		double[] temp_d_28 = {0, 1.2, 2.22, 3.17, 3.98, 4.86, 5.67, 6.62, 7.64, 8.84}; // Khodier 10 elements
 		
 		// ismail th
 		//double[] alpha_example = {14.3983, -26.1588, -9.93420, 10.2254, 1.93170, 5.18520, 1.53020, -1.48370, -2.37140, -2.97950, -0.997700, 3.23560, -1.12110, 0.775300, 4.14480, -7.55650, 1.79030, 6.73780, 24.7469, -15.6342};
@@ -67,7 +68,10 @@ public class AntennaArray {
 			//alpha[i] = alpha_example[i]; // ismail th
 			
 			//d[i] = 0.5*lambda;
-			d[i] = temp_d[i];
+			//d[i] = temp_d_10[i]*0.5*lambda;
+			d[i] = temp_d_28[i]*0.5*lambda;
+			//d[i] += i*0.5*lambda;
+			
 		}		
 	}
 
@@ -78,8 +82,8 @@ public class AntennaArray {
 		double result_img = 0;
 		for (int e = 0; e<numberofElements; e++)
 		{
-			result_real = result_real + a[e]*Math.cos((beta*d[e]*Math.cos((theta)/180*Math.PI)*(e) + ((alpha[e])/180*Math.PI)));
-			result_img = result_img + a[e]*Math.sin((beta*d[e]*Math.cos((theta)/180*Math.PI)*(e) + ((alpha[e])/180*Math.PI)));			
+			result_real = result_real + a[e]*Math.cos(d[e]*beta*Math.cos((theta)/180*Math.PI) + ((alpha[e])/180*Math.PI));
+			result_img = result_img + a[e]*Math.sin(d[e]*beta*Math.cos((theta)/180*Math.PI) + ((alpha[e])/180*Math.PI));			
 		}
 		result = Math.sqrt(result_real*result_real + result_img*result_img);
 					

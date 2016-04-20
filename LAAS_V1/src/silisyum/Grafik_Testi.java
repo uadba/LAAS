@@ -52,8 +52,8 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
-    private int initialNumberofElements = 10;
-    private int problemDimension = 10;
+    private int initialNumberofElements = 28;
+    private int problemDimension = 28;
     private Mask mask = new Mask();
     private int patterGraphResolution = 721;
     private AntennaArray aA = new AntennaArray(initialNumberofElements, patterGraphResolution, mask);
