@@ -24,8 +24,9 @@ public class AntennaArray {
 	public double[] levels_ForInners;
 	public double[] weights_ForInners;
 	private Mask mask;
-	private int numberOfSLLOuters;
-	private int numberOfSLLInners;	
+	public int numberOfSLLOuters;
+	public int numberOfSLLInners;
+	public double biggestOne;	
 	
 	public AntennaArray(int _numberofElements, int _numberofSamplePoints, Mask _mask) {
 		
@@ -128,15 +129,13 @@ public class AntennaArray {
 		}
 	}
 
-	public double createPatternForOptimization() {
-		double result = 0;
-		
+	public void createPatternForOptimization() {	
 		// Create an array for the all mask values
 		// For this purpose, we have to make a loop.
 		// Then, we set angles into the elements of this array.
 		
 		int i;
-		double biggestOne = 1;
+		biggestOne = 1;
 		
 		if (numberOfSLLOuters > 0) {
 			// ------------ for Outers ------------
@@ -190,25 +189,5 @@ public class AntennaArray {
 			}
 		}
 		
-		if (numberOfSLLOuters > 0) {
-			// ------------ for Outers ------------
-			for (int z = 0; z < angleForOptimization_ForOuters.length; z++) {
-				patternForOptimization_dB_ForOuters[z] = 20 * Math.log10(patternForOptimization_ForOuters[z] / biggestOne);
-				if (patternForOptimization_dB_ForOuters[z] > levels_ForOuters[z])
-					result += weights_ForOuters[z] * (patternForOptimization_dB_ForOuters[z] - levels_ForOuters[z]);
-			}
-		}
-		
-		if (numberOfSLLInners > 0) {
-			// ------------ for Inners ------------
-			for (int z = 0; z < angleForOptimization_ForInners.length; z++) {
-				patternForOptimization_dB_ForInners[z] = 20 * Math.log10(patternForOptimization_ForInners[z] / biggestOne);
-				if (levels_ForInners[z] > patternForOptimization_dB_ForInners[z]) {
-					result += weights_ForInners[z] * (levels_ForInners[z] - patternForOptimization_dB_ForInners[z]);
-				}
-			} 
-		}
-		
-		return result;
 	}
 }
