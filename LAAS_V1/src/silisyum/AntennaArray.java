@@ -7,7 +7,7 @@ public class AntennaArray {
 	//static double[] a = {1.0, 0.9295, 1.2126, 1.4383, 1.5568, 1.5568, 1.4383, 1.2126, 0.9295, 1.0};
 	int numberofElements;
 	public double[] a;
-	private double[] d;
+	public double[] d;
 	public double[] alpha;
 	public int numberofSamplePoints;
 	public double[] angle = new double[numberofSamplePoints];	
@@ -52,18 +52,22 @@ public class AntennaArray {
 		// seeker example nulling at -10 degree
 		double[] temp_a = {0.32561, 0.28558, 0.39104, 0.50461, 0.62034, 0.73147, 0.83102, 0.91243, 0.97010, 1.00000, 1.00000, 0.97010, 0.91243, 0.83102, 0.73147, 0.62034, 0.50461, 0.39104, 0.28558, 0.32561};
 		//double[] temp_alpha = {-3.70782, -7.51205, -4.20985, -1.57898, 0.64605, 2.50538, 2.89041, 2.24520, 1.81287, 0.78319, -0.78319, -1.81287, -2.24520, -2.89041, -2.50538, -0.64605, +1.57898, +4.20985, +7.51205, +3.70782};
+		double[] temp_d= {0.44, 1.25, 2.20, 3.22, 4.42, 4.42, 3.22, 2.20, 1.25, 0.44};
 		
 		// ismail th
 		//double[] alpha_example = {14.3983, -26.1588, -9.93420, 10.2254, 1.93170, 5.18520, 1.53020, -1.48370, -2.37140, -2.97950, -0.997700, 3.23560, -1.12110, 0.775300, 4.14480, -7.55650, 1.79030, 6.73780, 24.7469, -15.6342};
 		
 		for (int i = 0; i < numberofElements; i++)
 		{
-			//a[i] = 1;
-			a[i] = temp_a[i]; // seeker
-			d[i] = 0.5*lambda;
+			a[i] = 1;
+			//a[i] = temp_a[i]; // seeker
+			
 			alpha[i] = 0;
 			//alpha[i] = temp_alpha[i]; // seeker
 			//alpha[i] = alpha_example[i]; // ismail th
+			
+			//d[i] = 0.5*lambda;
+			d[i] = temp_d[i];
 		}		
 	}
 

@@ -52,8 +52,8 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
-    private int initialNumberofElements = 20;
-    private int problemDimension = 20;
+    private int initialNumberofElements = 10;
+    private int problemDimension = 10;
     private Mask mask = new Mask();
     private int patterGraphResolution = 721;
     private AntennaArray aA = new AntennaArray(initialNumberofElements, patterGraphResolution, mask);
@@ -182,9 +182,13 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		
 				
 		for (int d = 0; d < problemDimension; d++) {
-			aAforPresentation.alpha[d] = bV.bestAmplitudes[d];
+			//aAforPresentation.alpha[d] = bV.bestAmplitudes[d];
 			//aAforPresentation.alpha[d] = alpha_example[d];
 		}
+		
+		// ----------- DELETE THIS LINE AFTER COMPLETING YOUR TEST -----------------
+		// 
+		// ----------- DELETE THIS LINE AFTER COMPLETING YOUR TEST -----------------
 		
 		aAforPresentation.createPattern();
 		
