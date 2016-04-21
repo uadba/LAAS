@@ -58,7 +58,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private int patterGraphResolution = 721; //721;
     private AntennaArray aA = new AntennaArray(initialNumberofElements, patterGraphResolution, mask);
     private AntennaArray aAforPresentation = new AntennaArray(initialNumberofElements, patterGraphResolution, mask);
-    private DifferentialEvolution mA = new DifferentialEvolution(aA.numberofElements, 70, 5000, 0.3, 0.95, 0, 360, aA, mask);
+    private DifferentialEvolution mA = new DifferentialEvolution(aA.numberofElements, 70, 5000, 0.7, 0.95, 0, 360, aA, mask);
     private JButton btnDoIt;
     private BestValues bV;
 
