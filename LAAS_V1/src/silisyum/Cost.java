@@ -27,11 +27,11 @@ public class Cost {
 //		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
 //		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);
 		
-		mask.addNewSLL_outer("SLL_01", 0, 20, 20, -20, 1);
-		mask.addNewSLL_outer("SLL_01", 20, 30, 10, -40, 1);
-		mask.addNewSLL_outer("SLL_01", 30, 80, 49, -20, 1);
-		mask.addNewSLL_outer("SLL_01", 80, 100, 20, 0, 1);
-		mask.addNewSLL_outer("SLL_01", 100, 180, 10, -20, 1);
+		mask.addNewSLL_outer("SLL_01", 0, 74.99, 75, -28, 1);
+		mask.addNewSLL_outer("SLL_01", 74.99, 75.01, 2, -100, 1);
+		mask.addNewSLL_outer("SLL_01", 75.01, 82, 10, -28, 1);
+		mask.addNewSLL_outer("SLL_01", 82, 98, 20, 0, 1);
+		mask.addNewSLL_outer("SLL_01", 98, 180, 80, -28, 1);
 
 		
 		aA.createLongArrays();
@@ -46,10 +46,14 @@ public class Cost {
 		
 		double result = 0;
 		
-		for (int d = 0; d < problemDimension; d++) {
-			aA.alpha[d] = theVector[d];
-		}	
-
+//		for (int d = 0; d < problemDimension; d++) {
+//			aA.d[d] = theVector[d];
+//		}
+		
+		aA.d[0] = 0;
+		for (int index = 1; index < problemDimension; index++) {
+			aA.d[index] = aA.d[index-1] + 0.5 + theVector[index];
+		}
 		
 		aA.createPatternForOptimization();
 
