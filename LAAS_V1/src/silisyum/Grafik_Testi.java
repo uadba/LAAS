@@ -52,13 +52,13 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
-    private int initialNumberofElements = 28;
-    private int problemDimension = 28;
+    private int initialNumberofElements = 20;
+    private int problemDimension = 20;
     private Mask mask = new Mask();
-    private int patterGraphResolution = 721;
+    private int patterGraphResolution = 361; //721;
     private AntennaArray aA = new AntennaArray(initialNumberofElements, patterGraphResolution, mask);
     private AntennaArray aAforPresentation = new AntennaArray(initialNumberofElements, patterGraphResolution, mask);
-    private DifferentialEvolution mA = new DifferentialEvolution(aA.numberofElements, 70, 5000, 0.7, 0.95, 0, 360, aA, mask);
+    private DifferentialEvolution mA = new DifferentialEvolution(aA.numberofElements, 70, 5000, 0.7, 0.95, -0.2, 0.2, aA, mask);
     private JButton btnDoIt;
     private BestValues bV;
 
@@ -180,15 +180,21 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		// Its name may be aAforPresentation;
 		// CONSIDER THIS!
 		
-				
-		for (int d = 0; d < problemDimension; d++) {
-			//aAforPresentation.alpha[d] = bV.bestAmplitudes[d];
-			//aAforPresentation.alpha[d] = alpha_example[d];
-		}
+		// this is for amplitudes and phases		
+//		for (int index = 0; index < problemDimension; index++) {
+//			aAforPresentation.alpha[d] = bV.bestAmplitudes[d];
+//		}
 		
-		// ----------- DELETE THIS LINE AFTER COMPLETING YOUR TEST -----------------
-		// 
-		// ----------- DELETE THIS LINE AFTER COMPLETING YOUR TEST -----------------
+		// this is for positions. It starts with 1 instead of 0
+		aAforPresentation.d[0] = 0;
+		for (int index = 1; index < problemDimension; index++) {
+			//aAforPresentation.d[index] = 0;
+			//aAforPresentation.d[index] = 0.5 + aAforPresentation.d[index-1];
+			//aAforPresentation.d[index] = 0.5 + aAforPresentation.d[index-1] + bV.bestAmplitudes[index];
+			//System.out.print(aAforPresentation.d[index] + " ");
+		}
+		System.out.println();
+		
 		
 		aAforPresentation.createPattern();
 		
