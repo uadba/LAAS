@@ -26,13 +26,9 @@ import org.jfree.ui.RectangleEdge;
 
 
 import java.awt.FlowLayout;
-import javax.swing.JTextField;
 import javax.swing.SwingWorker;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
-import java.awt.event.ActionEvent;
 
 public class Grafik_Testi extends JFrame implements ChartMouseListener{
 
@@ -41,7 +37,6 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	 */
 	private static final long serialVersionUID = 208535889565395799L;
 	private JPanel contentPane;
-	private JTextField yazi;
 	
 	private XYSeries seriler;
 	private XYSeries maskOuter;
@@ -62,8 +57,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private int patterGraphResolution = 721; //721;
     private AntennaArray aA = new AntennaArray(numberofElements, patterGraphResolution, mask);
     private AntennaArray aAforPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
-    private DifferentialEvolution mA = new DifferentialEvolution(aA.numberofElements, 70, 5000, 0.7, 0.95, L, H, aA, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
-    private JButton btnDoIt;
+    private DifferentialEvolution mA = new DifferentialEvolution(numberofElements, 70, 5000, 0.7, 0.95, L, H, aA, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
     private BestValues bV;
 
 	/**
@@ -128,48 +122,6 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		yazi = new JTextField();
-		panel.add(yazi);
-		yazi.setColumns(10);
-		yazi.setText(Integer.toString(numberofElements));
-
-				
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				int _numberofElements=numberofElements ;
-				
-			    try{
-			    	_numberofElements = Integer.parseInt(yazi.getText());
-			    }catch(NumberFormatException e){
-			        _numberofElements = 2;
-			        yazi.setText("2");
-			    }
-
-				if (_numberofElements<2) { _numberofElements = 2; yazi.setText("2"); } 
-				aA.numberofElements = _numberofElements;
-				aA.createArrays();
-				aA.initializeArrays();
-				
-				aAforPresentation.numberofElements = _numberofElements;
-				aAforPresentation.createArrays();
-				aAforPresentation.initializeArrays();
-
-			}
-		});
-		panel.add(btnNewButton);
-		
-		btnDoIt = new JButton("Do it");
-		btnDoIt.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				
-				
-			}
-		});
-		panel.add(btnDoIt);
 
 		AlgorithmExecuter ae = new AlgorithmExecuter();
 		ae.execute();
