@@ -27,7 +27,6 @@ public class DifferentialEvolution {
     private boolean positionIsUsed;
 	private Cost c;
 	private boolean iterationState = true;
-	private int whichParameter;
 	
 	public DifferentialEvolution(int _numberofElements, int _populationNumber, int _iterationNumber, double _F, double _C, double[] _L, double[] _H, AntennaArray _aA, Mask _mask, boolean _amplitudeIsUsed, boolean _phaseIsUsed, boolean _positionIsUsed) {
 		
@@ -45,10 +44,6 @@ public class DifferentialEvolution {
 		r = new Random();		
 		createArrays();
 		initialize();
-		
-		if(amplitudeIsUsed) whichParameter = 0;
-		if(phaseIsUsed) whichParameter = 1;
-		if(positionIsUsed) whichParameter = 2;
 	}
 	
 	private void createArrays() {
