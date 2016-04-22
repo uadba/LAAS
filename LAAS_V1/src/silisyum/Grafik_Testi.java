@@ -55,9 +55,9 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private int numberofElements = 20;
     private double[] L = {0, 0, 0}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 360, 0.2}; // initial values of amplitude, phase, and position maximum limits
-    private boolean amplitudeIsUsed = false;
+    private boolean amplitudeIsUsed = true;
     private boolean phaseIsUsed = false;
-    private boolean positionIsUsed = true;
+    private boolean positionIsUsed = false;
     private Mask mask = new Mask();
     private int patterGraphResolution = 721; //721;
     private AntennaArray aA = new AntennaArray(numberofElements, patterGraphResolution, mask);

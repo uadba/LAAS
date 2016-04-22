@@ -20,6 +20,8 @@ public class DifferentialEvolution {
 	public int iterationIndex = 0;
 	private double[] L;
 	private double[] H;
+	private double[] Ls;
+	private double[] Hs;
     private boolean amplitudeIsUsed;
     private boolean phaseIsUsed;
     private boolean positionIsUsed;
@@ -54,13 +56,32 @@ public class DifferentialEvolution {
 		memberFitness = new double[populationNumber];
 		Xtrial = new double[numberofElements];
 		temp = new double[numberofElements];
+		Ls = new double[numberofElements];
+		Hs = new double[numberofElements];
 	}
 
 	private void initialize() {
+		for (int d = 0; d < numberofElements; d++) {
+			if(amplitudeIsUsed) {
+				Ls[d] = L[0];
+				Hs[d] = H[0];
+			}
+			
+			if(phaseIsUsed) {
+				Ls[d] = L[1];
+				Hs[d] = H[1];
+			}
+			
+			if(positionIsUsed) {
+				Ls[d] = L[2];
+				Hs[d] = H[2];
+			}
+		}
+		
 		Random r = new Random();
 		for (int m = 0; m < populationNumber; m++) {
 			for (int d = 0; d < numberofElements; d++) {
-				members[d][m] = L[whichParameter] + (H[whichParameter]-L[whichParameter])*r.nextDouble();
+				members[d][m] = Ls[d] + (Hs[d]-Ls[d])*r.nextDouble();
 				temp[d] = members[d][m];
 			}			
 			memberFitness[m] = c.function(temp);
@@ -100,9 +121,9 @@ public class DifferentialEvolution {
 			
 			// Check the boundary constraints for the the trial vector
 			for (int d = 0; d < numberofElements; d++) {
-				if(Xtrial[d]<L[whichParameter] || Xtrial[d]>H[whichParameter])
+				if(Xtrial[d]<Ls[d] || Xtrial[d]>Hs[d])
 				{
-					Xtrial[d] = L[whichParameter] + (H[whichParameter]-L[whichParameter])*r.nextDouble();
+					Xtrial[d] = Ls[d] + (Hs[d]-Ls[d])*r.nextDouble();
 				}
 			}
 			
