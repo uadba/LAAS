@@ -60,7 +60,7 @@ public class AntennaArray {
 //		double[] thesis_seven_position = {0, 0.250, 0.734, 1.369, 1.850, 2.108, 3.935};
 //		double[] thesis_seven_weight = {0.146, 0.258, 0.195, 0.195, 0.275, 0.169, 0.057};
 //		double[] thesis_seven_alpha = {44, 257, 143, 48, 292, 145, 25};
-		double[] seeker_position = {0, 0.53593, 1.09863, 1.59965, 2.10054, 2.57424, 3.05002, 3.53444, 4.04507, 4.56049, 5.07719, 5.59261, 6.10324, 6.58766, 7.06344, 7.53714, 8.03803, 8.53905, 9.10175, 9.63768};
+//		double[] seeker_position = {0, 0.53593, 1.09863, 1.59965, 2.10054, 2.57424, 3.05002, 3.53444, 4.04507, 4.56049, 5.07719, 5.59261, 6.10324, 6.58766, 7.06344, 7.53714, 8.03803, 8.53905, 9.10175, 9.63768};
 		
 		// ismail th
 		//double[] alpha_example = {14.3983, -26.1588, -9.93420, 10.2254, 1.93170, 5.18520, 1.53020, -1.48370, -2.37140, -2.97950, -0.997700, 3.23560, -1.12110, 0.775300, 4.14480, -7.55650, 1.79030, 6.73780, 24.7469, -15.6342};
@@ -76,8 +76,8 @@ public class AntennaArray {
 			//alpha[i] = temp_alpha[i]; // seeker
 			//alpha[i] = alpha_example[i]; // ismail th
 			
-			//d[i] = i*0.5*lambda;
-			d[i] = seeker_position[i]*lambda;
+			d[i] = i*0.5*lambda;
+			//d[i] = seeker_position[i]*lambda;
 			//d[i] = temp_d_10[i]*0.5*lambda;
 			//d[i] = temp_d_32[i]*0.5*lambda;
 			//d[i] = 2*thesis_seven_position[i]*0.5*lambda; // for thesis. Attention please it has a two multiplication because it considers lambda not lambda/2

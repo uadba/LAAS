@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class DifferentialEvolution {
 	
-	private int problemDimension;
+	private int numberofElements;
 	private int populationNumber;
 	public double[][] members;
 	private double[] memberFitness;
@@ -18,38 +18,49 @@ public class DifferentialEvolution {
 	private int R1, R2, R3;
 	private Random r;
 	public int iterationIndex = 0;
-	private double L, H;
+	private double[] L;
+	private double[] H;
+    private boolean amplitudeIsUsed;
+    private boolean phaseIsUsed;
+    private boolean positionIsUsed;
 	private Cost c;
 	private boolean iterationState = true;
+	private int whichParameter;
 	
-	public DifferentialEvolution(int _problemDimension, int _populationNumber, int _iterationNumber, double _F, double _C, double _L, double _H, AntennaArray _aA, Mask _mask) {
+	public DifferentialEvolution(int _numberofElements, int _populationNumber, int _iterationNumber, double _F, double _C, double[] _L, double[] _H, AntennaArray _aA, Mask _mask, boolean _amplitudeIsUsed, boolean _phaseIsUsed, boolean _positionIsUsed) {
 		
-		problemDimension = _problemDimension;
+		numberofElements = _numberofElements;
 		populationNumber = _populationNumber;
 		iterationNumber = _iterationNumber;
 		F = _F;
 		Cr = _C;
 		L = _L;
 		H = _H;
-		c = new Cost(problemDimension, _aA, _mask);
+	    amplitudeIsUsed = _amplitudeIsUsed;
+	    phaseIsUsed = _phaseIsUsed;
+	    positionIsUsed = _positionIsUsed;
+		c = new Cost(numberofElements, _aA, _mask, _amplitudeIsUsed, _phaseIsUsed, positionIsUsed);
 		r = new Random();		
 		createArrays();
 		initialize();
-
+		
+		if(amplitudeIsUsed) whichParameter = 0;
+		if(phaseIsUsed) whichParameter = 1;
+		if(positionIsUsed) whichParameter = 2;
 	}
 	
 	private void createArrays() {
-		members = new double[problemDimension][populationNumber];
+		members = new double[numberofElements][populationNumber];
 		memberFitness = new double[populationNumber];
-		Xtrial = new double[problemDimension];
-		temp = new double[problemDimension];
+		Xtrial = new double[numberofElements];
+		temp = new double[numberofElements];
 	}
 
 	private void initialize() {
 		Random r = new Random();
 		for (int m = 0; m < populationNumber; m++) {
-			for (int d = 0; d < problemDimension; d++) {
-				members[d][m] = L + (H-L)*r.nextDouble();
+			for (int d = 0; d < numberofElements; d++) {
+				members[d][m] = L[whichParameter] + (H[whichParameter]-L[whichParameter])*r.nextDouble();
 				temp[d] = members[d][m];
 			}			
 			memberFitness[m] = c.function(temp);
@@ -79,7 +90,7 @@ public class DifferentialEvolution {
 			int ri = r.nextInt(populationNumber);
 			
 			// Construct trial vector
-			for (int d = 0; d < problemDimension; d++) {
+			for (int d = 0; d < numberofElements; d++) {
 				if(r.nextDouble() < Cr || ri == d) {
 					Xtrial[d] = members[d][R3] + F * (members[d][R2] - members[d][R1]);
 				} else {
@@ -88,10 +99,10 @@ public class DifferentialEvolution {
 			}
 			
 			// Check the boundary constraints for the the trial vector
-			for (int d = 0; d < problemDimension; d++) {
-				if(Xtrial[d]<L || Xtrial[d]>H)
+			for (int d = 0; d < numberofElements; d++) {
+				if(Xtrial[d]<L[whichParameter] || Xtrial[d]>H[whichParameter])
 				{
-					Xtrial[d] = L + (H-L)*r.nextDouble();
+					Xtrial[d] = L[whichParameter] + (H[whichParameter]-L[whichParameter])*r.nextDouble();
 				}
 			}
 			
@@ -101,7 +112,7 @@ public class DifferentialEvolution {
 			if(fitnessOfTrial < memberFitness[individual]) {
 				// Replace the current with Xtrial
 				// Because it is better than the current
-				for (int d = 0; d < problemDimension; d++) {
+				for (int d = 0; d < numberofElements; d++) {
 					members[d][individual] = Xtrial[d];					
 				}
 				memberFitness[individual] = fitnessOfTrial;				
@@ -119,18 +130,4 @@ public class DifferentialEvolution {
 		
 		return iterationState;
 	}
-
-	public static void main(String[] args) {
-//		AntennaArray aA_local = new AntennaArray(5);
-//		DifferentialEvolution name = new DifferentialEvolution(7, 1000000, 100, 0.7, 0.5, 0, 1, aA_local);
-//		while (name.iterate()) {
-//			System.out.println(name.fitnessOfBestMember);
-//		}
-//		System.out.println("_______________________________");
-//		for (int d = 0; d < name.problemDimension; d++) {
-//			System.out.println((name.members[d][name.bestMember]));
-//		}		
-		
-	}
-
 }
