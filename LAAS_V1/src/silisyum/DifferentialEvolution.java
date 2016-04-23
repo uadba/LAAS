@@ -5,6 +5,7 @@ import java.util.Random;
 public class DifferentialEvolution {
 	
 	private int numberofElements;
+    private int problemDimension = 0;
 	private int populationNumber;
 	public double[][] members;
 	private double[] memberFitness;
@@ -40,6 +41,11 @@ public class DifferentialEvolution {
 	    amplitudeIsUsed = _amplitudeIsUsed;
 	    phaseIsUsed = _phaseIsUsed;
 	    positionIsUsed = _positionIsUsed;
+	    
+		if (amplitudeIsUsed) problemDimension = numberofElements;		
+		if (phaseIsUsed) problemDimension += numberofElements;		
+		if (positionIsUsed) problemDimension += numberofElements;
+		
 		c = new Cost(numberofElements, _aA, _mask, _amplitudeIsUsed, _phaseIsUsed, positionIsUsed);
 		r = new Random();		
 		createArrays();
@@ -47,35 +53,43 @@ public class DifferentialEvolution {
 	}
 	
 	private void createArrays() {
-		members = new double[numberofElements][populationNumber];
+		members = new double[problemDimension][populationNumber];
 		memberFitness = new double[populationNumber];
-		Xtrial = new double[numberofElements];
-		temp = new double[numberofElements];
-		Ls = new double[numberofElements];
-		Hs = new double[numberofElements];
+		Xtrial = new double[problemDimension];
+		temp = new double[problemDimension];
+		Ls = new double[problemDimension];
+		Hs = new double[problemDimension];
 	}
 
 	private void initialize() {
-		for (int d = 0; d < numberofElements; d++) {
-			if(amplitudeIsUsed) {
+		
+		int delta = 0;
+		if(amplitudeIsUsed) {
+			for (int d = 0; d < numberofElements; d++) {
 				Ls[d] = L[0];
 				Hs[d] = H[0];
 			}
-			
-			if(phaseIsUsed) {
-				Ls[d] = L[1];
-				Hs[d] = H[1];
-			}
-			
-			if(positionIsUsed) {
-				Ls[d] = L[2];
-				Hs[d] = H[2];
-			}
+			delta = numberofElements;
 		}
+		
+		if (phaseIsUsed) {
+			for (int d = 0; d < numberofElements; d++) {
+				Ls[d + delta] = L[1];
+				Hs[d + delta] = H[1];
+			}
+			delta += numberofElements;
+		}		
+		
+		if (positionIsUsed) {
+			for (int d = 0; d < numberofElements; d++) {
+				Ls[d + delta] = L[2];
+				Hs[d + delta] = H[2];
+			}
+		}		
 		
 		Random r = new Random();
 		for (int m = 0; m < populationNumber; m++) {
-			for (int d = 0; d < numberofElements; d++) {
+			for (int d = 0; d < problemDimension; d++) {
 				members[d][m] = Ls[d] + (Hs[d]-Ls[d])*r.nextDouble();
 				temp[d] = members[d][m];
 			}			
@@ -106,7 +120,7 @@ public class DifferentialEvolution {
 			int ri = r.nextInt(populationNumber);
 			
 			// Construct trial vector
-			for (int d = 0; d < numberofElements; d++) {
+			for (int d = 0; d < problemDimension; d++) {
 				if(r.nextDouble() < Cr || ri == d) {
 					Xtrial[d] = members[d][R3] + F * (members[d][R2] - members[d][R1]);
 				} else {
@@ -115,7 +129,7 @@ public class DifferentialEvolution {
 			}
 			
 			// Check the boundary constraints for the the trial vector
-			for (int d = 0; d < numberofElements; d++) {
+			for (int d = 0; d < problemDimension; d++) {
 				if(Xtrial[d]<Ls[d] || Xtrial[d]>Hs[d])
 				{
 					Xtrial[d] = Ls[d] + (Hs[d]-Ls[d])*r.nextDouble();
@@ -128,7 +142,7 @@ public class DifferentialEvolution {
 			if(fitnessOfTrial < memberFitness[individual]) {
 				// Replace the current with Xtrial
 				// Because it is better than the current
-				for (int d = 0; d < numberofElements; d++) {
+				for (int d = 0; d < problemDimension; d++) {
 					members[d][individual] = Xtrial[d];					
 				}
 				memberFitness[individual] = fitnessOfTrial;				

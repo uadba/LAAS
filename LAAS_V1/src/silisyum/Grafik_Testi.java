@@ -48,10 +48,11 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private Crosshair yCrosshair;    
     
     private int numberofElements = 20;
+    private int problemDimension = 0;
     private double[] L = {0, 0, 0}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 360, 0.2}; // initial values of amplitude, phase, and position maximum limits
     private boolean amplitudeIsUsed = true;
-    private boolean phaseIsUsed = false;
+    private boolean phaseIsUsed = true;
     private boolean positionIsUsed = false;
     private Mask mask = new Mask();
     private int patterGraphResolution = 721; //721;
@@ -122,6 +123,10 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		if (amplitudeIsUsed) problemDimension = numberofElements;		
+		if (phaseIsUsed) problemDimension += numberofElements;		
+		if (positionIsUsed) problemDimension += numberofElements;
 
 		AlgorithmExecuter ae = new AlgorithmExecuter();
 		ae.execute();
@@ -135,26 +140,29 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		// Its name may be aAforPresentation;
 		// CONSIDER THIS!
 		
+		int delta = 0;
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
 			for (int index = 0; index < numberofElements; index++) {
 				aAforPresentation.a[index] = bV.valuesOfBestMember[index];
-			} 
+			}
+			delta = numberofElements;
 		}
 		
 		if (phaseIsUsed) {
 			// this is for phases
 			for (int index = 0; index < numberofElements; index++) {
-				aAforPresentation.alpha[index] = bV.valuesOfBestMember[index];
-			} 
+				aAforPresentation.alpha[index] = bV.valuesOfBestMember[index + delta];
+			}
+			delta += numberofElements;
 		}
 		
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
 			aAforPresentation.d[0] = 0;
 			for (int index = 1; index < numberofElements; index++) {
-				aAforPresentation.d[index] = aAforPresentation.d[index - 1] + 0.5 + bV.valuesOfBestMember[index];
-			} 
+				aAforPresentation.d[index] = aAforPresentation.d[index - 1] + 0.5 + bV.valuesOfBestMember[index + delta];
+			}
 		}
 		
 		aAforPresentation.createPattern();
@@ -258,8 +266,8 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 					// You can create a new BestValue class object
 					// with the best values of mA
 					// and then it can be published
-					double[] valuesOfBestMember = new double[numberofElements];
-					for (int d = 0; d < numberofElements; d++) {
+					double[] valuesOfBestMember = new double[problemDimension];
+					for (int d = 0; d < problemDimension; d++) {
 						valuesOfBestMember[d] = mA.members[d][mA.bestMember];
 					}
 					publish(new BestValues(mA.bestMember, mA.fitnessOfBestMember, valuesOfBestMember));
