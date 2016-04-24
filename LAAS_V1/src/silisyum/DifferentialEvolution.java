@@ -65,25 +65,25 @@ public class DifferentialEvolution {
 		
 		int delta = 0;
 		if(amplitudeIsUsed) {
-			for (int d = 0; d < numberofElements; d++) {
-				Ls[d] = L[0];
-				Hs[d] = H[0];
+			for (int e = 0; e < numberofElements; e++) {
+				Ls[e] = L[0];
+				Hs[e] = H[0];
 			}
 			delta = numberofElements;
 		}
 		
 		if (phaseIsUsed) {
-			for (int d = 0; d < numberofElements; d++) {
-				Ls[d + delta] = L[1];
-				Hs[d + delta] = H[1];
+			for (int e = 0; e < numberofElements; e++) {
+				Ls[e + delta] = L[1];
+				Hs[e + delta] = H[1];
 			}
 			delta += numberofElements;
 		}		
 		
 		if (positionIsUsed) {
-			for (int d = 0; d < numberofElements; d++) {
-				Ls[d + delta] = L[2];
-				Hs[d + delta] = H[2];
+			for (int e = 0; e < numberofElements; e++) {
+				Ls[e + delta] = L[2];
+				Hs[e + delta] = H[2];
 			}
 		}		
 		
@@ -117,7 +117,7 @@ public class DifferentialEvolution {
 			
 			// Set a new random index
 			// in order to guarantee that at least one parameter will be changed
-			int ri = r.nextInt(populationNumber);
+			int ri = r.nextInt(problemDimension);
 			
 			// Construct trial vector
 			for (int d = 0; d < problemDimension; d++) {
