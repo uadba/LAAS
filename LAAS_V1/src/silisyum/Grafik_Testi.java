@@ -25,10 +25,10 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleEdge;
 
 
-import java.awt.FlowLayout;
 import javax.swing.SwingWorker;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
+import javax.swing.JTextArea;
 
 public class Grafik_Testi extends JFrame implements ChartMouseListener{
 
@@ -53,13 +53,17 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private double[] H = {1, 360, 0.2}; // initial values of amplitude, phase, and position maximum limits
     private boolean amplitudeIsUsed = true;
     private boolean phaseIsUsed = true;
-    private boolean positionIsUsed = false;
+    private boolean positionIsUsed = true;
     private Mask mask = new Mask();
     private int patterGraphResolution = 721; //721;
     private AntennaArray aA = new AntennaArray(numberofElements, patterGraphResolution, mask);
     private AntennaArray aAforPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
     private DifferentialEvolution mA = new DifferentialEvolution(numberofElements, 70, 5000, 0.7, 0.95, L, H, aA, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
     private BestValues bV;
+    private JPanel eastPart;
+    private JTextArea bigBoxForAmplitude;
+    private JTextArea bigBoxForPhase;
+    private JTextArea bigBoxForPostion;
 
 	/**
 	 * Launch the application.
@@ -120,9 +124,26 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 				
 		contentPane.add(chartPanel);
 		
-		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.SOUTH);
-		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		eastPart = new JPanel();
+		contentPane.add(eastPart, BorderLayout.EAST);
+		
+		bigBoxForAmplitude = new JTextArea();
+		bigBoxForAmplitude.setLineWrap(true);
+		bigBoxForAmplitude.setRows(30);
+		bigBoxForAmplitude.setColumns(20);
+		eastPart.add(bigBoxForAmplitude);
+		
+		bigBoxForPhase = new JTextArea();
+		bigBoxForPhase.setRows(30);
+		bigBoxForPhase.setLineWrap(true);
+		bigBoxForPhase.setColumns(20);
+		eastPart.add(bigBoxForPhase);
+		
+		bigBoxForPostion = new JTextArea();
+		bigBoxForPostion.setRows(30);
+		bigBoxForPostion.setLineWrap(true);
+		bigBoxForPostion.setColumns(20);
+		eastPart.add(bigBoxForPostion);
 		
 		if (amplitudeIsUsed) problemDimension = numberofElements;		
 		if (phaseIsUsed) problemDimension += numberofElements;		
@@ -140,29 +161,40 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		// Its name may be aAforPresentation;
 		// CONSIDER THIS!
 		
+		bigBoxForAmplitude.setText("");
+		
+		String s = "";
 		int delta = 0;
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
 			for (int index = 0; index < numberofElements; index++) {
 				aAforPresentation.a[index] = bV.valuesOfBestMember[index];
+				s += "" + aAforPresentation.a[index] + "\n";
 			}
 			delta = numberofElements;
+			bigBoxForAmplitude.setText(s);
 		}
 		
+		s = "";
 		if (phaseIsUsed) {
 			// this is for phases
 			for (int index = 0; index < numberofElements; index++) {
 				aAforPresentation.alpha[index] = bV.valuesOfBestMember[index + delta];
+				s += "" + aAforPresentation.alpha[index] + "\n";
 			}
 			delta += numberofElements;
+			bigBoxForAmplitude.setText(s);
 		}
 		
+		s = "";
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
 			aAforPresentation.d[0] = 0;
 			for (int index = 1; index < numberofElements; index++) {
 				aAforPresentation.d[index] = aAforPresentation.d[index - 1] + 0.5 + bV.valuesOfBestMember[index + delta];
+				s += "" + aAforPresentation.d[index] + "\n";
 			}
+			bigBoxForAmplitude.setText(s);
 		}
 		
 		aAforPresentation.createPattern();
