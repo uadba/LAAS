@@ -52,7 +52,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private double[] L = {0, 0, 0}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 360, 0.2}; // initial values of amplitude, phase, and position maximum limits
     private boolean amplitudeIsUsed = true;
-    private boolean phaseIsUsed = true;
+    private boolean phaseIsUsed = false;
     private boolean positionIsUsed = true;
     private Mask mask = new Mask();
     private int patterGraphResolution = 721; //721;
@@ -183,18 +183,19 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 				s += "" + aAforPresentation.alpha[index] + "\n";
 			}
 			delta += numberofElements;
-			bigBoxForAmplitude.setText(s);
+			bigBoxForPhase.setText(s);
 		}
 		
 		s = "";
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
 			aAforPresentation.d[0] = 0;
+			s += "" + aAforPresentation.d[0] + "\n";
 			for (int index = 1; index < numberofElements; index++) {
 				aAforPresentation.d[index] = aAforPresentation.d[index - 1] + 0.5 + bV.valuesOfBestMember[index + delta];
 				s += "" + aAforPresentation.d[index] + "\n";
 			}
-			bigBoxForAmplitude.setText(s);
+			bigBoxForPostion.setText(s);
 		}
 		
 		aAforPresentation.createPattern();
