@@ -29,6 +29,7 @@ import javax.swing.SwingWorker;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import javax.swing.JTextArea;
+import javax.swing.JTabbedPane;
 
 public class Grafik_Testi extends JFrame implements ChartMouseListener{
 
@@ -49,10 +50,10 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     
     private int numberofElements = 20;
     private int problemDimension = 0;
-    private double[] L = {0, 0, 0}; // initial values of amplitude, phase, and position minimum limits
-    private double[] H = {1, 360, 0.2}; // initial values of amplitude, phase, and position maximum limits
+    private double[] L = {0, 0, -0.2}; // initial values of amplitude, phase, and position minimum limits
+    private double[] H = {1, 50, 0.2}; // initial values of amplitude, phase, and position maximum limits
     private boolean amplitudeIsUsed = true;
-    private boolean phaseIsUsed = false;
+    private boolean phaseIsUsed = true;
     private boolean positionIsUsed = true;
     private Mask mask = new Mask();
     private int patterGraphResolution = 721; //721;
@@ -60,10 +61,12 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private AntennaArray aAforPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
     private DifferentialEvolution mA = new DifferentialEvolution(numberofElements, 70, 5000, 0.7, 0.95, L, H, aA, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
     private BestValues bV;
-    private JPanel eastPart;
     private JTextArea bigBoxForAmplitude;
     private JTextArea bigBoxForPhase;
     private JTextArea bigBoxForPostion;
+    private JTabbedPane tabbedPane;
+    private JPanel arrayParameters;
+    private JPanel differentialEvolution;
 
 	/**
 	 * Launch the application.
@@ -86,7 +89,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	 */
 	public Grafik_Testi() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 734, 494);
+		setBounds(100, 100, 1266, 494);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -124,26 +127,32 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 				
 		contentPane.add(chartPanel);
 		
-		eastPart = new JPanel();
-		contentPane.add(eastPart, BorderLayout.EAST);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		contentPane.add(tabbedPane, BorderLayout.EAST);
+		
+		arrayParameters = new JPanel();
+		tabbedPane.addTab("Array Parameters", null, arrayParameters, null);
 		
 		bigBoxForAmplitude = new JTextArea();
+		arrayParameters.add(bigBoxForAmplitude);
 		bigBoxForAmplitude.setLineWrap(true);
 		bigBoxForAmplitude.setRows(30);
 		bigBoxForAmplitude.setColumns(20);
-		eastPart.add(bigBoxForAmplitude);
 		
 		bigBoxForPhase = new JTextArea();
+		arrayParameters.add(bigBoxForPhase);
 		bigBoxForPhase.setRows(30);
 		bigBoxForPhase.setLineWrap(true);
 		bigBoxForPhase.setColumns(20);
-		eastPart.add(bigBoxForPhase);
 		
 		bigBoxForPostion = new JTextArea();
+		arrayParameters.add(bigBoxForPostion);
 		bigBoxForPostion.setRows(30);
 		bigBoxForPostion.setLineWrap(true);
 		bigBoxForPostion.setColumns(20);
-		eastPart.add(bigBoxForPostion);
+		
+		differentialEvolution = new JPanel();
+		tabbedPane.addTab("Differential Evolution", null, differentialEvolution, null);
 		
 		if (amplitudeIsUsed) problemDimension = numberofElements;		
 		if (phaseIsUsed) problemDimension += numberofElements;		
