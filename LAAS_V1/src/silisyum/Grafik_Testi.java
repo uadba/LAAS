@@ -30,6 +30,12 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.JTabbedPane;
+import java.awt.FlowLayout;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Grafik_Testi extends JFrame implements ChartMouseListener{
 
@@ -42,19 +48,21 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	private XYSeries seriler;
 	private XYSeries maskOuter;
 	private XYSeries maskInner;
+	private XYSeries convergenceSeries;
 	private boolean add_or_update = false; //false:add and true:update
 	
-	private ChartPanel chartPanel;
+	private ChartPanel chartPanelPattern;
+	private ChartPanel chartPanelConvergence;
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
     private int numberofElements = 20;
     private int problemDimension = 0;
-    private double[] L = {0, 0, -0.1}; // initial values of amplitude, phase, and position minimum limits
-    private double[] H = {1, 360, 0.1}; // initial values of amplitude, phase, and position maximum limits
-    private boolean amplitudeIsUsed = false;
+    private double[] L = {0, 0, -0.05}; // initial values of amplitude, phase, and position minimum limits
+    private double[] H = {1, 30, 0.05}; // initial values of amplitude, phase, and position maximum limits
+    private boolean amplitudeIsUsed = true;
     private boolean phaseIsUsed = true;
-    private boolean positionIsUsed = false;
+    private boolean positionIsUsed = true;
     private Mask mask = new Mask();
     private int patterGraphResolution = 721; //721;
     private AntennaArray aA = new AntennaArray(numberofElements, patterGraphResolution, mask);
@@ -67,6 +75,16 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private JTabbedPane tabbedPane;
     private JPanel arrayParameters;
     private JPanel differentialEvolution;
+    private JPanel chartsPanel;    
+    private JPanel panelConvergence;
+    private JPanel panelPattern;
+    private JTextField costText;
+    private JTextField iterationText;
+    private JLabel lblNewLabel;
+    private JLabel lblNewLabel_1;
+    private JPanel main;
+    private JButton startStopButton;
+    private AlgorithmExecuter ae;
 
 	/**
 	 * Launch the application.
@@ -89,7 +107,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	 */
 	public Grafik_Testi() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1266, 494);
+		setBounds(100, 100, 1429, 991);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -97,11 +115,13 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		seriler = new XYSeries("Pattern");
 		maskOuter = new XYSeries("Outer Mask");
 		maskInner = new XYSeries("Inner Mask");
+		convergenceSeries = new XYSeries("Convergence Curve");
 		XYSeriesCollection veri_seti = new XYSeriesCollection(seriler);
+		XYSeriesCollection veri_seti2 = new XYSeriesCollection(convergenceSeries);
 		veri_seti.addSeries(maskOuter);
 		veri_seti.addSeries(maskInner);
-		JFreeChart grafik = ChartFactory.createXYLineChart("Başlık", "Açı", "Patter (dB)", veri_seti);
-		contentPane.setLayout(new BorderLayout(0, 0));
+		JFreeChart grafik = ChartFactory.createXYLineChart("Array Pattern", "Angle", "Array Factor (in dB)", veri_seti);
+		JFreeChart grafik2 = ChartFactory.createXYLineChart("Convergence", "Iteration", "Cost", veri_seti2);
 				
 		XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) grafik.getXYPlot().getRenderer();
 		renderer.setSeriesPaint(0, Color.red);
@@ -110,9 +130,6 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		renderer.setSeriesStroke(1, new BasicStroke(0.5f));
 		renderer.setSeriesPaint(2, new Color(0, 100, 0));
 		renderer.setSeriesStroke(2, new BasicStroke(0.5f));
-		
-        this.chartPanel = new ChartPanel(grafik);
-        this.chartPanel.addChartMouseListener(this);
         CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
         this.xCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
         this.xCrosshair.setLabelVisible(true);
@@ -120,15 +137,66 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
         this.yCrosshair.setLabelVisible(true);
         crosshairOverlay.addDomainCrosshair(xCrosshair);
         crosshairOverlay.addRangeCrosshair(yCrosshair);
-        chartPanel.addOverlay(crosshairOverlay);
 		
 		grafik.getXYPlot().getDomainAxis().setRange(0, 180); // x axis
-		grafik.getXYPlot().getRangeAxis().setRange(-100, 0); // y axis
-				
-		contentPane.add(chartPanel);
+		grafik.getXYPlot().getRangeAxis().setRange(-100, 0);
+		contentPane.setLayout(new BorderLayout(0, 0));
+		
+		chartsPanel = new JPanel();
+		contentPane.add(chartsPanel, BorderLayout.CENTER);
+        chartsPanel.setLayout(new BorderLayout(0, 0));
+        
+        panelPattern = new JPanel();
+        chartsPanel.add(panelPattern, BorderLayout.NORTH);
+        
+        this.chartPanelPattern = new ChartPanel(grafik);
+        panelPattern.add(chartPanelPattern);
+        this.chartPanelPattern.addChartMouseListener(this);
+        chartPanelPattern.addOverlay(crosshairOverlay);
+        
+        panelConvergence = new JPanel();
+        chartsPanel.add(panelConvergence, BorderLayout.CENTER);
+        panelConvergence.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        
+        chartPanelConvergence = new ChartPanel(grafik2);
+        panelConvergence.add(chartPanelConvergence);
+        
+        lblNewLabel = new JLabel("Iteration Number:");
+        panelConvergence.add(lblNewLabel);
+        
+        iterationText = new JTextField();
+        iterationText.setEditable(false);
+        panelConvergence.add(iterationText);
+        iterationText.setColumns(20);
+        
+        lblNewLabel_1 = new JLabel("Cost Value:");
+        panelConvergence.add(lblNewLabel_1);
+        
+        costText = new JTextField();
+        costText.setEditable(false);
+        panelConvergence.add(costText);
+        costText.setColumns(20);
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.EAST);
+		
+		main = new JPanel();
+		tabbedPane.addTab("Main Controls", null, main, null);
+		
+		startStopButton = new JButton("Start Optimization");
+		startStopButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(ae.keepIterating == false) {
+					ae.keepIterating = true;
+					startStopButton.setText("Stop Optimization");
+				} else {
+					ae.keepIterating = false;
+					startStopButton.setText("Start Optimization");
+				}
+			}
+		});
+		main.add(startStopButton);
 		
 		arrayParameters = new JPanel();
 		tabbedPane.addTab("Array Parameters", null, arrayParameters, null);
@@ -158,7 +226,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		if (phaseIsUsed) problemDimension += numberofElements;		
 		if (positionIsUsed) problemDimension += numberofElements;
 
-		AlgorithmExecuter ae = new AlgorithmExecuter();
+		ae = new AlgorithmExecuter();
 		ae.execute();
 	}
 
@@ -219,7 +287,11 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 			{
 				seriler.add(aAforPresentation.angle[x], aAforPresentation.pattern_dB[x]);
 			}
-		}		
+		}
+		
+		convergenceSeries.add(mA.iterationIndex, mA.fitnessOfBestMember);
+		iterationText.setText(Integer.toString(mA.iterationIndex));
+		costText.setText(Double.toString(mA.fitnessOfBestMember));		
 
 		// ------------- Outer Mask --------------------
 		int numberOfSLLOuters = mask.SLL_outers.size(); 
@@ -284,7 +356,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 
 	@Override
 	public void chartMouseMoved(ChartMouseEvent event) {
-        Rectangle2D dataArea = this.chartPanel.getScreenDataArea();
+        Rectangle2D dataArea = this.chartPanelPattern.getScreenDataArea();
         JFreeChart chart = event.getChart();
         XYPlot plot = (XYPlot) chart.getPlot();
         ValueAxis xAxis = plot.getDomainAxis();
@@ -297,14 +369,21 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	}
 	
 	class AlgorithmExecuter extends SwingWorker<Void, BestValues>
-	{
+	{		
+		private boolean keepIterating;
 		
+		public AlgorithmExecuter() {
+			keepIterating = false;
+		}
+
 		@Override
 		protected Void doInBackground() throws Exception {
 			while(!isCancelled())
 			{
-				while (mA.iterate()) {
-					System.out.println("it:" + mA.iterationIndex + "\t best:" + mA.fitnessOfBestMember);					
+				boolean iterationState = true;
+				while (keepIterating && iterationState) {
+					iterationState = mA.iterate();
+					//System.out.println("it:" + mA.iterationIndex + "\t best:" + mA.fitnessOfBestMember);					
 					// You can create a new BestValue class object
 					// with the best values of mA
 					// and then it can be published
