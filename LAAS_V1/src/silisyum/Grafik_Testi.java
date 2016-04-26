@@ -52,7 +52,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private int problemDimension = 0;
     private double[] L = {0, 0, -0.1}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 360, 0.1}; // initial values of amplitude, phase, and position maximum limits
-    private boolean amplitudeIsUsed = true;
+    private boolean amplitudeIsUsed = false;
     private boolean phaseIsUsed = true;
     private boolean positionIsUsed = false;
     private Mask mask = new Mask();
