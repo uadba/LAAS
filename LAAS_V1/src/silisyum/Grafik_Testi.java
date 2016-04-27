@@ -72,10 +72,9 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private JTextArea bigBoxForAmplitude;
     private JTextArea bigBoxForPhase;
     private JTextArea bigBoxForPostion;
-    private JTabbedPane tabbedPane;
+    private JTabbedPane tabbedPaneForSettings;
     private JPanel arrayParameters;
     private JPanel differentialEvolution;
-    private JPanel chartsPanel;    
     private JPanel panelConvergence;
     private JPanel panelPattern;
     private JTextField costText;
@@ -85,6 +84,8 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private JPanel main;
     private JButton startStopButton;
     private AlgorithmExecuter ae;
+    private JTabbedPane tabbedPaneForPlots;
+    private JPanel panel;
 
 	/**
 	 * Launch the application.
@@ -142,46 +143,11 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		grafik.getXYPlot().getRangeAxis().setRange(-100, 0);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		chartsPanel = new JPanel();
-		contentPane.add(chartsPanel, BorderLayout.CENTER);
-        chartsPanel.setLayout(new BorderLayout(0, 0));
-        
-        panelPattern = new JPanel();
-        chartsPanel.add(panelPattern, BorderLayout.NORTH);
-        
-        this.chartPanelPattern = new ChartPanel(grafik);
-        panelPattern.add(chartPanelPattern);
-        this.chartPanelPattern.addChartMouseListener(this);
-        chartPanelPattern.addOverlay(crosshairOverlay);
-        
-        panelConvergence = new JPanel();
-        chartsPanel.add(panelConvergence, BorderLayout.CENTER);
-        panelConvergence.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        
-        chartPanelConvergence = new ChartPanel(grafik2);
-        panelConvergence.add(chartPanelConvergence);
-        
-        lblNewLabel = new JLabel("Iteration Number:");
-        panelConvergence.add(lblNewLabel);
-        
-        iterationText = new JTextField();
-        iterationText.setEditable(false);
-        panelConvergence.add(iterationText);
-        iterationText.setColumns(20);
-        
-        lblNewLabel_1 = new JLabel("Cost Value:");
-        panelConvergence.add(lblNewLabel_1);
-        
-        costText = new JTextField();
-        costText.setEditable(false);
-        panelConvergence.add(costText);
-        costText.setColumns(20);
-		
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		contentPane.add(tabbedPane, BorderLayout.EAST);
+		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
+		contentPane.add(tabbedPaneForSettings, BorderLayout.EAST);
 		
 		main = new JPanel();
-		tabbedPane.addTab("Main Controls", null, main, null);
+		tabbedPaneForSettings.addTab("Main Controls", null, main, null);
 		
 		startStopButton = new JButton("Start Optimization");
 		startStopButton.addMouseListener(new MouseAdapter() {
@@ -199,7 +165,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		main.add(startStopButton);
 		
 		arrayParameters = new JPanel();
-		tabbedPane.addTab("Array Parameters", null, arrayParameters, null);
+		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParameters, null);
 		
 		bigBoxForAmplitude = new JTextArea();
 		arrayParameters.add(bigBoxForAmplitude);
@@ -220,7 +186,45 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		bigBoxForPostion.setColumns(20);
 		
 		differentialEvolution = new JPanel();
-		tabbedPane.addTab("Differential Evolution", null, differentialEvolution, null);
+		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolution, null);
+		
+		tabbedPaneForPlots = new JTabbedPane(JTabbedPane.TOP);
+		contentPane.add(tabbedPaneForPlots, BorderLayout.CENTER);
+		
+		panelPattern = new JPanel();
+		tabbedPaneForPlots.addTab("New tab", null, panelPattern, null);
+		panelPattern.setLayout(new BorderLayout(0, 0));
+		
+		panel = new JPanel();
+		panelPattern.add(panel, BorderLayout.NORTH);
+		
+		this.chartPanelPattern = new ChartPanel(grafik);
+		panel.add(chartPanelPattern);
+		this.chartPanelPattern.addChartMouseListener(this);
+		chartPanelPattern.addOverlay(crosshairOverlay);
+		
+		panelConvergence = new JPanel();
+		tabbedPaneForPlots.addTab("New tab", null, panelConvergence, null);
+		panelConvergence.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		chartPanelConvergence = new ChartPanel(grafik2);
+		panelConvergence.add(chartPanelConvergence);
+		
+		lblNewLabel = new JLabel("Iteration Number:");
+		panelConvergence.add(lblNewLabel);
+		
+		iterationText = new JTextField();
+		iterationText.setEditable(false);
+		panelConvergence.add(iterationText);
+		iterationText.setColumns(20);
+		
+		lblNewLabel_1 = new JLabel("Cost Value:");
+		panelConvergence.add(lblNewLabel_1);
+		
+		costText = new JTextField();
+		costText.setEditable(false);
+		panelConvergence.add(costText);
+		costText.setColumns(20);
 		
 		if (amplitudeIsUsed) problemDimension = numberofElements;		
 		if (phaseIsUsed) problemDimension += numberofElements;		
