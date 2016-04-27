@@ -94,11 +94,13 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private JButton startStopButton;
     private AlgorithmExecuter ae;
     private JTabbedPane tabbedPaneForPlots;
-    private JPanel panel;
+    private JPanel panelPatternGraphProperties;
     private JLabel lblNewLabel_2;
     private JButton btnNewButton;
     private JTextField textField;
-    private JPanel panel_1;
+    private JPanel panelPatternGraph;
+    private JPanel panelConvergenceGraph;
+    private JPanel panelConvergenceGraphProperties;
 
 	/**
 	 * Launch the application.
@@ -208,19 +210,19 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		tabbedPaneForPlots.addTab("New tab", null, panelPattern, null);
 		panelPattern.setLayout(new BorderLayout(0, 0));
 		
-		panel_1 = new JPanel(new GridBagLayout());
-		panelPattern.add(panel_1, BorderLayout.NORTH);
+		panelPatternGraph = new JPanel(new GridBagLayout());
+		panelPattern.add(panelPatternGraph, BorderLayout.NORTH);
 		
 		this.chartPanelPattern = new ChartPanel(grafik);
 		GridBagConstraints gbc_chartPanelPattern = new GridBagConstraints();
 		gbc_chartPanelPattern.anchor = GridBagConstraints.NORTHWEST;
 		gbc_chartPanelPattern.gridx = 1;
 		gbc_chartPanelPattern.gridy = 0;
-		panel_1.add(chartPanelPattern, gbc_chartPanelPattern);
-		panel_1.addComponentListener(new ComponentAdapter() {
+		panelPatternGraph.add(chartPanelPattern, gbc_chartPanelPattern);
+		panelPatternGraph.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                preserveAspectRatio(chartPanelPattern, panel_1);
+                preserveAspectRatio(chartPanelPattern, panelPatternGraph);
             }
 		});
 		
@@ -228,41 +230,57 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		this.chartPanelPattern.addChartMouseListener(this);
 		chartPanelPattern.addOverlay(crosshairOverlay);
 		
-		panel = new JPanel();
-		panelPattern.add(panel, BorderLayout.CENTER);
+		panelPatternGraphProperties = new JPanel();
+		panelPattern.add(panelPatternGraphProperties, BorderLayout.CENTER);
 		
 		lblNewLabel_2 = new JLabel("New label");
-		panel.add(lblNewLabel_2);
+		panelPatternGraphProperties.add(lblNewLabel_2);
 		
 		textField = new JTextField();
-		panel.add(textField);
+		panelPatternGraphProperties.add(textField);
 		textField.setColumns(10);
 		
 		btnNewButton = new JButton("New button");
-		panel.add(btnNewButton);
+		panelPatternGraphProperties.add(btnNewButton);
 		
 		panelConvergence = new JPanel();
 		tabbedPaneForPlots.addTab("New tab", null, panelConvergence, null);
-		panelConvergence.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		panelConvergence.setLayout(new BorderLayout(0, 0));
+		
+		panelConvergenceGraph = new JPanel(new GridBagLayout());
+		panelConvergence.add(panelConvergenceGraph, BorderLayout.NORTH);
 		
 		chartPanelConvergence = new ChartPanel(grafik2);
-		panelConvergence.add(chartPanelConvergence);
+		GridBagConstraints gbc_chartPanelConvergence = new GridBagConstraints();
+		gbc_chartPanelConvergence.anchor = GridBagConstraints.NORTHWEST;
+		gbc_chartPanelConvergence.gridx = 1;
+		gbc_chartPanelConvergence.gridy = 0;
+		panelConvergenceGraph.add(chartPanelConvergence, gbc_chartPanelConvergence);
+		panelConvergenceGraph.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                preserveAspectRatio(chartPanelConvergence, panelConvergenceGraph);
+            }
+		});
 		
-		lblNewLabel = new JLabel("Iteration Number:");
-		panelConvergence.add(lblNewLabel);
+		panelConvergenceGraphProperties = new JPanel();
+		panelConvergence.add(panelConvergenceGraphProperties);
 		
 		iterationText = new JTextField();
+		panelConvergenceGraphProperties.add(iterationText);
 		iterationText.setEditable(false);
-		panelConvergence.add(iterationText);
 		iterationText.setColumns(20);
 		
 		lblNewLabel_1 = new JLabel("Cost Value:");
-		panelConvergence.add(lblNewLabel_1);
+		panelConvergenceGraphProperties.add(lblNewLabel_1);
 		
 		costText = new JTextField();
+		panelConvergenceGraphProperties.add(costText);
 		costText.setEditable(false);
-		panelConvergence.add(costText);
 		costText.setColumns(20);
+		
+		lblNewLabel = new JLabel("Iteration Number:");
+		panelConvergenceGraphProperties.add(lblNewLabel);
 		
 		if (amplitudeIsUsed) problemDimension = numberofElements;		
 		if (phaseIsUsed) problemDimension += numberofElements;		
@@ -277,7 +295,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
         //int h = container.getHeight();
         //int size =  Math.min(w, h);
         //innerPanel.setPreferredSize(new Dimension(size, size));
-        innerPanel.setPreferredSize(new Dimension(w, w*450/640));
+        innerPanel.setPreferredSize(new Dimension(w, w*440/680));
         container.revalidate();
     }
 
