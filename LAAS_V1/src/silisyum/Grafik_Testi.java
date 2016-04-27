@@ -184,19 +184,19 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		arrayParameters.add(bigBoxForAmplitude);
 		bigBoxForAmplitude.setLineWrap(true);
 		bigBoxForAmplitude.setRows(30);
-		bigBoxForAmplitude.setColumns(20);
+		bigBoxForAmplitude.setColumns(17);
 		
 		bigBoxForPhase = new JTextArea();
 		arrayParameters.add(bigBoxForPhase);
 		bigBoxForPhase.setRows(30);
 		bigBoxForPhase.setLineWrap(true);
-		bigBoxForPhase.setColumns(20);
+		bigBoxForPhase.setColumns(17);
 		
 		bigBoxForPostion = new JTextArea();
 		arrayParameters.add(bigBoxForPostion);
 		bigBoxForPostion.setRows(30);
 		bigBoxForPostion.setLineWrap(true);
-		bigBoxForPostion.setColumns(20);
+		bigBoxForPostion.setColumns(17);
 		
 		differentialEvolution = new JPanel();
 		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolution, null);
@@ -209,7 +209,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		panelPattern.setLayout(new BorderLayout(0, 0));
 		
 		panel_1 = new JPanel(new GridBagLayout());
-		panelPattern.add(panel_1, BorderLayout.CENTER);
+		panelPattern.add(panel_1, BorderLayout.NORTH);
 		
 		this.chartPanelPattern = new ChartPanel(grafik);
 		GridBagConstraints gbc_chartPanelPattern = new GridBagConstraints();
@@ -229,7 +229,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		chartPanelPattern.addOverlay(crosshairOverlay);
 		
 		panel = new JPanel();
-		panelPattern.add(panel, BorderLayout.SOUTH);
+		panelPattern.add(panel, BorderLayout.CENTER);
 		
 		lblNewLabel_2 = new JLabel("New label");
 		panel.add(lblNewLabel_2);
@@ -277,7 +277,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
         //int h = container.getHeight();
         //int size =  Math.min(w, h);
         //innerPanel.setPreferredSize(new Dimension(size, size));
-        innerPanel.setPreferredSize(new Dimension(w, w/2));
+        innerPanel.setPreferredSize(new Dimension(w, w*450/640));
         container.revalidate();
     }
 
