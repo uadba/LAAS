@@ -3,6 +3,7 @@ package silisyum;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -34,11 +35,16 @@ import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JSplitPane;
 import javax.swing.JRadioButton;
 import javax.swing.BoxLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 
 public class Grafik_Testi extends JFrame implements ChartMouseListener{
 
@@ -92,6 +98,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private JLabel lblNewLabel_2;
     private JButton btnNewButton;
     private JTextField textField;
+    private JPanel panel_1;
 
 	/**
 	 * Launch the application.
@@ -201,8 +208,25 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		tabbedPaneForPlots.addTab("New tab", null, panelPattern, null);
 		panelPattern.setLayout(new BorderLayout(0, 0));
 		
+		panel_1 = new JPanel(new GridBagLayout());
+		panelPattern.add(panel_1, BorderLayout.CENTER);
+		
 		this.chartPanelPattern = new ChartPanel(grafik);
-		panelPattern.add(chartPanelPattern, BorderLayout.CENTER);
+		GridBagConstraints gbc_chartPanelPattern = new GridBagConstraints();
+		gbc_chartPanelPattern.anchor = GridBagConstraints.NORTHWEST;
+		gbc_chartPanelPattern.gridx = 1;
+		gbc_chartPanelPattern.gridy = 0;
+		panel_1.add(chartPanelPattern, gbc_chartPanelPattern);
+		panel_1.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                preserveAspectRatio(chartPanelPattern, panel_1);
+            }
+		});
+		
+		
+		this.chartPanelPattern.addChartMouseListener(this);
+		chartPanelPattern.addOverlay(crosshairOverlay);
 		
 		panel = new JPanel();
 		panelPattern.add(panel, BorderLayout.SOUTH);
@@ -216,8 +240,6 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		
 		btnNewButton = new JButton("New button");
 		panel.add(btnNewButton);
-		this.chartPanelPattern.addChartMouseListener(this);
-		chartPanelPattern.addOverlay(crosshairOverlay);
 		
 		panelConvergence = new JPanel();
 		tabbedPaneForPlots.addTab("New tab", null, panelConvergence, null);
@@ -249,6 +271,15 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		ae = new AlgorithmExecuter();
 		ae.execute();
 	}
+	
+	private static void preserveAspectRatio(JPanel innerPanel, JPanel container) {
+        int w = container.getWidth();
+        //int h = container.getHeight();
+        //int size =  Math.min(w, h);
+        //innerPanel.setPreferredSize(new Dimension(size, size));
+        innerPanel.setPreferredSize(new Dimension(w, w/2));
+        container.revalidate();
+    }
 
 	protected void drawPlot() {
 
