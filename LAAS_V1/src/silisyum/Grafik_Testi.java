@@ -36,6 +36,9 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JSplitPane;
+import javax.swing.JRadioButton;
+import javax.swing.BoxLayout;
 
 public class Grafik_Testi extends JFrame implements ChartMouseListener{
 
@@ -86,6 +89,9 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private AlgorithmExecuter ae;
     private JTabbedPane tabbedPaneForPlots;
     private JPanel panel;
+    private JLabel lblNewLabel_2;
+    private JButton btnNewButton;
+    private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -195,11 +201,21 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		tabbedPaneForPlots.addTab("New tab", null, panelPattern, null);
 		panelPattern.setLayout(new BorderLayout(0, 0));
 		
-		panel = new JPanel();
-		panelPattern.add(panel, BorderLayout.NORTH);
-		
 		this.chartPanelPattern = new ChartPanel(grafik);
-		panel.add(chartPanelPattern);
+		panelPattern.add(chartPanelPattern, BorderLayout.CENTER);
+		
+		panel = new JPanel();
+		panelPattern.add(panel, BorderLayout.SOUTH);
+		
+		lblNewLabel_2 = new JLabel("New label");
+		panel.add(lblNewLabel_2);
+		
+		textField = new JTextField();
+		panel.add(textField);
+		textField.setColumns(10);
+		
+		btnNewButton = new JButton("New button");
+		panel.add(btnNewButton);
 		this.chartPanelPattern.addChartMouseListener(this);
 		chartPanelPattern.addOverlay(crosshairOverlay);
 		

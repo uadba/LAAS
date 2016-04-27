@@ -10,6 +10,9 @@ import javax.swing.SpringLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.awt.GridLayout;
+import java.awt.CardLayout;
+import javax.swing.JSplitPane;
 
 public class Sil_Bunu extends JFrame {
 
@@ -32,6 +35,7 @@ public class Sil_Bunu extends JFrame {
 	private JButton button_7;
 	private JLabel lblNewLabel_1;
 	private JTextField textField_1;
+	private JSplitPane splitPane;
 
 	/**
 	 * Launch the application.
@@ -54,7 +58,7 @@ public class Sil_Bunu extends JFrame {
 	 */
 	public Sil_Bunu() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 475, 554);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -62,6 +66,7 @@ public class Sil_Bunu extends JFrame {
 		
 		panel_up = new JPanel();
 		contentPane.add(panel_up, BorderLayout.NORTH);
+		panel_up.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		btnNewButton = new JButton("New button");
 		panel_up.add(btnNewButton);
@@ -118,5 +123,8 @@ public class Sil_Bunu extends JFrame {
 		sl_panel.putConstraint(SpringLayout.EAST, textField_1, 0, SpringLayout.EAST, textField);
 		panel.add(textField_1);
 		textField_1.setColumns(10);
+		
+		splitPane = new JSplitPane();
+		contentPane.add(splitPane, BorderLayout.SOUTH);
 	}
 }
