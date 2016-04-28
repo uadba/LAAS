@@ -207,7 +207,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		contentPane.add(tabbedPaneForPlots, BorderLayout.CENTER);
 		
 		panelPattern = new JPanel();
-		tabbedPaneForPlots.addTab("New tab", null, panelPattern, null);
+		tabbedPaneForPlots.addTab("Antenna Array Pattern", null, panelPattern, null);
 		panelPattern.setLayout(new BorderLayout(0, 0));
 		
 		panelPatternGraph = new JPanel(new GridBagLayout());
@@ -244,7 +244,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		panelPatternGraphProperties.add(btnNewButton);
 		
 		panelConvergence = new JPanel();
-		tabbedPaneForPlots.addTab("New tab", null, panelConvergence, null);
+		tabbedPaneForPlots.addTab("Convergence Curve of Optimization Process", null, panelConvergence, null);
 		panelConvergence.setLayout(new BorderLayout(0, 0));
 		
 		panelConvergenceGraph = new JPanel(new GridBagLayout());
