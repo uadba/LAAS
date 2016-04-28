@@ -286,7 +286,7 @@ public class Main extends JFrame implements ChartMouseListener{
 		ae.execute();
 	}
 	
-	private static void preserveAspectRatio(JPanel innerPanel, JPanel container) {
+	private void preserveAspectRatio(JPanel innerPanel, JPanel container) {
         int w = container.getWidth();
         //int h = container.getHeight();
         //int size =  Math.min(w, h);
