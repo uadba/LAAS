@@ -31,7 +31,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.JTabbedPane;
-import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -40,13 +39,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JSplitPane;
-import javax.swing.JRadioButton;
-import javax.swing.BoxLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
-public class Grafik_Testi extends JFrame implements ChartMouseListener{
+public class Main extends JFrame implements ChartMouseListener{
 
 	/**
 	 * 
@@ -90,7 +86,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
     private JTextField iterationText;
     private JLabel lblNewLabel;
     private JLabel lblNewLabel_1;
-    private JPanel main;
+    private JPanel mainPanel;
     private JButton startStopButton;
     private AlgorithmExecuter ae;
     private JTabbedPane tabbedPaneForPlots;
@@ -109,7 +105,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Grafik_Testi frame = new Grafik_Testi();
+					Main frame = new Main();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -121,7 +117,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 	/**
 	 * Create the frame.
 	 */
-	public Grafik_Testi() {
+	public Main() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1429, 991);
 		contentPane = new JPanel();
@@ -161,8 +157,8 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPaneForSettings, BorderLayout.EAST);
 		
-		main = new JPanel();
-		tabbedPaneForSettings.addTab("Main Controls", null, main, null);
+		mainPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Main Controls", null, mainPanel, null);
 		
 		startStopButton = new JButton("Start Optimization");
 		startStopButton.addMouseListener(new MouseAdapter() {
@@ -177,7 +173,7 @@ public class Grafik_Testi extends JFrame implements ChartMouseListener{
 				}
 			}
 		});
-		main.add(startStopButton);
+		mainPanel.add(startStopButton);
 		
 		arrayParameters = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParameters, null);
