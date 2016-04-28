@@ -42,7 +42,7 @@ import java.awt.event.MouseEvent;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
-public class Main extends JFrame implements ChartMouseListener{
+public class UserInterface extends JFrame implements ChartMouseListener{
 
 	/**
 	 * 
@@ -105,7 +105,7 @@ public class Main extends JFrame implements ChartMouseListener{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Main frame = new Main();
+					UserInterface frame = new UserInterface();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -117,7 +117,7 @@ public class Main extends JFrame implements ChartMouseListener{
 	/**
 	 * Create the frame.
 	 */
-	public Main() {
+	public UserInterface() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1429, 991);
 		contentPane = new JPanel();
