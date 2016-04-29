@@ -68,11 +68,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private boolean amplitudeIsUsed = true;
     private boolean phaseIsUsed = true;
     private boolean positionIsUsed = true;
-    private Mask mask = new Mask();
+    private Mask mask;
     private int patterGraphResolution = 721; //721;
-    private AntennaArray aA = new AntennaArray(numberofElements, patterGraphResolution, mask);
-    private AntennaArray aAforPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
-    private DifferentialEvolution mA = new DifferentialEvolution(numberofElements, 70, 5000, 0.7, 0.95, L, H, aA, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
+    private AntennaArray aA;
+    private AntennaArray aAforPresentation;
+    private DifferentialEvolution mA;
     private BestValues bV;
     private JTextArea bigBoxForAmplitude;
     private JTextArea bigBoxForPhase;
@@ -281,7 +281,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (amplitudeIsUsed) problemDimension = numberofElements;		
 		if (phaseIsUsed) problemDimension += numberofElements;		
 		if (positionIsUsed) problemDimension += numberofElements;
-
+		
+		mask = new Mask();
+		aA = new AntennaArray(numberofElements, patterGraphResolution, mask);
+		aAforPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
+		mA = new DifferentialEvolution(numberofElements, 70, 5000, 0.7, 0.95, L, H, aA, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
+		
 		ae = new AlgorithmExecuter();
 		ae.execute();
 	}
