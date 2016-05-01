@@ -49,6 +49,9 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JFormattedTextField;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.JPasswordField;
+import javax.swing.UIManager;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -102,6 +105,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JPanel panelConvergenceGraphProperties;
     private JPanel panel;
     private JButton startStopButton;
+    private JLabel numberOfElements_Label;
+    private JTextField numberOfElements_Field;
+    private JButton terminateOptimizationButton;
 
 	/**
 	 * Launch the application.
@@ -164,12 +170,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		panel = new JPanel();
 		tabbedPaneForSettings.addTab("Main Controls", null, panel, null);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{0, 0, 0, 0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0};
-		gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
+		panel.setLayout(new MigLayout("", "[150px][150px][150px]", "[][23px]"));
 		
 		startStopButton = new JButton("Start Optimization");
 		startStopButton.addMouseListener(new MouseAdapter() {
@@ -184,29 +185,28 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}				
 			}
 		});
-		GridBagConstraints gbc_startStopButton = new GridBagConstraints();
-		gbc_startStopButton.insets = new Insets(0, 0, 5, 5);
-		gbc_startStopButton.gridx = 2;
-		gbc_startStopButton.gridy = 0;
-		panel.add(startStopButton, gbc_startStopButton);
+		panel.add(startStopButton, "cell 1 1,alignx center,aligny top");
 		
-		Component horizontalStrut = Box.createHorizontalStrut(20);
-		horizontalStrut.setMaximumSize(new Dimension(500, 32767));
-		horizontalStrut.setPreferredSize(new Dimension(500, 0));
-		GridBagConstraints gbc_horizontalStrut = new GridBagConstraints();
-		gbc_horizontalStrut.gridwidth = 3;
-		gbc_horizontalStrut.gridheight = 2;
-		gbc_horizontalStrut.insets = new Insets(0, 0, 5, 0);
-		gbc_horizontalStrut.gridx = 1;
-		gbc_horizontalStrut.gridy = 1;
-		panel.add(horizontalStrut, gbc_horizontalStrut);
+		terminateOptimizationButton = new JButton("Terminate Optimization");
+		terminateOptimizationButton.setForeground(new Color(255, 255, 255));
+		terminateOptimizationButton.setBackground(new Color(255, 69, 0));
+		panel.add(terminateOptimizationButton, "cell 2 1,alignx center");
 		
 		arrayParameters = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParameters, null);
-		arrayParameters.setLayout(null);
+		arrayParameters.setLayout(new MigLayout("", "[170px][86px]", "[20px]"));
+		
+		numberOfElements_Label = new JLabel("Number of Antenna Array Elements");
+		arrayParameters.add(numberOfElements_Label, "cell 0 0,alignx right,aligny center");
+		
+		numberOfElements_Field = new JTextField();
+		numberOfElements_Field.setText(Integer.toString(numberofElements));
+		arrayParameters.add(numberOfElements_Field, "cell 1 0,growx,aligny center");
+		numberOfElements_Field.setColumns(10);
 		
 		differentialEvolution = new JPanel();
 		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolution, null);
+		differentialEvolution.setLayout(new MigLayout("", "[]", "[]"));
 		
 		tabbedPaneForPlots = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPaneForPlots, BorderLayout.CENTER);
