@@ -29,7 +29,6 @@ import org.jfree.ui.RectangleEdge;
 import javax.swing.SwingWorker;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
-import javax.swing.JTextArea;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -41,6 +40,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.Component;
+import javax.swing.Box;
+import java.awt.GridLayout;
+import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JFormattedTextField;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -74,9 +82,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private AntennaArray aAforPresentation;
     private DifferentialEvolution mA;
     private BestValues bV;
-    private JTextArea bigBoxForAmplitude;
-    private JTextArea bigBoxForPhase;
-    private JTextArea bigBoxForPostion;
     private JTabbedPane tabbedPaneForSettings;
     private JPanel arrayParameters;
     private JPanel differentialEvolution;
@@ -86,8 +91,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTextField iterationText;
     private JLabel lblNewLabel;
     private JLabel lblNewLabel_1;
-    private JPanel mainPanel;
-    private JButton startStopButton;
     private AlgorithmExecuter ae;
     private JTabbedPane tabbedPaneForPlots;
     private JPanel panelPatternGraphProperties;
@@ -97,6 +100,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JPanel panelPatternGraph;
     private JPanel panelConvergenceGraph;
     private JPanel panelConvergenceGraphProperties;
+    private JPanel panel;
+    private JButton startStopButton;
 
 	/**
 	 * Launch the application.
@@ -157,8 +162,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPaneForSettings, BorderLayout.EAST);
 		
-		mainPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Main Controls", null, mainPanel, null);
+		panel = new JPanel();
+		tabbedPaneForSettings.addTab("Main Controls", null, panel, null);
+		GridBagLayout gbl_panel = new GridBagLayout();
+		gbl_panel.columnWidths = new int[]{0, 0, 0, 0, 0};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0};
+		gbl_panel.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		panel.setLayout(gbl_panel);
 		
 		startStopButton = new JButton("Start Optimization");
 		startStopButton.addMouseListener(new MouseAdapter() {
@@ -170,31 +181,29 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				} else {
 					ae.keepIterating = false;
 					startStopButton.setText("Start Optimization");
-				}
+				}				
 			}
 		});
-		mainPanel.add(startStopButton);
+		GridBagConstraints gbc_startStopButton = new GridBagConstraints();
+		gbc_startStopButton.insets = new Insets(0, 0, 5, 5);
+		gbc_startStopButton.gridx = 2;
+		gbc_startStopButton.gridy = 0;
+		panel.add(startStopButton, gbc_startStopButton);
+		
+		Component horizontalStrut = Box.createHorizontalStrut(20);
+		horizontalStrut.setMaximumSize(new Dimension(500, 32767));
+		horizontalStrut.setPreferredSize(new Dimension(500, 0));
+		GridBagConstraints gbc_horizontalStrut = new GridBagConstraints();
+		gbc_horizontalStrut.gridwidth = 3;
+		gbc_horizontalStrut.gridheight = 2;
+		gbc_horizontalStrut.insets = new Insets(0, 0, 5, 0);
+		gbc_horizontalStrut.gridx = 1;
+		gbc_horizontalStrut.gridy = 1;
+		panel.add(horizontalStrut, gbc_horizontalStrut);
 		
 		arrayParameters = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParameters, null);
-		
-		bigBoxForAmplitude = new JTextArea();
-		arrayParameters.add(bigBoxForAmplitude);
-		bigBoxForAmplitude.setLineWrap(true);
-		bigBoxForAmplitude.setRows(30);
-		bigBoxForAmplitude.setColumns(17);
-		
-		bigBoxForPhase = new JTextArea();
-		arrayParameters.add(bigBoxForPhase);
-		bigBoxForPhase.setRows(30);
-		bigBoxForPhase.setLineWrap(true);
-		bigBoxForPhase.setColumns(17);
-		
-		bigBoxForPostion = new JTextArea();
-		arrayParameters.add(bigBoxForPostion);
-		bigBoxForPostion.setRows(30);
-		bigBoxForPostion.setLineWrap(true);
-		bigBoxForPostion.setColumns(17);
+		arrayParameters.setLayout(null);
 		
 		differentialEvolution = new JPanel();
 		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolution, null);
@@ -308,41 +317,29 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		// Its name may be aAforPresentation;
 		// CONSIDER THIS!
 		
-		bigBoxForAmplitude.setText("");
-		
-		String s = "";
 		int delta = 0;
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
 			for (int index = 0; index < numberofElements; index++) {
 				aAforPresentation.a[index] = bV.valuesOfBestMember[index];
-				s += "" + aAforPresentation.a[index] + "\n";
 			}
 			delta = numberofElements;
-			bigBoxForAmplitude.setText(s);
 		}
 		
-		s = "";
 		if (phaseIsUsed) {
 			// this is for phases
 			for (int index = 0; index < numberofElements; index++) {
 				aAforPresentation.alpha[index] = bV.valuesOfBestMember[index + delta];
-				s += "" + aAforPresentation.alpha[index] + "\n";
 			}
 			delta += numberofElements;
-			bigBoxForPhase.setText(s);
 		}
 		
-		s = "";
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
 			aAforPresentation.d[0] = 0;
-			s += "" + aAforPresentation.d[0] + "\n";
 			for (int index = 1; index < numberofElements; index++) {
 				aAforPresentation.d[index] = aAforPresentation.d[index - 1] + 0.5 + bV.valuesOfBestMember[index + delta];
-				s += "" + aAforPresentation.d[index] + "\n";
 			}
-			bigBoxForPostion.setText(s);
 		}
 		
 		aAforPresentation.createPattern();
