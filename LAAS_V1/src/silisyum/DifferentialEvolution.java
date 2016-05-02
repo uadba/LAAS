@@ -13,7 +13,7 @@ public class DifferentialEvolution {
 	private double[] temp;
 	public int bestMember = -1;
 	public double fitnessOfBestMember = 0;
-	public int iterationNumber;
+	public int maximumIterationNumber;
 	private double F;
 	private double Cr;
 	private int R1, R2, R3;
@@ -29,13 +29,13 @@ public class DifferentialEvolution {
 	private Cost c;
 	private boolean iterationState = true;
 	
-	public DifferentialEvolution(int _numberofElements, int _populationNumber, int _iterationNumber, double _F, double _C, double[] _L, double[] _H, AntennaArray _aA, Mask _mask, boolean _amplitudeIsUsed, boolean _phaseIsUsed, boolean _positionIsUsed) {
+	public DifferentialEvolution(int _numberofElements, int _populationNumber, int _maximumIterationNumber, double _F, double _Cr, double[] _L, double[] _H, AntennaArray _aA, Mask _mask, boolean _amplitudeIsUsed, boolean _phaseIsUsed, boolean _positionIsUsed) {
 		
 		numberofElements = _numberofElements;
 		populationNumber = _populationNumber;
-		iterationNumber = _iterationNumber;
+		maximumIterationNumber = _maximumIterationNumber;
 		F = _F;
-		Cr = _C;
+		Cr = _Cr;
 		L = _L;
 		H = _H;
 	    amplitudeIsUsed = _amplitudeIsUsed;
@@ -155,7 +155,7 @@ public class DifferentialEvolution {
 		
 		iterationIndex++;
 		
-		if(iterationIndex == iterationNumber)
+		if(iterationIndex == maximumIterationNumber)
 			iterationState = false;
 		
 		return iterationState;

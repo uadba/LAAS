@@ -41,6 +41,7 @@ import java.awt.event.MouseEvent;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import net.miginfocom.swing.MigLayout;
+import javax.swing.SwingConstants;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -64,12 +65,16 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private int numberofElements = 20;
     private int problemDimension;
     private double[] L = {0, 0, -0.05}; // initial values of amplitude, phase, and position minimum limits
-    private double[] H = {1, 10, 0.05}; // initial values of amplitude, phase, and position maximum limits
+    private double[] H = {1, 10, 0.05}; // initial values of amplitude, phase, and position maximum limits    
     private boolean amplitudeIsUsed = true;
     private boolean phaseIsUsed = true;
     private boolean positionIsUsed = true;
     private Mask mask;
     private int patterGraphResolution = 721; //721;
+    private int populationNumber = 70;
+    private int maximumIterationNumber = 2000;
+    private double F = 0.7;
+    private double Cr = 0.95;
     private AntennaArray aA;
     private AntennaArray aAforPresentation;
     private DifferentialEvolution mA;
@@ -97,6 +102,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JLabel numberOfElements_Label;
     private JTextField numberOfElements_Field;
     private JButton terminateOptimizationButton;
+    private JLabel lblPopulationNumber;
+    private JTextField populationNumber_textField;
+    private JLabel lblMaximumIterationNumber;
+    private JTextField maximumIterationNumber_textField;
+    private JLabel lblF;
+    private JLabel lblCr;
+    private JTextField F_textField;
+    private JTextField Cr_textField;
 
 	/**
 	 * Launch the application.
@@ -177,6 +190,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						convergenceSeries.clear();
 						ae.newStart = false;
 						updateOrAdd = false; //false:add and true:update
+						System.out.println(Integer.toString(maximumIterationNumber));
+						System.out.println(Integer.toString(mA.maximumIterationNumber));
 					}
 					ae.keepIterating = true;
 					startStopButton.setText("Stop Optimization");
@@ -219,7 +234,43 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		differentialEvolution = new JPanel();
 		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolution, null);
-		differentialEvolution.setLayout(new MigLayout("", "[]", "[]"));
+		differentialEvolution.setLayout(new MigLayout("", "[][grow]", "[][][][]"));
+		
+		lblPopulationNumber = new JLabel("Population Number :");
+		lblPopulationNumber.setHorizontalAlignment(SwingConstants.RIGHT);
+		differentialEvolution.add(lblPopulationNumber, "cell 0 0,alignx trailing");
+		
+		populationNumber_textField = new JTextField();
+		populationNumber_textField.setText(Integer.toString(populationNumber));
+		differentialEvolution.add(populationNumber_textField, "cell 1 0,growx");
+		populationNumber_textField.setColumns(10);
+		
+		lblMaximumIterationNumber = new JLabel("Maximum Iteration Number :");
+		lblMaximumIterationNumber.setHorizontalAlignment(SwingConstants.RIGHT);
+		differentialEvolution.add(lblMaximumIterationNumber, "cell 0 1,alignx trailing");
+		
+		maximumIterationNumber_textField = new JTextField();
+		maximumIterationNumber_textField.setText(Integer.toString(maximumIterationNumber));
+		differentialEvolution.add(maximumIterationNumber_textField, "cell 1 1,growx");
+		maximumIterationNumber_textField.setColumns(10);
+		
+		lblF = new JLabel("Scaling Factor (F) :");
+		lblF.setHorizontalAlignment(SwingConstants.RIGHT);
+		differentialEvolution.add(lblF, "cell 0 2,alignx trailing");
+		
+		F_textField = new JTextField();
+		F_textField.setText(Double.toString(F));
+		F_textField.setColumns(10);
+		differentialEvolution.add(F_textField, "cell 1 2,growx");
+		
+		lblCr = new JLabel("Crossover Rate (Cr) :");
+		lblCr.setHorizontalAlignment(SwingConstants.RIGHT);
+		differentialEvolution.add(lblCr, "cell 0 3,alignx trailing");
+		
+		Cr_textField = new JTextField();
+		Cr_textField.setText(Double.toString(Cr));
+		Cr_textField.setColumns(10);
+		differentialEvolution.add(Cr_textField, "cell 1 3,growx");
 		
 		tabbedPaneForPlots = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPaneForPlots, BorderLayout.CENTER);
@@ -306,6 +357,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void getParametersFromUserInterface() {
 		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
+	    populationNumber = Integer.parseInt(populationNumber_textField.getText());
+	    maximumIterationNumber = Integer.parseInt(maximumIterationNumber_textField.getText());
+	    F = Double.parseDouble(F_textField.getText());
+	    Cr = Double.parseDouble(Cr_textField.getText());
 	}
 	
 	private void calculateProblemDimension() {
@@ -319,7 +374,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		mask = new Mask();
 		aA = new AntennaArray(numberofElements, patterGraphResolution, mask);
 		aAforPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
-		mA = new DifferentialEvolution(numberofElements, 70, 5000, 0.7, 0.95, L, H, aA, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
+		mA = new DifferentialEvolution(numberofElements, populationNumber, maximumIterationNumber, F, Cr, L, H, aA, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
 	}
 	
 	private void preserveAspectRatio(JPanel innerPanel, JPanel container) {
@@ -461,6 +516,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	{		
 		private boolean keepIterating;
 		private boolean newStart;
+		boolean iterationState = true;
 		
 		public AlgorithmExecuter() {
 			keepIterating = false;
@@ -470,8 +526,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		@Override
 		protected Void doInBackground() throws Exception {
 			while(!isCancelled())
-			{
-				boolean iterationState = true;
+			{				
 				while (keepIterating && iterationState) {
 					iterationState = mA.iterate();
 					//System.out.println("it:" + mA.iterationIndex + "\t best:" + mA.fitnessOfBestMember);					
@@ -483,7 +538,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						valuesOfBestMember[d] = mA.members[d][mA.bestMember];
 					}
 					publish(new BestValues(mA.bestMember, mA.fitnessOfBestMember, valuesOfBestMember));
-				}					
+				}				
 			}			
 			return null;
 		}
