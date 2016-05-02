@@ -40,18 +40,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.Component;
-import javax.swing.Box;
-import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import javax.swing.BoxLayout;
-import java.awt.Insets;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JFormattedTextField;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.JPasswordField;
-import javax.swing.UIManager;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -65,7 +54,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private XYSeries maskOuter;
 	private XYSeries maskInner;
 	private XYSeries convergenceSeries;
-	private boolean add_or_update = false; //false:add and true:update
+	private boolean updateOrAdd = false; //false:add and true:update
 	
 	private ChartPanel chartPanelPattern;
 	private ChartPanel chartPanelConvergence;
@@ -73,7 +62,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private Crosshair yCrosshair;    
     
     private int numberofElements = 20;
-    private int problemDimension = 0;
+    private int problemDimension;
     private double[] L = {0, 0, -0.05}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.05}; // initial values of amplitude, phase, and position maximum limits
     private boolean amplitudeIsUsed = true;
@@ -170,24 +159,48 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		panel = new JPanel();
 		tabbedPaneForSettings.addTab("Main Controls", null, panel, null);
-		panel.setLayout(new MigLayout("", "[150px][150px][150px]", "[][23px]"));
+		panel.setLayout(new MigLayout("", "[170px][170px][170px]", "[][23px]"));
 		
 		startStopButton = new JButton("Start Optimization");
 		startStopButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if(ae.keepIterating == false) {
+					if(ae.newStart)
+					{
+						getParametersFromUserInterface();
+						calculateProblemDimension();
+						createMainObjects();
+						seriler.clear();
+						maskOuter.clear();
+						maskInner.clear();
+						convergenceSeries.clear();
+						ae.newStart = false;
+						updateOrAdd = false; //false:add and true:update
+					}
 					ae.keepIterating = true;
 					startStopButton.setText("Stop Optimization");
+					terminateOptimizationButton.setVisible(false);
 				} else {
 					ae.keepIterating = false;
-					startStopButton.setText("Start Optimization");
-				}				
+					startStopButton.setText("Continue Optimization");
+					terminateOptimizationButton.setVisible(true);
+				}			
 			}
 		});
 		panel.add(startStopButton, "cell 1 1,alignx center,aligny top");
 		
 		terminateOptimizationButton = new JButton("Terminate Optimization");
+		terminateOptimizationButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				ae.keepIterating = false;
+				ae.newStart = true;
+				terminateOptimizationButton.setVisible(false);
+				startStopButton.setText("Start Optimization");
+			}
+		});
+		terminateOptimizationButton.setVisible(false);
 		terminateOptimizationButton.setForeground(new Color(255, 255, 255));
 		terminateOptimizationButton.setBackground(new Color(255, 69, 0));
 		panel.add(terminateOptimizationButton, "cell 2 1,alignx center");
@@ -287,17 +300,26 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		lblNewLabel = new JLabel("Iteration Number:");
 		panelConvergenceGraphProperties.add(lblNewLabel);
 		
+		ae = new AlgorithmExecuter();
+		ae.execute();
+	}
+	
+	private void getParametersFromUserInterface() {
+		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
+	}
+	
+	private void calculateProblemDimension() {
+		problemDimension = 0;
 		if (amplitudeIsUsed) problemDimension = numberofElements;		
 		if (phaseIsUsed) problemDimension += numberofElements;		
 		if (positionIsUsed) problemDimension += numberofElements;
-		
+	}
+	
+	private void createMainObjects() {
 		mask = new Mask();
 		aA = new AntennaArray(numberofElements, patterGraphResolution, mask);
 		aAforPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
 		mA = new DifferentialEvolution(numberofElements, 70, 5000, 0.7, 0.95, L, H, aA, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
-		
-		ae = new AlgorithmExecuter();
-		ae.execute();
 	}
 	
 	private void preserveAspectRatio(JPanel innerPanel, JPanel container) {
@@ -346,7 +368,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		for(int x=0; x<aAforPresentation.numberofSamplePoints; x++)
 		{				
-			if(add_or_update) //false:add and true:update
+			if(updateOrAdd) //false:add and true:update
 			{
 				seriler.update(aAforPresentation.angle[x], aAforPresentation.pattern_dB[x]);
 			}
@@ -366,7 +388,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		for (int n = 0; n < numberOfSLLOuters; n++) {
 			SLL_outer = mask.SLL_outers.get(n);
-			if(add_or_update) //false:add and true:update
+			if(updateOrAdd) //false:add and true:update
 			{
 				for (int i = 0; i < SLL_outer.angles.length; i++) {
 					if(i==0)
@@ -392,7 +414,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		for (int n = 0; n < numberOfSLLInners; n++) {
 			SLL_inner = mask.SLL_inners.get(n);
-			if(add_or_update) //false:add and true:update
+			if(updateOrAdd) //false:add and true:update
 			{
 				for (int i = 0; i < SLL_inner.angles.length; i++) {
 					if(i==0)
@@ -412,7 +434,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}		
 		}
 		
-		add_or_update = true;	
+		updateOrAdd = true;	
 
 	}
 
@@ -438,9 +460,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	class AlgorithmExecuter extends SwingWorker<Void, BestValues>
 	{		
 		private boolean keepIterating;
+		private boolean newStart;
 		
 		public AlgorithmExecuter() {
 			keepIterating = false;
+			newStart = true;
 		}
 
 		@Override
