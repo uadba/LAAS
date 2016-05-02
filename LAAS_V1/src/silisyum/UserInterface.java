@@ -529,6 +529,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			{				
 				while (keepIterating && iterationState) {
 					iterationState = mA.iterate();
+					if(iterationState == false) {
+						keepIterating = false;
+						newStart = true;						
+					}
 					//System.out.println("it:" + mA.iterationIndex + "\t best:" + mA.fitnessOfBestMember);					
 					// You can create a new BestValue class object
 					// with the best values of mA
@@ -538,7 +542,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						valuesOfBestMember[d] = mA.members[d][mA.bestMember];
 					}
 					publish(new BestValues(mA.bestMember, mA.fitnessOfBestMember, valuesOfBestMember));
-				}				
+				}
 			}			
 			return null;
 		}
