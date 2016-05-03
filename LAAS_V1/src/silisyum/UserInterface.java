@@ -8,6 +8,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import org.jfree.chart.ChartFactory;
@@ -43,6 +44,8 @@ import java.awt.GridBagConstraints;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -98,7 +101,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JPanel panelPatternGraph;
     private JPanel panelConvergenceGraph;
     private JPanel panelConvergenceGraphProperties;
-    private JPanel mainControlsPanel;
+    private JPanel startStopPanel;
     private JButton startStopButton;
     private JLabel numberOfElements_Label;
     private JTextField numberOfElements_Field;
@@ -127,6 +130,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JLabel lblMinimumValuePosition;
     private JTextField textField_maximumValuePosition;
     private JTextField textField_minimumValuePosition;
+    private JPanel mainControlsPanel;
+    private JLabel lblMessages;
+    private JTextPane messages_txtpn;
 
 	/**
 	 * Launch the application.
@@ -267,9 +273,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		contentPane.add(rightPannel, BorderLayout.EAST);
 		rightPannel.setLayout(new BorderLayout(0, 0));
 		
-		mainControlsPanel = new JPanel();
-		rightPannel.add(mainControlsPanel, BorderLayout.NORTH);
-		mainControlsPanel.setLayout(new MigLayout("", "[170px][170px][170px]", "[][23px]"));
+		startStopPanel = new JPanel();
+		rightPannel.add(startStopPanel, BorderLayout.NORTH);
+		startStopPanel.setLayout(new MigLayout("", "[170px][170px][170px]", "[][23px]"));
 		
 		startStopButton = new JButton("Start Optimization");
 		startStopButton.addMouseListener(new MouseAdapter() {
@@ -299,7 +305,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}			
 			}
 		});
-		mainControlsPanel.add(startStopButton, "cell 1 1,alignx center,aligny top");
+		startStopPanel.add(startStopButton, "cell 1 1,alignx center,aligny top");
 		
 		terminateOptimizationButton = new JButton("Terminate Optimization");
 		terminateOptimizationButton.addMouseListener(new MouseAdapter() {
@@ -314,10 +320,22 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		terminateOptimizationButton.setVisible(false);
 		terminateOptimizationButton.setForeground(new Color(255, 255, 255));
 		terminateOptimizationButton.setBackground(new Color(255, 69, 0));
-		mainControlsPanel.add(terminateOptimizationButton, "cell 2 1,alignx center");
+		startStopPanel.add(terminateOptimizationButton, "cell 2 1,alignx center");
 		
 		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
 		rightPannel.add(tabbedPaneForSettings, BorderLayout.CENTER);
+		
+		mainControlsPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
+		mainControlsPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
+		
+		lblMessages = new JLabel("Messages");
+		mainControlsPanel.add(lblMessages, "cell 0 0");
+		
+		messages_txtpn = new JTextPane();
+		messages_txtpn.setContentType("text/html");
+		JScrollPane jsp = new JScrollPane(messages_txtpn);
+		mainControlsPanel.add(jsp, "cell 0 1,grow");		
 		
 		arrayParametersPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
@@ -466,6 +484,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (amplitudeIsUsed) problemDimension = numberofElements;		
 		if (phaseIsUsed) problemDimension += numberofElements;		
 		if (positionIsUsed) problemDimension += numberofElements;
+		System.out.println(problemDimension);
 	}
 	
 	private void createMainObjects() {
@@ -477,9 +496,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void preserveAspectRatio(JPanel innerPanel, JPanel container) {
         int w = container.getWidth();
-        //int h = container.getHeight();
-        //int size =  Math.min(w, h);
-        //innerPanel.setPreferredSize(new Dimension(size, size));
         innerPanel.setPreferredSize(new Dimension(w, w*440/680));
         container.revalidate();
     }
