@@ -67,9 +67,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private int problemDimension;
     private double[] L = {0, 0, -0.05}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.05}; // initial values of amplitude, phase, and position maximum limits    
-    private boolean amplitudeIsUsed = true;
-    private boolean phaseIsUsed = true;
-    private boolean positionIsUsed = true;
+    private boolean amplitudeIsUsed = false;
+    private boolean phaseIsUsed = false;
+    private boolean positionIsUsed = false;
     private Mask mask;
     private int patterGraphResolution = 721; //721;
     private int populationNumber = 70;
@@ -332,6 +332,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		numberOfElements_Field.setColumns(10);
 		
 		chckbxAmplitude = new JCheckBox("Amplitude");
+		chckbxAmplitude.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				amplitudeIsUsed = chckbxAmplitude.isSelected();
+			}
+		});
+		chckbxAmplitude.setSelected(amplitudeIsUsed);
 		arrayParametersPanel.add(chckbxAmplitude, "cell 0 1");
 		
 		lblMaximumValueAmplitude = new JLabel("Maximum Value :");
@@ -351,6 +358,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		textField_minimumValueAmplitude.setColumns(10);
 		
 		chckbxPhase = new JCheckBox("Phase");
+		chckbxPhase.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				phaseIsUsed = chckbxPhase.isSelected();
+			}
+		});
+		chckbxPhase.setSelected(phaseIsUsed);
 		arrayParametersPanel.add(chckbxPhase, "cell 0 4");
 		
 		lblMaximumValuePhase = new JLabel("Maximum Value :");
@@ -370,6 +384,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		textField_minimumValuePhase.setColumns(10);
 		
 		chckbxPosition = new JCheckBox("Position");
+		chckbxPosition.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				positionIsUsed = chckbxPosition.isSelected();
+			}
+		});
+		chckbxPosition.setSelected(positionIsUsed);
 		arrayParametersPanel.add(chckbxPosition, "cell 0 7");
 		
 		lblMaximumValuePosition = new JLabel("Maximum Value :");
