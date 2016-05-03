@@ -72,7 +72,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private Mask mask;
     private int patterGraphResolution = 721; //721;
     private int populationNumber = 70;
-    private int maximumIterationNumber = 50;
+    private int maximumIterationNumber = 2000;
     private double F = 0.7;
     private double Cr = 0.95;
     private AntennaArray antennaArray;
@@ -110,6 +110,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JLabel lblCr;
     private JTextField F_textField;
     private JTextField Cr_textField;
+    private JPanel rightPannel;
 
 	/**
 	 * Launch the application.
@@ -166,111 +167,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		grafik.getXYPlot().getDomainAxis().setRange(0, 180); // x axis
 		grafik.getXYPlot().getRangeAxis().setRange(-100, 0);
 		contentPane.setLayout(new BorderLayout(0, 0));
-		
-		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
-		contentPane.add(tabbedPaneForSettings, BorderLayout.EAST);
-		
-		mainControlsPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
-		mainControlsPanel.setLayout(new MigLayout("", "[170px][170px][170px]", "[][23px]"));
-		
-		startStopButton = new JButton("Start Optimization");
-		startStopButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				if(ae.keepIterating == false) {
-					if(ae.newStart)
-					{
-						System.out.println("Fresh start!");
-						getParametersFromUserInterface();
-						calculateProblemDimension();
-						createMainObjects();
-						seriler.clear();
-						maskOuter.clear();
-						maskInner.clear();
-						convergenceSeries.clear();
-						ae.newStart = false;
-						updateOrAdd = false; //false:add and true:update
-						ae.iterationState = true;
-					}
-					ae.keepIterating = true;
-					startStopButton.setText("Stop Optimization");
-					terminateOptimizationButton.setVisible(false);
-				} else {
-					ae.keepIterating = false;
-					startStopButton.setText("Continue Optimization");
-					terminateOptimizationButton.setVisible(true);
-				}			
-			}
-		});
-		mainControlsPanel.add(startStopButton, "cell 1 1,alignx center,aligny top");
-		
-		terminateOptimizationButton = new JButton("Terminate Optimization");
-		terminateOptimizationButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				ae.keepIterating = false;
-				ae.newStart = true;
-				terminateOptimizationButton.setVisible(false);
-				startStopButton.setText("Start Optimization");
-			}
-		});
-		terminateOptimizationButton.setVisible(false);
-		terminateOptimizationButton.setForeground(new Color(255, 255, 255));
-		terminateOptimizationButton.setBackground(new Color(255, 69, 0));
-		mainControlsPanel.add(terminateOptimizationButton, "cell 2 1,alignx center");
-		
-		arrayParametersPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
-		arrayParametersPanel.setLayout(new MigLayout("", "[170px][86px]", "[20px]"));
-		
-		numberOfElements_Label = new JLabel("Number of Antenna Array Elements");
-		arrayParametersPanel.add(numberOfElements_Label, "cell 0 0,alignx right,aligny center");
-		
-		numberOfElements_Field = new JTextField();
-		numberOfElements_Field.setText(Integer.toString(numberofElements));
-		arrayParametersPanel.add(numberOfElements_Field, "cell 1 0,growx,aligny center");
-		numberOfElements_Field.setColumns(10);
-		
-		differentialEvolutionPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolutionPanel, null);
-		differentialEvolutionPanel.setLayout(new MigLayout("", "[][grow]", "[][][][]"));
-		
-		lblPopulationNumber = new JLabel("Population Number :");
-		lblPopulationNumber.setHorizontalAlignment(SwingConstants.RIGHT);
-		differentialEvolutionPanel.add(lblPopulationNumber, "cell 0 0,alignx trailing");
-		
-		populationNumber_textField = new JTextField();
-		populationNumber_textField.setText(Integer.toString(populationNumber));
-		differentialEvolutionPanel.add(populationNumber_textField, "cell 1 0,growx");
-		populationNumber_textField.setColumns(10);
-		
-		lblMaximumIterationNumber = new JLabel("Maximum Iteration Number :");
-		lblMaximumIterationNumber.setHorizontalAlignment(SwingConstants.RIGHT);
-		differentialEvolutionPanel.add(lblMaximumIterationNumber, "cell 0 1,alignx trailing");
-		
-		maximumIterationNumber_textField = new JTextField();
-		maximumIterationNumber_textField.setText(Integer.toString(maximumIterationNumber));
-		differentialEvolutionPanel.add(maximumIterationNumber_textField, "cell 1 1,growx");
-		maximumIterationNumber_textField.setColumns(10);
-		
-		lblF = new JLabel("Scaling Factor (F) :");
-		lblF.setHorizontalAlignment(SwingConstants.RIGHT);
-		differentialEvolutionPanel.add(lblF, "cell 0 2,alignx trailing");
-		
-		F_textField = new JTextField();
-		F_textField.setText(Double.toString(F));
-		F_textField.setColumns(10);
-		differentialEvolutionPanel.add(F_textField, "cell 1 2,growx");
-		
-		lblCr = new JLabel("Crossover Rate (Cr) :");
-		lblCr.setHorizontalAlignment(SwingConstants.RIGHT);
-		differentialEvolutionPanel.add(lblCr, "cell 0 3,alignx trailing");
-		
-		Cr_textField = new JTextField();
-		Cr_textField.setText(Double.toString(Cr));
-		Cr_textField.setColumns(10);
-		differentialEvolutionPanel.add(Cr_textField, "cell 1 3,growx");
 		
 		tabbedPaneForPlots = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPaneForPlots, BorderLayout.CENTER);
@@ -350,6 +246,114 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		lblNewLabel = new JLabel("Iteration Number:");
 		panelConvergenceGraphProperties.add(lblNewLabel);
+		
+		rightPannel = new JPanel();
+		contentPane.add(rightPannel, BorderLayout.EAST);
+		rightPannel.setLayout(new BorderLayout(0, 0));
+		
+		mainControlsPanel = new JPanel();
+		rightPannel.add(mainControlsPanel, BorderLayout.NORTH);
+		mainControlsPanel.setLayout(new MigLayout("", "[170px][170px][170px]", "[][23px]"));
+		
+		startStopButton = new JButton("Start Optimization");
+		startStopButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(ae.keepIterating == false) {
+					if(ae.newStart)
+					{
+						getParametersFromUserInterface();
+						calculateProblemDimension();
+						createMainObjects();
+						seriler.clear();
+						maskOuter.clear();
+						maskInner.clear();
+						convergenceSeries.clear();
+						ae.newStart = false;
+						updateOrAdd = false; //false:add and true:update
+						ae.iterationState = true;
+					}
+					ae.keepIterating = true;
+					startStopButton.setText("Stop Optimization");
+					terminateOptimizationButton.setVisible(false);
+				} else {
+					ae.keepIterating = false;
+					startStopButton.setText("Continue Optimization");
+					terminateOptimizationButton.setVisible(true);
+				}			
+			}
+		});
+		mainControlsPanel.add(startStopButton, "cell 1 1,alignx center,aligny top");
+		
+		terminateOptimizationButton = new JButton("Terminate Optimization");
+		terminateOptimizationButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				ae.keepIterating = false;
+				ae.newStart = true;
+				terminateOptimizationButton.setVisible(false);
+				startStopButton.setText("Start Optimization");
+			}
+		});
+		terminateOptimizationButton.setVisible(false);
+		terminateOptimizationButton.setForeground(new Color(255, 255, 255));
+		terminateOptimizationButton.setBackground(new Color(255, 69, 0));
+		mainControlsPanel.add(terminateOptimizationButton, "cell 2 1,alignx center");
+		
+		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
+		rightPannel.add(tabbedPaneForSettings, BorderLayout.CENTER);
+		
+		arrayParametersPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
+		arrayParametersPanel.setLayout(new MigLayout("", "[170px][86px]", "[20px]"));
+		
+		numberOfElements_Label = new JLabel("Number of Antenna Array Elements");
+		arrayParametersPanel.add(numberOfElements_Label, "cell 0 0,alignx right,aligny center");
+		
+		numberOfElements_Field = new JTextField();
+		numberOfElements_Field.setText(Integer.toString(numberofElements));
+		arrayParametersPanel.add(numberOfElements_Field, "cell 1 0,growx,aligny center");
+		numberOfElements_Field.setColumns(10);
+		
+		differentialEvolutionPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolutionPanel, null);
+		differentialEvolutionPanel.setLayout(new MigLayout("", "[][grow]", "[][][][]"));
+		
+		lblPopulationNumber = new JLabel("Population Number :");
+		lblPopulationNumber.setHorizontalAlignment(SwingConstants.RIGHT);
+		differentialEvolutionPanel.add(lblPopulationNumber, "cell 0 0,alignx trailing");
+		
+		populationNumber_textField = new JTextField();
+		populationNumber_textField.setText(Integer.toString(populationNumber));
+		differentialEvolutionPanel.add(populationNumber_textField, "cell 1 0,growx");
+		populationNumber_textField.setColumns(10);
+		
+		lblMaximumIterationNumber = new JLabel("Maximum Iteration Number :");
+		lblMaximumIterationNumber.setHorizontalAlignment(SwingConstants.RIGHT);
+		differentialEvolutionPanel.add(lblMaximumIterationNumber, "cell 0 1,alignx trailing");
+		
+		maximumIterationNumber_textField = new JTextField();
+		maximumIterationNumber_textField.setText(Integer.toString(maximumIterationNumber));
+		differentialEvolutionPanel.add(maximumIterationNumber_textField, "cell 1 1,growx");
+		maximumIterationNumber_textField.setColumns(10);
+		
+		lblF = new JLabel("Scaling Factor (F) :");
+		lblF.setHorizontalAlignment(SwingConstants.RIGHT);
+		differentialEvolutionPanel.add(lblF, "cell 0 2,alignx trailing");
+		
+		F_textField = new JTextField();
+		F_textField.setText(Double.toString(F));
+		F_textField.setColumns(10);
+		differentialEvolutionPanel.add(F_textField, "cell 1 2,growx");
+		
+		lblCr = new JLabel("Crossover Rate (Cr) :");
+		lblCr.setHorizontalAlignment(SwingConstants.RIGHT);
+		differentialEvolutionPanel.add(lblCr, "cell 0 3,alignx trailing");
+		
+		Cr_textField = new JTextField();
+		Cr_textField.setText(Double.toString(Cr));
+		Cr_textField.setColumns(10);
+		differentialEvolutionPanel.add(Cr_textField, "cell 1 3,growx");
 		
 		ae = new AlgorithmExecuter();
 		ae.execute();
