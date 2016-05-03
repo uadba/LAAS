@@ -42,6 +42,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.SwingConstants;
+import javax.swing.JCheckBox;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -111,6 +112,21 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTextField F_textField;
     private JTextField Cr_textField;
     private JPanel rightPannel;
+    private JCheckBox chckbxAmplitude;
+    private JLabel lblMaximumValueAmplitude;
+    private JLabel lblMinimumValueAmplitude;
+    private JTextField textField_maximumValueAmplitude;
+    private JTextField textField_minimumValueAmplitude;
+    private JCheckBox chckbxPhase;
+    private JLabel lblMaximumValuePhase;
+    private JLabel lblMinimumValuePhase;
+    private JTextField textField_maximumValuePhase;
+    private JTextField textField_minimumValuePhase;
+    private JCheckBox chckbxPosition;
+    private JLabel lblMaximumValuePosition;
+    private JLabel lblMinimumValuePosition;
+    private JTextField textField_maximumValuePosition;
+    private JTextField textField_minimumValuePosition;
 
 	/**
 	 * Launch the application.
@@ -305,7 +321,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		arrayParametersPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
-		arrayParametersPanel.setLayout(new MigLayout("", "[170px][86px]", "[20px]"));
+		arrayParametersPanel.setLayout(new MigLayout("", "[170px][86px,grow]", "[20px][][][][][][][][][]"));
 		
 		numberOfElements_Label = new JLabel("Number of Antenna Array Elements");
 		arrayParametersPanel.add(numberOfElements_Label, "cell 0 0,alignx right,aligny center");
@@ -314,6 +330,63 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		numberOfElements_Field.setText(Integer.toString(numberofElements));
 		arrayParametersPanel.add(numberOfElements_Field, "cell 1 0,growx,aligny center");
 		numberOfElements_Field.setColumns(10);
+		
+		chckbxAmplitude = new JCheckBox("Amplitude");
+		arrayParametersPanel.add(chckbxAmplitude, "cell 0 1");
+		
+		lblMaximumValueAmplitude = new JLabel("Maximum Value :");
+		lblMaximumValueAmplitude.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMaximumValueAmplitude, "cell 0 2,alignx trailing");
+		
+		textField_maximumValueAmplitude = new JTextField();
+		arrayParametersPanel.add(textField_maximumValueAmplitude, "cell 1 2,growx");
+		textField_maximumValueAmplitude.setColumns(10);
+		
+		lblMinimumValueAmplitude = new JLabel("Minimum Value :");
+		lblMinimumValueAmplitude.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMinimumValueAmplitude, "cell 0 3,alignx trailing");
+		
+		textField_minimumValueAmplitude = new JTextField();
+		arrayParametersPanel.add(textField_minimumValueAmplitude, "cell 1 3,growx");
+		textField_minimumValueAmplitude.setColumns(10);
+		
+		chckbxPhase = new JCheckBox("Phase");
+		arrayParametersPanel.add(chckbxPhase, "cell 0 4");
+		
+		lblMaximumValuePhase = new JLabel("Maximum Value :");
+		lblMaximumValuePhase.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMaximumValuePhase, "cell 0 5,alignx trailing");
+		
+		textField_maximumValuePhase = new JTextField();
+		arrayParametersPanel.add(textField_maximumValuePhase, "cell 1 5,growx");
+		textField_maximumValuePhase.setColumns(10);
+		
+		lblMinimumValuePhase = new JLabel("Minimum Value :");
+		lblMinimumValuePhase.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMinimumValuePhase, "cell 0 6,alignx trailing");
+		
+		textField_minimumValuePhase = new JTextField();
+		arrayParametersPanel.add(textField_minimumValuePhase, "cell 1 6,growx");
+		textField_minimumValuePhase.setColumns(10);
+		
+		chckbxPosition = new JCheckBox("Position");
+		arrayParametersPanel.add(chckbxPosition, "cell 0 7");
+		
+		lblMaximumValuePosition = new JLabel("Maximum Value :");
+		lblMaximumValuePosition.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMaximumValuePosition, "cell 0 8,alignx trailing");
+		
+		textField_maximumValuePosition = new JTextField();
+		arrayParametersPanel.add(textField_maximumValuePosition, "cell 1 8,growx");
+		textField_maximumValuePosition.setColumns(10);
+		
+		lblMinimumValuePosition = new JLabel("Minimum Value :");
+		lblMinimumValuePosition.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMinimumValuePosition, "cell 0 9,alignx trailing");
+		
+		textField_minimumValuePosition = new JTextField();
+		arrayParametersPanel.add(textField_minimumValuePosition, "cell 1 9,growx");
+		textField_minimumValuePosition.setColumns(10);
 		
 		differentialEvolutionPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolutionPanel, null);
