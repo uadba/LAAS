@@ -137,6 +137,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTextPane messagePane;
     List<String> messagesOfErrors = new ArrayList<String>();
     private String messageToUser;
+    private JPanel masksPanel;
 
 	/**
 	 * Launch the application.
@@ -439,6 +440,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		textField_minimumValuePosition = new JTextField();
 		arrayParametersPanel.add(textField_minimumValuePosition, "cell 1 9,growx");
 		textField_minimumValuePosition.setColumns(10);
+		
+		masksPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Masks", null, masksPanel, null);
 		
 		differentialEvolutionPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolutionPanel, null);
