@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.html.HTML;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartMouseEvent;
@@ -72,8 +73,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private double[] L = {0, 0, -0.05}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.05}; // initial values of amplitude, phase, and position maximum limits    
     private boolean amplitudeIsUsed = false;
-    private boolean phaseIsUsed = false;
-    private boolean positionIsUsed = false;
+    private boolean phaseIsUsed = true;
+    private boolean positionIsUsed = true;
     private Mask mask;
     private int patterGraphResolution = 721; //721;
     private int populationNumber = 70;
@@ -135,6 +136,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JLabel lblMessages;
     private JTextPane messagePane;
     List<String> messagesOfErrors = new ArrayList<String>();
+    private String messageToUser;
 
 	/**
 	 * Launch the application.
@@ -295,16 +297,19 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							convergenceSeries.clear();
 							ae.newStart = false;
 							updateOrAdd = false; //false:add and true:update
-							ae.iterationState = true;
+							ae.iterationHasNotCompletedYet = true;
+							sendMessageToPane("<font color=#006400><b>Optimization process has been <i>started</i> successfully!</b></font>", true);
+						} else {
+							sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>restarted</i>.</b></font>", false);
 						}
 						ae.keepIterating = true;
 						startStopButton.setText("Stop Optimization");
 						terminateOptimizationButton.setVisible(false);
-						presentWelfareMessage();
 					} else {
 						ae.keepIterating = false;
 						startStopButton.setText("Continue Optimization");
 						terminateOptimizationButton.setVisible(true);
+						sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>stopped</i>.</b></font>", false);
 					}
 				} else {
 					presentErrorMessages();					
@@ -322,6 +327,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				ae.newStart = true;
 				terminateOptimizationButton.setVisible(false);
 				startStopButton.setText("Start Optimization");
+				sendMessageToPane("<br><font color=#006400><b>Optimization process has been </b></font> <font color=red><b><i>terminated</i></b></font> <font color=#006400><b>by the user</b></font>.", false);
 			}
 		});
 		terminateOptimizationButton.setVisible(false);
@@ -478,9 +484,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		ae.execute();
 	}
 	
-	private void presentWelfareMessage() {
-		messagePane.setText("<font color=#006400><b>Optimization process has been started successfully!</b></font>");
-	}
+	private void sendMessageToPane(String additionalMessage, boolean deletePreviousMessages) {
+		if (deletePreviousMessages)
+			messageToUser = additionalMessage;
+		else
+			messageToUser += additionalMessage;
+		messagePane.setText(messageToUser);
+	}	
 	
 	private void presentWarningMessages() {
 		
@@ -490,29 +500,29 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		// How many error messages are there?
 		int errors = messagesOfErrors.size();
 		
-		String message = null;
+		String tempMessage = null;
 		if (errors == 1) {
-			message = "Please press <b>Start Optimization</b> button again after fixing the following error:<br><br>";
-			message += "<center><b>Error</b></center>";
-			message += "<ul>";			
-			message += "<li>";
-			message += messagesOfErrors.get(0);
-			message += "</li>";
-			message += "</ul>";
+			tempMessage = "Please press <b>Start Optimization</b> button again after fixing the following error:<br><br>";
+			tempMessage += "<center><b>Error</b></center>";
+			tempMessage += "<ul>";			
+			tempMessage += "<li>";
+			tempMessage += messagesOfErrors.get(0);
+			tempMessage += "</li>";
+			tempMessage += "</ul>";
 		} else {
-			message = "Please press <b>Start Optimization</b> button again after fixing the following errors:<br><br>";
-			message += "<center><b>Errors</b></center>";			
-			message += "<ol>";
+			tempMessage = "Please press <b>Start Optimization</b> button again after fixing the following errors:<br><br>";
+			tempMessage += "<center><b>Errors</b></center>";			
+			tempMessage += "<ol>";
 			for (int i = 0; i < errors; i++) {
-				message += "<li>";
-				message += messagesOfErrors.get(i);
-				message += "</li>";
+				tempMessage += "<li>";
+				tempMessage += messagesOfErrors.get(i);
+				tempMessage += "</li>";
 			}
-			message += "</ol>";
+			tempMessage += "</ol>";
 		}
 
 		
-		messagePane.setText(message);
+		sendMessageToPane(tempMessage, true);
 		
 		messagesOfErrors.clear();
 	}
@@ -687,7 +697,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	{		
 		private boolean keepIterating;
 		private boolean newStart;
-		boolean iterationState = true;
+		boolean iterationHasNotCompletedYet = true;
 		
 		public AlgorithmExecuter() {
 			keepIterating = false;
@@ -698,8 +708,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		protected Void doInBackground() throws Exception {
 			while(!isCancelled())
 			{
-				while (keepIterating && iterationState) {
-					iterationState = differentialEvolution.iterate();
+				while (keepIterating && iterationHasNotCompletedYet) {
+					iterationHasNotCompletedYet = differentialEvolution.iterate();
 					double[] valuesOfBestMember = new double[problemDimension];
 					for (int d = 0; d < problemDimension; d++) {
 						valuesOfBestMember[d] = differentialEvolution.members[d][differentialEvolution.bestMember];
@@ -713,11 +723,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		@Override
 		protected void process(List<BestValues> chunks) {
 			bestValues = chunks.get(chunks.size()-1);
-			if(iterationState == false)
+			if(iterationHasNotCompletedYet == false)
 			{	
 				keepIterating = false;
 				newStart = true;
 				startStopButton.setText("Start Optimization");
+				String tempMessage = messagePane.getText();
+				tempMessage += "<br>Iterion has been completed";
+				System.out.println(tempMessage);
+				messagePane.setText(tempMessage);
 			}
 				
 			drawPlot();
