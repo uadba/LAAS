@@ -29,6 +29,7 @@ import org.jfree.ui.RectangleEdge;
 
 import javax.swing.SwingWorker;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -132,7 +133,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTextField textField_minimumValuePosition;
     private JPanel mainControlsPanel;
     private JLabel lblMessages;
-    private JTextPane messages_txtpn;
+    private JTextPane messagePane;
+    List<String> messagesOfErrors = new ArrayList<String>();
 
 	/**
 	 * Launch the application.
@@ -281,28 +283,33 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		startStopButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(ae.keepIterating == false) {
-					if(ae.newStart)
-					{
-						getParametersFromUserInterface();
-						calculateProblemDimension();
-						createMainObjects();
-						seriler.clear();
-						maskOuter.clear();
-						maskInner.clear();
-						convergenceSeries.clear();
-						ae.newStart = false;
-						updateOrAdd = false; //false:add and true:update
-						ae.iterationState = true;
+				if(validateParameters()) {
+					if(ae.keepIterating == false) {
+						if(ae.newStart) {
+							getParametersFromUserInterface();
+							calculateProblemDimension();
+							createMainObjects();
+							seriler.clear();
+							maskOuter.clear();
+							maskInner.clear();
+							convergenceSeries.clear();
+							ae.newStart = false;
+							updateOrAdd = false; //false:add and true:update
+							ae.iterationState = true;
+						}
+						ae.keepIterating = true;
+						startStopButton.setText("Stop Optimization");
+						terminateOptimizationButton.setVisible(false);
+						presentWelfareMessage();
+					} else {
+						ae.keepIterating = false;
+						startStopButton.setText("Continue Optimization");
+						terminateOptimizationButton.setVisible(true);
 					}
-					ae.keepIterating = true;
-					startStopButton.setText("Stop Optimization");
-					terminateOptimizationButton.setVisible(false);
 				} else {
-					ae.keepIterating = false;
-					startStopButton.setText("Continue Optimization");
-					terminateOptimizationButton.setVisible(true);
-				}			
+					presentErrorMessages();					
+				}
+				tabbedPaneForSettings.setSelectedIndex(0);
 			}
 		});
 		startStopPanel.add(startStopButton, "cell 1 1,alignx center,aligny top");
@@ -327,14 +334,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		mainControlsPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
-		mainControlsPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
+		mainControlsPanel.setLayout(new MigLayout("", "[510px,grow]", "[][grow]"));
 		
 		lblMessages = new JLabel("Messages");
 		mainControlsPanel.add(lblMessages, "cell 0 0");
 		
-		messages_txtpn = new JTextPane();
-		messages_txtpn.setContentType("text/html");
-		JScrollPane jsp = new JScrollPane(messages_txtpn);
+		messagePane = new JTextPane();
+		messagePane.setContentType("text/html");
+		JScrollPane jsp = new JScrollPane(messagePane);
 		mainControlsPanel.add(jsp, "cell 0 1,grow");		
 		
 		arrayParametersPanel = new JPanel();
@@ -471,6 +478,57 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		ae.execute();
 	}
 	
+	private void presentWelfareMessage() {
+		messagePane.setText("<font color=#006400><b>Optimization process has been started successfully!</b></font>");
+	}
+	
+	private void presentWarningMessages() {
+		
+	}
+	
+	private void presentErrorMessages() {
+		// How many error messages are there?
+		int errors = messagesOfErrors.size();
+		
+		String message = null;
+		if (errors == 1) {
+			message = "Please press <b>Start Optimization</b> button again after fixing the following error:<br><br>";
+			message += "<center><b>Error</b></center>";
+			message += "<ul>";			
+			message += "<li>";
+			message += messagesOfErrors.get(0);
+			message += "</li>";
+			message += "</ul>";
+		} else {
+			message = "Please press <b>Start Optimization</b> button again after fixing the following errors:<br><br>";
+			message += "<center><b>Errors</b></center>";			
+			message += "<ol>";
+			for (int i = 0; i < errors; i++) {
+				message += "<li>";
+				message += messagesOfErrors.get(i);
+				message += "</li>";
+			}
+			message += "</ol>";
+		}
+
+		
+		messagePane.setText(message);
+		
+		messagesOfErrors.clear();
+	}
+	
+	private boolean validateParameters() {
+		boolean parametersAreValid = true;
+		
+		if(amplitudeIsUsed == false && phaseIsUsed == false && positionIsUsed == false)
+		{
+			parametersAreValid = false;
+			messagesOfErrors.add("There is not any selected antenna parameters to optimize. At least one of them (amplitude, phase or position) must be selected.");
+		}
+		
+		return parametersAreValid;
+	}
+	
 	private void getParametersFromUserInterface() {
 		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
 	    populationNumber = Integer.parseInt(populationNumber_textField.getText());
@@ -484,7 +542,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (amplitudeIsUsed) problemDimension = numberofElements;		
 		if (phaseIsUsed) problemDimension += numberofElements;		
 		if (positionIsUsed) problemDimension += numberofElements;
-		System.out.println(problemDimension);
 	}
 	
 	private void createMainObjects() {
