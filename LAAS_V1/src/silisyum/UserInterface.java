@@ -48,6 +48,8 @@ import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.JTable;
+import javax.swing.JList;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -138,6 +140,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     List<String> messagesOfErrors = new ArrayList<String>();
     private String messageToUser;
     private JPanel masksPanel;
+    private JTable table;
+    private JList list;
+    private JButton btnAddMask;
+    private JTextField maskNameField;
 
 	/**
 	 * Launch the application.
@@ -339,6 +345,23 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
 		rightPannel.add(tabbedPaneForSettings, BorderLayout.CENTER);
 		
+		masksPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Masks", null, masksPanel, null);
+		masksPanel.setLayout(new MigLayout("", "[grow][][grow]", "[][grow]"));
+		
+		maskNameField = new JTextField();
+		masksPanel.add(maskNameField, "flowx,cell 0 0");
+		maskNameField.setColumns(10);
+		
+		list = new JList();
+		masksPanel.add(list, "cell 0 1,grow");
+		
+		table = new JTable();
+		masksPanel.add(table, "cell 2 1,grow");
+		
+		btnAddMask = new JButton("Add Mask");
+		masksPanel.add(btnAddMask, "cell 0 0");
+		
 		mainControlsPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
 		mainControlsPanel.setLayout(new MigLayout("", "[510px,grow]", "[][grow]"));
@@ -440,9 +463,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		textField_minimumValuePosition = new JTextField();
 		arrayParametersPanel.add(textField_minimumValuePosition, "cell 1 9,growx");
 		textField_minimumValuePosition.setColumns(10);
-		
-		masksPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Masks", null, masksPanel, null);
 		
 		differentialEvolutionPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolutionPanel, null);
