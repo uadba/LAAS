@@ -142,7 +142,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTable table;
     private JList<String> list;
     private JButton btnAddMask;
-    private DialogBoxForAddingMask dialogBoxForAddingMask = new DialogBoxForAddingMask(this, "Add a New Mask", true);
+    private DialogBoxForAddingMask dialogBoxForAddingMask;
+    private DefaultListModel<String> listModel;
 
 	/**
 	 * Launch the application.
@@ -163,12 +164,17 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	/**
 	 * Create the frame.
 	 */
-	public UserInterface() {
+	public UserInterface() {		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1429, 991);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+		
+		mask = new Mask();
+		dialogBoxForAddingMask = new DialogBoxForAddingMask(this, "Add a New Mask", true, mask);
+		
+		createTemporaryMasks();
 		
 		seriler = new XYSeries("Pattern");
 		maskOuter = new XYSeries("Outer Mask");
@@ -346,20 +352,30 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		masksPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Masks", null, masksPanel, null);
-		masksPanel.setLayout(new MigLayout("", "[][grow]", "[][grow]"));
+		masksPanel.setLayout(new MigLayout("", "[150px][grow]", "[][grow]"));
 		
-		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		listModel = new DefaultListModel<String>();
 		list = new JList<String>(listModel);
+		list.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				String selectedElement = list.getSelectedValue();
+				System.out.println(selectedElement);
+				
+			}
+		});
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane listScroller = new JScrollPane(list);
 		masksPanel.add(listScroller, "cell 0 1,grow");
+		refreshMasksList();
 		
 		btnAddMask = new JButton("Add Mask");
 		btnAddMask.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
-				dialogBoxForAddingMask.setVisible(true);				
+				dialogBoxForAddingMask.setVisible(true);
+				refreshMasksList();
 			}
 		});
 		masksPanel.add(btnAddMask, "cell 0 0");
@@ -513,6 +529,77 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		ae.execute();
 	}
 	
+	private void createTemporaryMasks() {
+
+		mask.addNewSLL_outer("SLL_01", 0, 20, 20, -24, 1);
+		mask.addNewSLL_outer("SLL_02", 20, 30, 10, -40, 1);
+		mask.addNewSLL_outer("SLL_03", 30, 79, 49, -20, 1);
+		mask.addNewSLL_outer("SLL_04", 79, 80, 5, -60, 1);
+		mask.addNewSLL_outer("SLL_05", 80, 100, 20, 0, 1);
+		mask.addNewSLL_outer("SLL_06", 100, 110, 10, -20, 1);
+		mask.addNewSLL_outer("SLL_07", 110, 115, 15, -40, 1);
+		mask.addNewSLL_outer("SLL_08", 115, 180, 65, -24, 1);
+						
+//		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
+//		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
+//		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
+//		mask.addNewSLL_inner("SLL_01", 70, 150, 3, -95, 1);
+//		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
+//		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);
+
+//		mask.addNewSLL_outer("SLL_01", 0, 60, 60, -25, 1);
+//		mask.addNewSLL_outer("SLL_01", 60, 65, 20, -70, 1);
+//		mask.addNewSLL_outer("SLL_01", 65, 80, 50, -25, 1);
+//		mask.addNewSLL_outer("SLL_01", 80, 100, 20, 0, 1);
+//		mask.addNewSLL_outer("SLL_01", 100, 110, 10, -25, 1);
+//		mask.addNewSLL_outer("SLL_01", 110, 115, 5, -25, 1);
+//		mask.addNewSLL_outer("SLL_01", 115, 180, 65, -25, 1);		
+//
+//		mask.addNewSLL_inner("SLL_01", 0, 86, 3, -95, 1);
+//		mask.addNewSLL_inner("SLL_01", 86, 94, 20, -5, 1);
+//		mask.addNewSLL_inner("SLL_01", 94, 180, 3, -95, 1);
+		
+		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
+		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
+		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
+		mask.addNewSLL_inner("SLL_01", 70, 86, 3, -95, 1);
+		mask.addNewSLL_inner("SLL_01", 86, 94, 3, -5, 1);
+		mask.addNewSLL_inner("SLL_01", 94, 150, 3, -95, 1);
+		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
+		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);	
+		
+	}
+
+	private void refreshMasksList() {
+		// ------------- Outer Mask --------------------
+		int numberOfSLLOuters = mask.SLL_outers.size(); 
+		Mask.SidelobeLevel SLL_outer;
+		
+		listModel.removeAllElements();
+		for (int n = 0; n < numberOfSLLOuters; n++) {
+			SLL_outer = mask.SLL_outers.get(n);
+			listModel.addElement(SLL_outer.name);
+//			if(updateOrAdd) //false:add and true:update
+//			{
+//				for (int i = 0; i < SLL_outer.angles.length; i++) {
+//					if(i==0)
+//						maskOuter.update(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
+//					else
+//						maskOuter.update(SLL_outer.angles[i], SLL_outer.levels[i]);	
+//				}
+//			}
+//			else
+//			{
+//				for (int i = 0; i < SLL_outer.angles.length; i++) {
+//					if(i==0)
+//						maskOuter.add(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
+//					else
+//						maskOuter.add(SLL_outer.angles[i], SLL_outer.levels[i]);		
+//				}
+//			}		
+		}		
+	}
+	
 	private void sendMessageToPane(String additionalMessage, boolean deletePreviousMessages) {
 		if (deletePreviousMessages)
 			messageToUser = additionalMessage;
@@ -580,7 +667,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	}
 	
 	private void createMainObjects() {
-		mask = new Mask();
 		antennaArray = new AntennaArray(numberofElements, patterGraphResolution, mask);
 		antennaArrayForPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
 		differentialEvolution = new DifferentialEvolution(numberofElements, populationNumber, maximumIterationNumber, F, Cr, L, H, antennaArray, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);

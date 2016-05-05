@@ -10,6 +10,8 @@ import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class DialogBoxForAddingMask extends JDialog {
 
@@ -19,6 +21,7 @@ public class DialogBoxForAddingMask extends JDialog {
 	private static final long serialVersionUID = -9016107987493756122L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField maskName_textField;
+	private Mask mask;
 
 	/**
 	 * Create the dialog.
@@ -26,9 +29,10 @@ public class DialogBoxForAddingMask extends JDialog {
 	 * @param string 
 	 * @param userInterface 
 	 */
-	public DialogBoxForAddingMask(UserInterface _frame, String _title, boolean _modal) {
+	public DialogBoxForAddingMask(UserInterface _frame, String _title, boolean _modal, Mask _mask) {
 		super(_frame, _title, _modal);
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		mask = _mask;
+		//setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -49,18 +53,14 @@ public class DialogBoxForAddingMask extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton Add_btn = new JButton("Add");
+				Add_btn.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						mask.addNewSLL_outer(maskName_textField.getText(), 115, 180, 65, -24, 1);
+						setVisible(false);
+					}
+				});
 				buttonPane.add(Add_btn);
-			}
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
 			}
 		}
 	}

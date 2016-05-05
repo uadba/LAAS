@@ -46,7 +46,7 @@ public class DifferentialEvolution {
 		if (phaseIsUsed) problemDimension += numberofElements;		
 		if (positionIsUsed) problemDimension += numberofElements;
 		
-		c = new Cost(numberofElements, _aA, _mask, _amplitudeIsUsed, _phaseIsUsed, positionIsUsed);
+		c = new Cost(numberofElements, _aA, _amplitudeIsUsed, _phaseIsUsed, positionIsUsed);
 		r = new Random();		
 		createArrays();
 		initialize();
