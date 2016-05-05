@@ -10,8 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.html.HTML;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
@@ -35,6 +33,7 @@ import java.util.List;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 
 import java.awt.event.ComponentAdapter;
@@ -46,10 +45,10 @@ import java.awt.GridBagConstraints;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.JTable;
 import javax.swing.JList;
+import javax.swing.ListSelectionModel;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -141,9 +140,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private String messageToUser;
     private JPanel masksPanel;
     private JTable table;
-    private JList list;
+    private JList<String> list;
     private JButton btnAddMask;
-    private JTextField maskNameField;
+    private DialogBoxForAddingMask dialogBoxForAddingMask = new DialogBoxForAddingMask(this, "Add a New Mask", true);
 
 	/**
 	 * Launch the application.
@@ -347,20 +346,26 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		masksPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Masks", null, masksPanel, null);
-		masksPanel.setLayout(new MigLayout("", "[grow][][grow]", "[][grow]"));
+		masksPanel.setLayout(new MigLayout("", "[][grow]", "[][grow]"));
 		
-		maskNameField = new JTextField();
-		masksPanel.add(maskNameField, "flowx,cell 0 0");
-		maskNameField.setColumns(10);
-		
-		list = new JList();
-		masksPanel.add(list, "cell 0 1,grow");
-		
-		table = new JTable();
-		masksPanel.add(table, "cell 2 1,grow");
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		list = new JList<String>(listModel);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane listScroller = new JScrollPane(list);
+		masksPanel.add(listScroller, "cell 0 1,grow");
 		
 		btnAddMask = new JButton("Add Mask");
+		btnAddMask.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
+				dialogBoxForAddingMask.setVisible(true);				
+			}
+		});
 		masksPanel.add(btnAddMask, "cell 0 0");
+		
+		table = new JTable();
+		masksPanel.add(table, "cell 1 1,grow");
 		
 		mainControlsPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
@@ -514,10 +519,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		else
 			messageToUser += additionalMessage;
 		messagePane.setText(messageToUser);
-	}	
-	
-	private void presentWarningMessages() {
-		
 	}
 	
 	private void presentErrorMessages() {
