@@ -552,7 +552,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			Mask.SidelobeLevel SLL_outer;
 			SLL_outer = mask.SLL_outers.get(0);
 			return SLL_outer.angles.length;
-	        //return data.length;
 	    }
 	
 	    public String getColumnName(int col) {
