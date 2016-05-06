@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.AbstractTableModel;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
@@ -359,9 +361,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				String selectedElement = list.getSelectedValue();
-				System.out.println(selectedElement);
-				
+				//String selectedElement = list.getSelectedValue();
+				refreshMaskDetailsTable();
 			}
 		});
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -380,8 +381,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		});
 		masksPanel.add(btnAddMask, "cell 0 0");
 		
-		table = new JTable();
-		masksPanel.add(table, "cell 1 1,grow");
+		table = new JTable(new tableModel());
+		JScrollPane scrollPaneForTable = new JScrollPane(table);
+		masksPanel.add(scrollPaneForTable, "cell 1 1,grow");
+		//table.setFillsViewportHeight(true);
 		
 		mainControlsPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
@@ -392,8 +395,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		messagePane = new JTextPane();
 		messagePane.setContentType("text/html");
-		JScrollPane jsp = new JScrollPane(messagePane);
-		mainControlsPanel.add(jsp, "cell 0 1,grow");		
+		JScrollPane scrollPaneForList = new JScrollPane(messagePane);
+		mainControlsPanel.add(scrollPaneForList, "cell 0 1,grow");		
 		
 		arrayParametersPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
@@ -569,7 +572,78 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);	
 		
 	}
+	
 
+	class tableModel extends AbstractTableModel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3580573026741275615L;
+		private String[] columnNames = {"First Name",
+                "Last Name",
+                "Sport",
+                "# of Years",
+                "Vegetarian"};
+		Object[][] data = {
+			    {"Kathy", "Smith",
+			     "Snowboarding", new Integer(5), new Boolean(false)},
+			    {"John", "Doe",
+			     "Rowing", new Integer(3), new Boolean(true)},
+			    {"Sue", "Black",
+			     "Knitting", new Integer(2), new Boolean(false)},
+			    {"Jane", "White",
+			     "Speed reading", new Integer(20), new Boolean(true)},
+			    {"Joe", "Brown",
+			     "Pool", new Integer(10), new Boolean(false)}
+			};
+	
+	    public int getColumnCount() {
+	        return columnNames.length;
+	    }
+	
+	    public int getRowCount() {
+	        return data.length;
+	    }
+	
+	    public String getColumnName(int col) {
+	        return columnNames[col];
+	    }
+	
+	    public Object getValueAt(int row, int col) {
+	        return data[row][col];
+	    }
+	
+	    public Class getColumnClass(int c) {
+	        return getValueAt(0, c).getClass();
+	    }
+	
+	    /*
+	     * Don't need to implement this method unless your table's
+	     * editable.
+	     */
+	    public boolean isCellEditable(int row, int col) {
+	        //Note that the data/cell address is constant,
+	        //no matter where the cell appears onscreen.
+	        if (col < 2) {
+	            return false;
+	        } else {
+	            return true;
+	        }
+	    }
+	    /*
+	     * Don't need to implement this method unless your table's
+	     * data can change.
+	     */
+	    public void setValueAt(Object value, int row, int col) {
+	        data[row][col] = value;
+	        fireTableCellUpdated(row, col);
+	    }
+	}
+
+	private void refreshMaskDetailsTable() {
+		
+	}
+	
 	private void refreshMasksList() {
 		// ------------- Outer Mask --------------------
 		int numberOfSLLOuters = mask.SLL_outers.size(); 
@@ -841,7 +915,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				startStopButton.setText("Start Optimization");
 				String tempMessage = messagePane.getText();
 				tempMessage += "<br>Iterion has been completed";
-				System.out.println(tempMessage);
 				messagePane.setText(tempMessage);
 			}
 				
