@@ -374,9 +374,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnAddMask.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
-				dialogBoxForAddingMask.setVisible(true);
-				refreshMasksList();
+//				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
+//				dialogBoxForAddingMask.setVisible(true);
+//				refreshMasksList();
+				
 			}
 		});
 		masksPanel.add(btnAddMask, "cell 0 0");
@@ -532,46 +533,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		ae.execute();
 	}
 	
-	private void createTemporaryMasks() {
-
-		mask.addNewSLL_outer("SLL_01", 0, 20, 20, -24, 1);
-		mask.addNewSLL_outer("SLL_02", 20, 30, 10, -40, 1);
-		mask.addNewSLL_outer("SLL_03", 30, 79, 49, -20, 1);
-		mask.addNewSLL_outer("SLL_04", 79, 80, 5, -60, 1);
-		mask.addNewSLL_outer("SLL_05", 80, 100, 20, 0, 1);
-		mask.addNewSLL_outer("SLL_06", 100, 110, 10, -20, 1);
-		mask.addNewSLL_outer("SLL_07", 110, 115, 15, -40, 1);
-		mask.addNewSLL_outer("SLL_08", 115, 180, 65, -24, 1);
-						
-//		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
-//		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
-//		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
-//		mask.addNewSLL_inner("SLL_01", 70, 150, 3, -95, 1);
-//		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
-//		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);
-
-//		mask.addNewSLL_outer("SLL_01", 0, 60, 60, -25, 1);
-//		mask.addNewSLL_outer("SLL_01", 60, 65, 20, -70, 1);
-//		mask.addNewSLL_outer("SLL_01", 65, 80, 50, -25, 1);
-//		mask.addNewSLL_outer("SLL_01", 80, 100, 20, 0, 1);
-//		mask.addNewSLL_outer("SLL_01", 100, 110, 10, -25, 1);
-//		mask.addNewSLL_outer("SLL_01", 110, 115, 5, -25, 1);
-//		mask.addNewSLL_outer("SLL_01", 115, 180, 65, -25, 1);		
-//
-//		mask.addNewSLL_inner("SLL_01", 0, 86, 3, -95, 1);
-//		mask.addNewSLL_inner("SLL_01", 86, 94, 20, -5, 1);
-//		mask.addNewSLL_inner("SLL_01", 94, 180, 3, -95, 1);
-		
-		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
-		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
-		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
-		mask.addNewSLL_inner("SLL_01", 70, 86, 3, -95, 1);
-		mask.addNewSLL_inner("SLL_01", 86, 94, 3, -5, 1);
-		mask.addNewSLL_inner("SLL_01", 94, 150, 3, -95, 1);
-		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
-		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);	
-		
-	}
 	
 
 	class tableModel extends AbstractTableModel {
@@ -579,30 +540,19 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		 * 
 		 */
 		private static final long serialVersionUID = -3580573026741275615L;
-		private String[] columnNames = {"First Name",
-                "Last Name",
-                "Sport",
-                "# of Years",
-                "Vegetarian"};
-		Object[][] data = {
-			    {"Kathy", "Smith",
-			     "Snowboarding", new Integer(5), new Boolean(false)},
-			    {"John", "Doe",
-			     "Rowing", new Integer(3), new Boolean(true)},
-			    {"Sue", "Black",
-			     "Knitting", new Integer(2), new Boolean(false)},
-			    {"Jane", "White",
-			     "Speed reading", new Integer(20), new Boolean(true)},
-			    {"Joe", "Brown",
-			     "Pool", new Integer(10), new Boolean(false)}
-			};
+		private String[] columnNames = {"Angle (Degree)",
+                "Level (dB)",
+                "Weight"};
 	
 	    public int getColumnCount() {
 	        return columnNames.length;
 	    }
 	
 	    public int getRowCount() {
-	        return data.length;
+			Mask.SidelobeLevel SLL_outer;
+			SLL_outer = mask.SLL_outers.get(0);
+			return SLL_outer.angles.length;
+	        //return data.length;
 	    }
 	
 	    public String getColumnName(int col) {
@@ -610,10 +560,16 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	    }
 	
 	    public Object getValueAt(int row, int col) {
-	        return data[row][col];
+			Mask.SidelobeLevel SLL_outer;
+			SLL_outer = mask.SLL_outers.get(0);
+			double returnedValue = 0;
+			if(col == 0) returnedValue = SLL_outer.angles[row];
+			if(col == 1) returnedValue = SLL_outer.levels[row];
+			if(col == 2) returnedValue = SLL_outer.weights[row];
+			return returnedValue;
 	    }
 	
-	    public Class getColumnClass(int c) {
+	    public Class<?> getColumnClass(int c) {
 	        return getValueAt(0, c).getClass();
 	    }
 	
@@ -624,7 +580,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	    public boolean isCellEditable(int row, int col) {
 	        //Note that the data/cell address is constant,
 	        //no matter where the cell appears onscreen.
-	        if (col < 2) {
+	        if (col < 1) {
 	            return false;
 	        } else {
 	            return true;
@@ -635,7 +591,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	     * data can change.
 	     */
 	    public void setValueAt(Object value, int row, int col) {
-	        data[row][col] = value;
+			Mask.SidelobeLevel SLL_outer;
+			SLL_outer = mask.SLL_outers.get(0);
+
+			if(col == 0) SLL_outer.angles[row] = (double) value;
+			if(col == 1) SLL_outer.levels[row] = (double) value;
+			if(col == 2) SLL_outer.weights[row] = (double) value;
+	    	
 	        fireTableCellUpdated(row, col);
 	    }
 	}
@@ -921,5 +883,46 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			drawPlot();
 			
 		}
+	}
+	
+	private void createTemporaryMasks() {
+		
+		mask.addNewSLL_outer("SLL_01", 0, 20, 20, -24, 1);
+		mask.addNewSLL_outer("SLL_02", 20, 30, 10, -40, 1);
+		mask.addNewSLL_outer("SLL_03", 30, 79, 49, -20, 1);
+		mask.addNewSLL_outer("SLL_04", 79, 80, 5, -60, 1);
+		mask.addNewSLL_outer("SLL_05", 80, 100, 20, 0, 1);
+		mask.addNewSLL_outer("SLL_06", 100, 110, 10, -20, 1);
+		mask.addNewSLL_outer("SLL_07", 110, 115, 15, -40, 1);
+		mask.addNewSLL_outer("SLL_08", 115, 180, 65, -24, 1);
+		
+//		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
+//		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
+//		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
+//		mask.addNewSLL_inner("SLL_01", 70, 150, 3, -95, 1);
+//		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
+//		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);
+		
+//		mask.addNewSLL_outer("SLL_01", 0, 60, 60, -25, 1);
+//		mask.addNewSLL_outer("SLL_01", 60, 65, 20, -70, 1);
+//		mask.addNewSLL_outer("SLL_01", 65, 80, 50, -25, 1);
+//		mask.addNewSLL_outer("SLL_01", 80, 100, 20, 0, 1);
+//		mask.addNewSLL_outer("SLL_01", 100, 110, 10, -25, 1);
+//		mask.addNewSLL_outer("SLL_01", 110, 115, 5, -25, 1);
+//		mask.addNewSLL_outer("SLL_01", 115, 180, 65, -25, 1);		
+//
+//		mask.addNewSLL_inner("SLL_01", 0, 86, 3, -95, 1);
+//		mask.addNewSLL_inner("SLL_01", 86, 94, 20, -5, 1);
+//		mask.addNewSLL_inner("SLL_01", 94, 180, 3, -95, 1);
+		
+		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
+		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
+		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
+		mask.addNewSLL_inner("SLL_01", 70, 86, 3, -95, 1);
+		mask.addNewSLL_inner("SLL_01", 86, 94, 3, -5, 1);
+		mask.addNewSLL_inner("SLL_01", 94, 150, 3, -95, 1);
+		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
+		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);	
+		
 	}
 }
