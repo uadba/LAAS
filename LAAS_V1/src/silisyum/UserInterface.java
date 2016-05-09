@@ -77,9 +77,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private int problemDimension;
     private double[] L = {0, 0, -0.05}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.05}; // initial values of amplitude, phase, and position maximum limits    
-    private boolean amplitudeIsUsed = false;
+    private boolean amplitudeIsUsed = true;
     private boolean phaseIsUsed = true;
-    private boolean positionIsUsed = true;
+    private boolean positionIsUsed = false;
     private Mask mask;
     private int patterGraphResolution = 721; //721;
     private int populationNumber = 70;
@@ -379,9 +379,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnAddMask.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-//				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
-//				dialogBoxForAddingMask.setVisible(true);
-//				refreshMasksList();
+				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
+				dialogBoxForAddingMask.setVisible(true);
+				refreshMasksList();
 				
 			}
 		});
@@ -901,7 +901,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		mask.addNewSLL_outer("SLL_05", 80, 100, 20, 0, 1);
 		mask.addNewSLL_outer("SLL_06", 100, 110, 10, -20, 1);
 		mask.addNewSLL_outer("SLL_07", 110, 115, 15, -40, 1);
-		mask.addNewSLL_outer("SLL_08", 115, 180, 65, -24, 1);
+//		mask.addNewSLL_outer("SLL_08", 115, 180, 65, -24, 1);
 		
 //		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
 //		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
