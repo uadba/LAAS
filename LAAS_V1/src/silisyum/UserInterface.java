@@ -64,7 +64,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private XYSeries maskOuter;
 	private XYSeries maskInner;
 	private XYSeries convergenceSeries;
-	private boolean updateOrAdd = false; //false:add and true:update
+	private boolean updateOrAddForPattern = false; //false:add and true:update
+	private boolean updateOrAddForOuterMask = false; //false:add and true:update
+	private boolean updateOrAddForInnerMask = false; //false:add and true:update
 	
 	private ChartPanel chartPanelPattern;
 	private ChartPanel chartPanelConvergence;
@@ -310,7 +312,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							maskInner.clear();
 							convergenceSeries.clear();
 							ae.newStart = false;
-							updateOrAdd = false; //false:add and true:update
+							updateOrAddForPattern = false; //false:add and true:update
+							updateOrAddForOuterMask = false;
+							updateOrAddForInnerMask = false;
 							ae.iterationHasNotCompletedYet = true;
 							sendMessageToPane("<font color=#006400><b>Optimization process has been <i>started</i> successfully!</b></font>", true);
 						} else {
@@ -360,7 +364,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		list = new JList<String>(listModel);
 		list.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void mouseReleased(MouseEvent arg0) {
 				TableModel model = (TableModel) table.getModel();
 				model.selectedMask = list.getSelectedIndex();				
 				refreshMaskDetailsTable();
@@ -530,6 +534,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		Cr_textField.setColumns(10);
 		differentialEvolutionPanel.add(Cr_textField, "cell 1 3,growx");
 		
+		drawOuterMask();
+		
 		ae = new AlgorithmExecuter();
 		ae.execute();
 	}
@@ -601,6 +607,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			if(col == 2) SLL_outer.weights[row] = (double) value;
 	    	
 	        fireTableCellUpdated(row, col);
+	        
+	        drawOuterMask();
 	    }
 	}
 
@@ -619,25 +627,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		for (int n = 0; n < numberOfSLLOuters; n++) {
 			SLL_outer = mask.SLL_outers.get(n);
 			listModel.addElement(SLL_outer.name);
-//			if(updateOrAdd) //false:add and true:update
-//			{
-//				for (int i = 0; i < SLL_outer.angles.length; i++) {
-//					if(i==0)
-//						maskOuter.update(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
-//					else
-//						maskOuter.update(SLL_outer.angles[i], SLL_outer.levels[i]);	
-//				}
-//			}
-//			else
-//			{
-//				for (int i = 0; i < SLL_outer.angles.length; i++) {
-//					if(i==0)
-//						maskOuter.add(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
-//					else
-//						maskOuter.add(SLL_outer.angles[i], SLL_outer.levels[i]);		
-//				}
-//			}		
-		}		
+		}
 	}
 	
 	private void sendMessageToPane(String additionalMessage, boolean deletePreviousMessages) {
@@ -755,7 +745,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		for(int x=0; x<antennaArrayForPresentation.numberofSamplePoints; x++)
 		{				
-			if(updateOrAdd) //false:add and true:update
+			if(updateOrAddForPattern) //false:add and true:update
 			{
 				seriler.update(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
 			}
@@ -769,13 +759,23 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		iterationText.setText(Integer.toString(differentialEvolution.iterationIndex));
 		costText.setText(Double.toString(differentialEvolution.fitnessOfBestMember));		
 
+		updateOrAddForPattern = true;	
+
+		drawOuterMask();
+		
+		drawInnerMask();
+		
+
+	}
+
+	private void drawOuterMask() {
 		// ------------- Outer Mask --------------------
 		int numberOfSLLOuters = mask.SLL_outers.size(); 
 		Mask.SidelobeLevel SLL_outer;
 		
 		for (int n = 0; n < numberOfSLLOuters; n++) {
 			SLL_outer = mask.SLL_outers.get(n);
-			if(updateOrAdd) //false:add and true:update
+			if(updateOrAddForOuterMask) //false:add and true:update
 			{
 				for (int i = 0; i < SLL_outer.angles.length; i++) {
 					if(i==0)
@@ -795,13 +795,17 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}		
 		}
 		
+		updateOrAddForOuterMask = true;
+	}
+
+	private void drawInnerMask() {
 		// ------------- Inner Mask --------------------
 		int numberOfSLLInners = mask.SLL_inners.size(); 
 		Mask.SidelobeLevel SLL_inner;
 		
 		for (int n = 0; n < numberOfSLLInners; n++) {
 			SLL_inner = mask.SLL_inners.get(n);
-			if(updateOrAdd) //false:add and true:update
+			if(updateOrAddForInnerMask) //false:add and true:update
 			{
 				for (int i = 0; i < SLL_inner.angles.length; i++) {
 					if(i==0)
@@ -821,10 +825,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}		
 		}
 		
-		updateOrAdd = true;	
-
+		updateOrAddForInnerMask = true;
 	}
-
+	
 	@Override
 	public void chartMouseClicked(ChartMouseEvent arg0) {
 		
