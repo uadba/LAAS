@@ -361,7 +361,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				//String selectedElement = list.getSelectedValue();
+				TableModel model = (TableModel) table.getModel();
+				model.selectedMask = list.getSelectedIndex();				
 				refreshMaskDetailsTable();
 			}
 		});
@@ -382,7 +383,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		});
 		masksPanel.add(btnAddMask, "cell 0 0");
 		
-		table = new JTable(new tableModel());
+		table = new JTable(new TableModel());
 		JScrollPane scrollPaneForTable = new JScrollPane(table);
 		masksPanel.add(scrollPaneForTable, "cell 1 1,grow");
 		//table.setFillsViewportHeight(true);
@@ -535,7 +536,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	
 
-	class tableModel extends AbstractTableModel {
+	class TableModel extends AbstractTableModel {
 		/**
 		 * 
 		 */
@@ -543,14 +544,16 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		private String[] columnNames = {"Angle (Degree)",
                 "Level (dB)",
                 "Weight"};
+		private int selectedMask = -1;
 	
 	    public int getColumnCount() {
 	        return columnNames.length;
 	    }
 	
 	    public int getRowCount() {
-			Mask.SidelobeLevel SLL_outer;
-			SLL_outer = mask.SLL_outers.get(0);
+	    	if(selectedMask == -1) return 0;
+	    	Mask.SidelobeLevel SLL_outer;
+			SLL_outer = mask.SLL_outers.get(selectedMask);
 			return SLL_outer.angles.length;
 	    }
 	
@@ -560,7 +563,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	    public Object getValueAt(int row, int col) {
 			Mask.SidelobeLevel SLL_outer;
-			SLL_outer = mask.SLL_outers.get(0);
+			SLL_outer = mask.SLL_outers.get(selectedMask);
 			double returnedValue = 0;
 			if(col == 0) returnedValue = SLL_outer.angles[row];
 			if(col == 1) returnedValue = SLL_outer.levels[row];
@@ -591,9 +594,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	     */
 	    public void setValueAt(Object value, int row, int col) {
 			Mask.SidelobeLevel SLL_outer;
-			SLL_outer = mask.SLL_outers.get(0);
+			SLL_outer = mask.SLL_outers.get(selectedMask);
 
-			if(col == 0) SLL_outer.angles[row] = (double) value;
+			//if(col == 0) SLL_outer.angles[row] = (double) value;
 			if(col == 1) SLL_outer.levels[row] = (double) value;
 			if(col == 2) SLL_outer.weights[row] = (double) value;
 	    	
@@ -602,7 +605,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	}
 
 	private void refreshMaskDetailsTable() {
-		
+
+		TableModel model = (TableModel) table.getModel();
+		model.fireTableDataChanged();		
 	}
 	
 	private void refreshMasksList() {
