@@ -181,7 +181,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		createTemporaryMasks();
 		
 		seriler = new XYSeries("Pattern");
-		maskOuter = new XYSeries("Outer Mask");
+		maskOuter = new XYSeries("Outer Mask", false, false);
 		maskInner = new XYSeries("Inner Mask");
 		convergenceSeries = new XYSeries("Convergence Curve");
 		XYSeriesCollection veri_seti = new XYSeriesCollection(seriler);
@@ -773,6 +773,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		int numberOfSLLOuters = mask.SLL_outers.size(); 
 		Mask.SidelobeLevel SLL_outer;
 		
+		//maskOuter//
 		for (int n = 0; n < numberOfSLLOuters; n++) {
 			SLL_outer = mask.SLL_outers.get(n);
 			if(false /*updateOrAddForOuterMask*/) //false:add and true:update
