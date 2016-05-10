@@ -120,8 +120,12 @@ public class DialogBoxForAddingMask extends JDialog {
 				Add_btn.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						// I was HERE!!!!!!!
-						mask.addNewSLL_outer(maskName_textField.getText(), 115, 180, 65, -24, 1);
+						double starAngle = Double.parseDouble(starAngle_textField.getText());
+						double stopAngle = Double.parseDouble(stopAngle_textField.getText());
+						int numberOfPoints = Integer.parseInt(numberOfPoints_textField.getText());
+						double level = Double.parseDouble(level_textField.getText());
+						double weight = Double.parseDouble(weight_textField.getText());
+						mask.addNewSLL_outer(maskName_textField.getText(), starAngle, stopAngle, numberOfPoints, level, weight);
 						setVisible(false);
 					}
 				});

@@ -775,8 +775,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		for (int n = 0; n < numberOfSLLOuters; n++) {
 			SLL_outer = mask.SLL_outers.get(n);
-			if(updateOrAddForOuterMask) //false:add and true:update
+			if(false /*updateOrAddForOuterMask*/) //false:add and true:update
 			{
+				
+				// allowDuplicateXValues ?
+				
+				
 				for (int i = 0; i < SLL_outer.angles.length; i++) {
 					if(i==0)
 						maskOuter.update(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
@@ -788,9 +792,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			{
 				for (int i = 0; i < SLL_outer.angles.length; i++) {
 					if(i==0)
-						maskOuter.add(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
+						maskOuter.addOrUpdate(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
 					else
-						maskOuter.add(SLL_outer.angles[i], SLL_outer.levels[i]);		
+						maskOuter.addOrUpdate(SLL_outer.angles[i], SLL_outer.levels[i]);		
 				}			
 			}		
 		}
