@@ -64,9 +64,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private XYSeries maskOuter;
 	private XYSeries maskInner;
 	private XYSeries convergenceSeries;
-	private boolean updateOrAddForPattern = false; //false:add and true:update
-	private boolean updateOrAddForOuterMask = false; //false:add and true:update
-	private boolean updateOrAddForInnerMask = false; //false:add and true:update
 	
 	private ChartPanel chartPanelPattern;
 	private ChartPanel chartPanelConvergence;
@@ -180,9 +177,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		createTemporaryMasks();
 		
-		seriler = new XYSeries("Pattern");
+		seriler = new XYSeries("Pattern", false, false);
 		maskOuter = new XYSeries("Outer Mask", false, false);
-		maskInner = new XYSeries("Inner Mask");
+		maskInner = new XYSeries("Inner Mask", false, false);
 		convergenceSeries = new XYSeries("Convergence Curve");
 		XYSeriesCollection veri_seti = new XYSeriesCollection(seriler);
 		XYSeriesCollection veri_seti2 = new XYSeriesCollection(convergenceSeries);
@@ -312,9 +309,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							maskInner.clear();
 							convergenceSeries.clear();
 							ae.newStart = false;
-							updateOrAddForPattern = false; //false:add and true:update
-							updateOrAddForOuterMask = false;
-							updateOrAddForInnerMask = false;
 							ae.iterationHasNotCompletedYet = true;
 							sendMessageToPane("<font color=#006400><b>Optimization process has been <i>started</i> successfully!</b></font>", true);
 						} else {
@@ -323,6 +317,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						ae.keepIterating = true;
 						startStopButton.setText("Stop Optimization");
 						terminateOptimizationButton.setVisible(false);
+						drawOuterMask();
 					} else {
 						ae.keepIterating = false;
 						startStopButton.setText("Continue Optimization");
@@ -745,23 +740,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		for(int x=0; x<antennaArrayForPresentation.numberofSamplePoints; x++)
 		{				
-			if(updateOrAddForPattern) //false:add and true:update
-			{
-				seriler.update(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
-			}
-			else
-			{
-				seriler.add(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
-			}
+			seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
 		}
 		
 		convergenceSeries.add(differentialEvolution.iterationIndex, differentialEvolution.fitnessOfBestMember);
 		iterationText.setText(Integer.toString(differentialEvolution.iterationIndex));
 		costText.setText(Double.toString(differentialEvolution.fitnessOfBestMember));		
 
-		updateOrAddForPattern = true;	
-
-		drawOuterMask();
+		//drawOuterMask();
 		
 		drawInnerMask();
 		
@@ -773,64 +759,33 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		int numberOfSLLOuters = mask.SLL_outers.size(); 
 		Mask.SidelobeLevel SLL_outer;
 		
-		//maskOuter//
+		maskOuter.clear();
 		for (int n = 0; n < numberOfSLLOuters; n++) {
 			SLL_outer = mask.SLL_outers.get(n);
-			if(false /*updateOrAddForOuterMask*/) //false:add and true:update
-			{
-				
-				// allowDuplicateXValues ?
-				
-				
-				for (int i = 0; i < SLL_outer.angles.length; i++) {
-					if(i==0)
-						maskOuter.update(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
-					else
-						maskOuter.update(SLL_outer.angles[i], SLL_outer.levels[i]);	
-				}
-			}
-			else
-			{
-				for (int i = 0; i < SLL_outer.angles.length; i++) {
-					if(i==0)
-						maskOuter.addOrUpdate(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
-					else
-						maskOuter.addOrUpdate(SLL_outer.angles[i], SLL_outer.levels[i]);		
-				}			
-			}		
+			for (int i = 0; i < SLL_outer.angles.length; i++) {
+				if(i==0)
+					maskOuter.addOrUpdate(SLL_outer.angles[i]+0.0000000001, SLL_outer.levels[i]);
+				else
+					maskOuter.addOrUpdate(SLL_outer.angles[i], SLL_outer.levels[i]);		
+			}			
 		}
-		
-		updateOrAddForOuterMask = true;
 	}
 
 	private void drawInnerMask() {
 		// ------------- Inner Mask --------------------
 		int numberOfSLLInners = mask.SLL_inners.size(); 
 		Mask.SidelobeLevel SLL_inner;
-		
+
+		maskInner.clear();
 		for (int n = 0; n < numberOfSLLInners; n++) {
 			SLL_inner = mask.SLL_inners.get(n);
-			if(updateOrAddForInnerMask) //false:add and true:update
-			{
-				for (int i = 0; i < SLL_inner.angles.length; i++) {
-					if(i==0)
-						maskInner.update(SLL_inner.angles[i]+0.0000000001, SLL_inner.levels[i]);
-					else
-						maskInner.update(SLL_inner.angles[i], SLL_inner.levels[i]);	
-				}
-			}
-			else
-			{
-				for (int i = 0; i < SLL_inner.angles.length; i++) {
-					if(i==0)
-						maskInner.add(SLL_inner.angles[i]+0.0000000001, SLL_inner.levels[i]);
-					else
-						maskInner.add(SLL_inner.angles[i], SLL_inner.levels[i]);		
-				}			
-			}		
+			for (int i = 0; i < SLL_inner.angles.length; i++) {
+				if(i==0)
+					maskInner.addOrUpdate(SLL_inner.angles[i]+0.0000000001, SLL_inner.levels[i]);
+				else
+					maskInner.addOrUpdate(SLL_inner.angles[i], SLL_inner.levels[i]);		
+			}			
 		}
-		
-		updateOrAddForInnerMask = true;
 	}
 	
 	@Override
@@ -899,14 +854,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void createTemporaryMasks() {
 		
-		mask.addNewSLL_outer("SLL_01", 0, 20, 20, -24, 1);
-		mask.addNewSLL_outer("SLL_02", 20, 30, 10, -40, 1);
-		mask.addNewSLL_outer("SLL_03", 30, 79, 49, -20, 1);
-		mask.addNewSLL_outer("SLL_04", 79, 80, 5, -60, 1);
-		mask.addNewSLL_outer("SLL_05", 80, 100, 20, 0, 1);
-		mask.addNewSLL_outer("SLL_06", 100, 110, 10, -20, 1);
-		mask.addNewSLL_outer("SLL_07", 110, 115, 15, -40, 1);
-//		mask.addNewSLL_outer("SLL_08", 115, 180, 65, -24, 1);
+//		mask.addNewSLL_outer("SLL_01", 0, 20, 20, -24, 1);
+//		mask.addNewSLL_outer("SLL_02", 20, 30, 10, -40, 1);
+////		mask.addNewSLL_outer("SLL_03", 30, 79, 49, -20, 1);
+//		mask.addNewSLL_outer("SLL_04", 79, 80, 5, -60, 1);
+//		mask.addNewSLL_outer("SLL_05", 80, 100, 20, 0, 1);
+//		mask.addNewSLL_outer("SLL_06", 100, 110, 10, -20, 1);
+//		mask.addNewSLL_outer("SLL_07", 110, 115, 15, -40, 1);
+//		mask.addNewSLL_outer("SLL_08", 115, 180, 65, -24, 1);		
 		
 //		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
 //		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);

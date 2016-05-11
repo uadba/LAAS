@@ -52,7 +52,7 @@ public class DialogBoxForAddingMask extends JDialog {
 		}
 		{
 			maskName_textField = new JTextField();
-			maskName_textField.setText("SLL_08_Test");
+			maskName_textField.setText("Test_SLL_03");
 			contentPanel.add(maskName_textField, "cell 1 0,growx");
 			maskName_textField.setColumns(10);
 		}
@@ -63,7 +63,7 @@ public class DialogBoxForAddingMask extends JDialog {
 		}
 		{
 			starAngle_textField = new JTextField();
-			starAngle_textField.setText("115");
+			starAngle_textField.setText("30");
 			starAngle_textField.setColumns(10);
 			contentPanel.add(starAngle_textField, "cell 1 1,growx");
 		}
@@ -74,7 +74,7 @@ public class DialogBoxForAddingMask extends JDialog {
 		}
 		{
 			stopAngle_textField = new JTextField();
-			stopAngle_textField.setText("180");
+			stopAngle_textField.setText("79");
 			stopAngle_textField.setColumns(10);
 			contentPanel.add(stopAngle_textField, "cell 1 2,growx");
 		}
@@ -85,7 +85,7 @@ public class DialogBoxForAddingMask extends JDialog {
 		}
 		{
 			numberOfPoints_textField = new JTextField();
-			numberOfPoints_textField.setText("65");
+			numberOfPoints_textField.setText("49");
 			numberOfPoints_textField.setColumns(10);
 			contentPanel.add(numberOfPoints_textField, "cell 1 3,growx");
 		}
@@ -96,7 +96,7 @@ public class DialogBoxForAddingMask extends JDialog {
 		}
 		{
 			level_textField = new JTextField();
-			level_textField.setText("-24");
+			level_textField.setText("-20");
 			level_textField.setColumns(10);
 			contentPanel.add(level_textField, "cell 1 4,growx");
 		}

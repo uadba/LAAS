@@ -1,6 +1,7 @@
 package silisyum;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Mask {
@@ -10,21 +11,27 @@ public class Mask {
 	public void addNewSLL_outer(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level, double _weight)
 	{
 		SLL_outers.add(new SidelobeLevel(_name, _startAngle, _stopAngle, _numberOfPoints, _level, _weight));
+		Collections.sort(SLL_outers);
 	}
 	
 	public void addNewSLL_inner(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level, double _weight)
 	{
 		SLL_inners.add(new SidelobeLevel(_name, _startAngle, _stopAngle, _numberOfPoints, _level, _weight));
+		Collections.sort(SLL_inners);
 	}
 	
-	public class SidelobeLevel {
+	public class SidelobeLevel implements Comparable<SidelobeLevel>{
 		String name;
+		Double startAngle;
+		double stopAngle;
 		double[] angles;
 		double[] levels;
 		double[] weights;
 		
 		public SidelobeLevel(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level, double _weight) {
 			name = _name;
+			startAngle = Double.valueOf(_startAngle);
+			stopAngle = _stopAngle;
 			angles = new double[_numberOfPoints];
 			levels = new double[_numberOfPoints];
 			weights = new double[_numberOfPoints];
@@ -42,6 +49,11 @@ public class Mask {
 			angles[_numberOfPoints-1] = _stopAngle;			
 			levels[_numberOfPoints-1] = _level;
 			weights[_numberOfPoints-1] = _weight;
+		}
+
+		@Override
+		public int compareTo(SidelobeLevel o) {			
+			return startAngle.compareTo(o.startAngle);
 		}
 	}
 }
