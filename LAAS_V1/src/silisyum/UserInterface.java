@@ -382,7 +382,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
 				dialogBoxForAddingMask.setVisible(true);
 				refreshMasksList();
-				
+				drawOuterMask();
 			}
 		});
 		masksPanel.add(btnAddMask, "cell 0 0");
