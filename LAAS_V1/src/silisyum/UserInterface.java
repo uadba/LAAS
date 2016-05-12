@@ -882,14 +882,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 //		mask.addNewSLL_inner("SLL_01", 86, 94, 20, -5, 1);
 //		mask.addNewSLL_inner("SLL_01", 94, 180, 3, -95, 1);
 		
-		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
-		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
-		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
-		mask.addNewSLL_inner("SLL_01", 70, 86, 3, -95, 1);
-		mask.addNewSLL_inner("SLL_01", 86, 94, 3, -5, 1);
-		mask.addNewSLL_inner("SLL_01", 94, 150, 3, -95, 1);
-		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
-		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);	
+//		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
+//		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
+//		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
+//		mask.addNewSLL_inner("SLL_01", 70, 86, 3, -95, 1);
+//		mask.addNewSLL_inner("SLL_01", 86, 94, 3, -5, 1);
+//		mask.addNewSLL_inner("SLL_01", 94, 150, 3, -95, 1);
+//		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
+//		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);	
 		
 	}
 }
