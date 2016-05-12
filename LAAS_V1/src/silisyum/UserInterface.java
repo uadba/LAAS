@@ -50,6 +50,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JTextPane;
 import javax.swing.JTable;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import java.awt.FlowLayout;
 import javax.swing.border.TitledBorder;
@@ -152,6 +153,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JButton btnEditOuterMask;
     private JLabel lblMaskNames;
     private JLabel lblSelectedMaskValues;
+	private int selectedMask = -1;
 
 	/**
 	 * Launch the application.
@@ -360,15 +362,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		outerMasksPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Outer Masks", null, outerMasksPanel, null);
-		outerMasksPanel.setLayout(new MigLayout("", "[180px][grow]", "[][][grow]"));
+		outerMasksPanel.setLayout(new MigLayout("", "[180px,grow][grow]", "[][][grow]"));
 		
 		listModel = new DefaultListModel<String>();
 		list = new JList<String>(listModel);
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				TableModel model = (TableModel) table.getModel();
-				model.selectedMask = list.getSelectedIndex();				
+				selectedMask = list.getSelectedIndex();				
 				refreshMaskDetailsTable();
 			}
 		});
@@ -386,6 +387,19 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		panel.add(btnEditOuterMask);
 		
 		btnDeleteOuterMask = new JButton("Delete");
+		btnDeleteOuterMask.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {				
+				if (selectedMask != -1) {
+					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to delete THIS mask?",
+							"Warning", JOptionPane.YES_NO_OPTION);
+					if (dialogResult == JOptionPane.YES_OPTION) {
+						refreshMasksList();
+						drawOuterMask();
+					} 
+				}
+			}
+		});
 		panel.add(btnDeleteOuterMask);
 		btnAddOuterMask.addMouseListener(new MouseAdapter() {
 			@Override
@@ -570,7 +584,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		private String[] columnNames = {"Angle (Degree)",
                 "Level (dB)",
                 "Weight"};
-		private int selectedMask = -1;
 	
 	    public int getColumnCount() {
 	        return columnNames.length;
@@ -648,6 +661,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			SLL_outer = mask.SLL_outers.get(n);
 			listModel.addElement(SLL_outer.name);
 		}
+		
+		selectedMask = list.getSelectedIndex();
 	}
 	
 	private void sendMessageToPane(String additionalMessage, boolean deletePreviousMessages) {
