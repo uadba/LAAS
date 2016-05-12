@@ -153,7 +153,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JButton btnEditOuterMask;
     private JLabel lblMaskNames;
     private JLabel lblSelectedMaskValues;
-	private int selectedMask = -1;
+	private int selectedMaskIndex = -1;
 
 	/**
 	 * Launch the application.
@@ -194,7 +194,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		XYSeriesCollection veri_seti2 = new XYSeriesCollection(convergenceSeries);
 		veri_seti.addSeries(maskOuter);
 		veri_seti.addSeries(maskInner);
-		JFreeChart grafik = ChartFactory.createXYLineChart("Array Pattern", "Angle", "Array Factor (in dB)", veri_seti);
+		JFreeChart grafik = ChartFactory.createXYLineChart("A P", "Angle", "Array Factor (in dB)", veri_seti);
 		JFreeChart grafik2 = ChartFactory.createXYLineChart("Convergence", "Iteration", "Cost", veri_seti2);
 				
 		XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) grafik.getXYPlot().getRenderer();
@@ -369,7 +369,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				selectedMask = list.getSelectedIndex();				
+				selectedMaskIndex = list.getSelectedIndex();				
 				refreshMaskDetailsTable();
 			}
 		});
@@ -390,11 +390,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnDeleteOuterMask.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {				
-				if (selectedMask != -1) {
-					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to delete THIS mask?",
-							"Warning", JOptionPane.YES_NO_OPTION);
+				if (selectedMaskIndex != -1) {
+					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to delete THIS mask?", "Warning", JOptionPane.YES_NO_OPTION);
 					if (dialogResult == JOptionPane.YES_OPTION) {
+						mask.deleteSLL_outer(selectedMaskIndex);
 						refreshMasksList();
+						refreshMaskDetailsTable();
 						drawOuterMask();
 					} 
 				}
@@ -407,6 +408,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
 				dialogBoxForAddingMask.setVisible(true);
 				refreshMasksList();
+				refreshMaskDetailsTable();
 				drawOuterMask();
 			}
 		});
@@ -590,9 +592,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	    }
 	
 	    public int getRowCount() {
-	    	if(selectedMask == -1) return 0;
+	    	if(selectedMaskIndex == -1) return 0;
 	    	Mask.SidelobeLevel SLL_outer;
-			SLL_outer = mask.SLL_outers.get(selectedMask);
+			SLL_outer = mask.SLL_outers.get(selectedMaskIndex);
 			return SLL_outer.angles.length;
 	    }
 	
@@ -602,7 +604,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	    public Object getValueAt(int row, int col) {
 			Mask.SidelobeLevel SLL_outer;
-			SLL_outer = mask.SLL_outers.get(selectedMask);
+			SLL_outer = mask.SLL_outers.get(selectedMaskIndex);
 			double returnedValue = 0;
 			if(col == 0) returnedValue = SLL_outer.angles[row];
 			if(col == 1) returnedValue = SLL_outer.levels[row];
@@ -633,7 +635,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	     */
 	    public void setValueAt(Object value, int row, int col) {
 			Mask.SidelobeLevel SLL_outer;
-			SLL_outer = mask.SLL_outers.get(selectedMask);
+			SLL_outer = mask.SLL_outers.get(selectedMaskIndex);
 
 			//if(col == 0) SLL_outer.angles[row] = (double) value;
 			if(col == 1) SLL_outer.levels[row] = (double) value;
@@ -662,7 +664,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			listModel.addElement(SLL_outer.name);
 		}
 		
-		selectedMask = list.getSelectedIndex();
+		selectedMaskIndex = list.getSelectedIndex();
 	}
 	
 	private void sendMessageToPane(String additionalMessage, boolean deletePreviousMessages) {
@@ -894,8 +896,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void createTemporaryMasks() {
 		
-//		mask.addNewSLL_outer("SLL_01", 0, 20, 20, -24, 1);
-//		mask.addNewSLL_outer("SLL_02", 20, 30, 10, -40, 1);
+		mask.addNewSLL_outer("SLL_01", 0, 20, 20, -24, 1);
+		mask.addNewSLL_outer("SLL_02", 20, 30, 10, -40, 1);
 ////		mask.addNewSLL_outer("SLL_03", 30, 79, 49, -20, 1);
 //		mask.addNewSLL_outer("SLL_04", 79, 80, 5, -60, 1);
 //		mask.addNewSLL_outer("SLL_05", 80, 100, 20, 0, 1);

@@ -14,6 +14,11 @@ public class Mask {
 		Collections.sort(SLL_outers);
 	}
 	
+	public void deleteSLL_outer(int index)
+	{
+		SLL_outers.remove(index);
+	}
+	
 	public void addNewSLL_inner(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level, double _weight)
 	{
 		SLL_inners.add(new SidelobeLevel(_name, _startAngle, _stopAngle, _numberOfPoints, _level, _weight));
