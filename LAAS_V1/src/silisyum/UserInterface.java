@@ -51,6 +51,8 @@ import javax.swing.JTextPane;
 import javax.swing.JTable;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
+import java.awt.FlowLayout;
+import javax.swing.border.TitledBorder;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -139,12 +141,17 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTextPane messagePane;
     List<String> messagesOfErrors = new ArrayList<String>();
     private String messageToUser;
-    private JPanel masksPanel;
+    private JPanel outerMasksPanel;
     private JTable table;
     private JList<String> list;
-    private JButton btnAddMask;
+    private JButton btnAddOuterMask;
     private DialogBoxForAddingMask dialogBoxForAddingMask;
     private DefaultListModel<String> listModel;
+    private JButton btnDeleteOuterMask;
+    private JPanel panel;
+    private JButton btnEditOuterMask;
+    private JLabel lblMaskNames;
+    private JLabel lblSelectedMaskValues;
 
 	/**
 	 * Launch the application.
@@ -351,9 +358,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
 		rightPannel.add(tabbedPaneForSettings, BorderLayout.CENTER);
 		
-		masksPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Masks", null, masksPanel, null);
-		masksPanel.setLayout(new MigLayout("", "[150px][grow]", "[][grow]"));
+		outerMasksPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Outer Masks", null, outerMasksPanel, null);
+		outerMasksPanel.setLayout(new MigLayout("", "[180px][grow]", "[][][grow]"));
 		
 		listModel = new DefaultListModel<String>();
 		list = new JList<String>(listModel);
@@ -365,13 +372,22 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				refreshMaskDetailsTable();
 			}
 		});
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane listScroller = new JScrollPane(list);
-		masksPanel.add(listScroller, "cell 0 1,grow");
-		refreshMasksList();
 		
-		btnAddMask = new JButton("Add Mask");
-		btnAddMask.addMouseListener(new MouseAdapter() {
+		panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "Mask Operations", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		outerMasksPanel.add(panel, "cell 0 0 2 1,grow");
+		
+		btnAddOuterMask = new JButton("Add");
+		panel.add(btnAddOuterMask);
+		
+		btnEditOuterMask = new JButton("Edit");
+		panel.add(btnEditOuterMask);
+		
+		btnDeleteOuterMask = new JButton("Delete");
+		panel.add(btnDeleteOuterMask);
+		btnAddOuterMask.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
@@ -380,11 +396,20 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				drawOuterMask();
 			}
 		});
-		masksPanel.add(btnAddMask, "cell 0 0");
+		
+		lblMaskNames = new JLabel("Mask Names");
+		outerMasksPanel.add(lblMaskNames, "cell 0 1,alignx center");
+		
+		lblSelectedMaskValues = new JLabel("Selected Mask Values");
+		outerMasksPanel.add(lblSelectedMaskValues, "cell 1 1,alignx center");
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane listScroller = new JScrollPane(list);
+		outerMasksPanel.add(listScroller, "cell 0 2,grow");
+		refreshMasksList();
 		
 		table = new JTable(new TableModel());
 		JScrollPane scrollPaneForTable = new JScrollPane(table);
-		masksPanel.add(scrollPaneForTable, "cell 1 1,grow");
+		outerMasksPanel.add(scrollPaneForTable, "cell 1 2,grow");
 		//table.setFillsViewportHeight(true);
 		
 		mainControlsPanel = new JPanel();
