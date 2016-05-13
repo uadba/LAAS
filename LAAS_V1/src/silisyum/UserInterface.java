@@ -148,6 +148,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JList<String> outerList;
     private JButton btnAddOuterMaskSegment;
     private DialogBoxForAddingMaskSegment dialogBoxForAddingMask;
+    private DialogBoxForEditingMaskSegment dialogBoxForEditingMask;
     private DefaultListModel<String> listModel;
     private JButton btnDeleteOuterMaskSegment;
     private JPanel maskOperations;
@@ -183,7 +184,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		setContentPane(contentPane);
 		
 		mask = new Mask();
-		dialogBoxForAddingMask = new DialogBoxForAddingMaskSegment(this, "Add a New Mask", true, mask);
+		dialogBoxForAddingMask = new DialogBoxForAddingMaskSegment(this, "Add a New Outer Mask Segment", true, mask);
+		dialogBoxForEditingMask = new DialogBoxForEditingMaskSegment(this, "Edit a Outer Mask Segment", true, mask);
 		
 		createTemporaryMasks();
 		
@@ -392,14 +394,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (selectedMaskIndex != -1) {
-					int numberOfOuterMaskSegments = mask.outerMaskSegments.size(); 
 					Mask.MaskSegment outerMaskSegment = mask.outerMaskSegments.get(selectedMaskIndex);
 					
-					dialogBoxForAddingMask.setTextFields(outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
+					dialogBoxForEditingMask.setTextFields(outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
 							Double.toString(outerMaskSegment.stopAngle), Integer.toString(outerMaskSegment.numberOfPoints), Double.toString(outerMaskSegment.level), Double.toString(outerMaskSegment.weight));
 					
-					dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());				
-					dialogBoxForAddingMask.setVisible(true);
+					dialogBoxForEditingMask.setLocationRelativeTo(dialogBoxForEditingMask.getParent());				
+					dialogBoxForEditingMask.setVisible(true);
 					refreshMasksList();
 					refreshMaskDetailsTable();
 					drawOuterMask();				

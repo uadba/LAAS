@@ -38,7 +38,6 @@ public class DialogBoxForAddingMaskSegment extends JDialog {
 	 */
 	public DialogBoxForAddingMaskSegment(UserInterface _frame, String _title, boolean _modal, Mask _mask) {
 		super(_frame, _title, _modal);
-		setTitle("Add Outer Mask");
 		mask = _mask;
 		//setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 236);
@@ -47,9 +46,9 @@ public class DialogBoxForAddingMaskSegment extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new MigLayout("", "[][grow]", "[][][][][][]"));
 		{
-			JLabel lblMaskName = new JLabel("Mask Name :");
-			lblMaskName.setHorizontalAlignment(SwingConstants.RIGHT);
-			contentPanel.add(lblMaskName, "cell 0 0,alignx trailing");
+			JLabel lblMaskSegmentName = new JLabel("Mask Segment Name :");
+			lblMaskSegmentName.setHorizontalAlignment(SwingConstants.RIGHT);
+			contentPanel.add(lblMaskSegmentName, "cell 0 0,alignx trailing");
 		}
 		{
 			maskSegmentName_textField = new JTextField();
@@ -117,7 +116,7 @@ public class DialogBoxForAddingMaskSegment extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton Add_btn = new JButton("Add Outer Mask");
+				JButton Add_btn = new JButton("Add Outer Mask Segment");
 				Add_btn.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {

@@ -38,7 +38,6 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 	 */
 	public DialogBoxForEditingMaskSegment(UserInterface _frame, String _title, boolean _modal, Mask _mask) {
 		super(_frame, _title, _modal);
-		setTitle("Add Outer Mask");
 		mask = _mask;
 		//setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 236);
@@ -47,13 +46,13 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new MigLayout("", "[][grow]", "[][][][][][]"));
 		{
-			JLabel lblMaskName = new JLabel("Mask Name :");
-			lblMaskName.setHorizontalAlignment(SwingConstants.RIGHT);
-			contentPanel.add(lblMaskName, "cell 0 0,alignx trailing");
+			JLabel lblMaskSegmentName = new JLabel("Mask Segment Name :");
+			lblMaskSegmentName.setHorizontalAlignment(SwingConstants.RIGHT);
+			contentPanel.add(lblMaskSegmentName, "cell 0 0,alignx trailing");
 		}
 		{
 			maskSegmentName_textField = new JTextField();
-			maskSegmentName_textField.setText("Test_SLL_03");
+			maskSegmentName_textField.setEditable(false);
 			contentPanel.add(maskSegmentName_textField, "cell 1 0,growx");
 			maskSegmentName_textField.setColumns(10);
 		}
@@ -64,7 +63,6 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			starAngle_textField = new JTextField();
-			starAngle_textField.setText("30");
 			starAngle_textField.setColumns(10);
 			contentPanel.add(starAngle_textField, "cell 1 1,growx");
 		}
@@ -75,7 +73,6 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			stopAngle_textField = new JTextField();
-			stopAngle_textField.setText("79");
 			stopAngle_textField.setColumns(10);
 			contentPanel.add(stopAngle_textField, "cell 1 2,growx");
 		}
@@ -86,7 +83,6 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			numberOfPoints_textField = new JTextField();
-			numberOfPoints_textField.setText("49");
 			numberOfPoints_textField.setColumns(10);
 			contentPanel.add(numberOfPoints_textField, "cell 1 3,growx");
 		}
@@ -97,7 +93,6 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			level_textField = new JTextField();
-			level_textField.setText("-20");
 			level_textField.setColumns(10);
 			contentPanel.add(level_textField, "cell 1 4,growx");
 		}
@@ -108,7 +103,6 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			weight_textField = new JTextField();
-			weight_textField.setText("1");
 			weight_textField.setColumns(10);
 			contentPanel.add(weight_textField, "cell 1 5,growx");
 		}
@@ -117,8 +111,8 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton Add_btn = new JButton("Add Outer Mask");
-				Add_btn.addMouseListener(new MouseAdapter() {
+				JButton Update_btn = new JButton("Update This Outer Mask Segment");
+				Update_btn.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						String maskName = maskSegmentName_textField.getText();
@@ -156,7 +150,7 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 						}
 					}
 				});
-				buttonPane.add(Add_btn);
+				buttonPane.add(Update_btn);
 			}
 		}
 	}
