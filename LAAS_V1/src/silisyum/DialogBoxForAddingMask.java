@@ -121,26 +121,37 @@ public class DialogBoxForAddingMask extends JDialog {
 				Add_btn.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						int numberOfSLLOuters = mask.SLL_outers.size(); 
+						String maskName = maskName_textField.getText();
+						double startAngle = Double.parseDouble(starAngle_textField.getText());
+						double stopAngle = Double.parseDouble(stopAngle_textField.getText());
+						int numberOfPoints = Integer.parseInt(numberOfPoints_textField.getText());
+						double level = Double.parseDouble(level_textField.getText());
+						double weight = Double.parseDouble(weight_textField.getText());
+						
+						int numberOfSLLOuters = mask.SLL_outers.size();
 						Mask.SidelobeLevel SLL_outer;
 						
 						boolean itIsANewName = true;
-						for (int n = 0; n < numberOfSLLOuters; n++) {							
+						boolean theyAreNotOverlapped = true;
+						for (int n = 0; n < numberOfSLLOuters; n++) {	
+							//
 							SLL_outer = mask.SLL_outers.get(n);
-							if(maskName_textField.getText().equals(SLL_outer.name)) {
+							if(maskName.equals(SLL_outer.name)) {
 								JOptionPane.showMessageDialog(null, "There is a mask in the list with a same name with which you want to add. You should change the name of the new mask.");
 								itIsANewName = false;
 								break;
 							}
+							
+							//if(!(SLL_outer.stopAngle <= startAngle || SLL_outer.startAngle >= stopAngle)) {
+							if(SLL_outer.stopAngle > startAngle && SLL_outer.startAngle < stopAngle) {
+								JOptionPane.showMessageDialog(null, "There is an overlap between one of the masks in the current list and the mask which you want to add. Please check your start and stop angle values to avoid the overlapping.");
+								theyAreNotOverlapped = false;
+								break;								
+							}
 						}
 						
-						if (itIsANewName) {
-							double starAngle = Double.parseDouble(starAngle_textField.getText());
-							double stopAngle = Double.parseDouble(stopAngle_textField.getText());
-							int numberOfPoints = Integer.parseInt(numberOfPoints_textField.getText());
-							double level = Double.parseDouble(level_textField.getText());
-							double weight = Double.parseDouble(weight_textField.getText());
-							mask.addNewSLL_outer(maskName_textField.getText(), starAngle, stopAngle, numberOfPoints, level, weight);
+						if (itIsANewName && theyAreNotOverlapped) {
+							mask.addNewSLL_outer(maskName, startAngle, stopAngle, numberOfPoints, level, weight);
 							setVisible(false);
 						}
 					}

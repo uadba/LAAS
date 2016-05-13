@@ -667,6 +667,32 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		selectedMaskIndex = list.getSelectedIndex();
 	}
 	
+	private boolean isThereAnyGapInTheMask() {
+		boolean gapExistency = false;
+		
+		int numberOfSLLOuters = mask.SLL_outers.size();
+		Mask.SidelobeLevel SLL_outer;
+		
+		for (int n = 0; n < numberOfSLLOuters - 1; n++) {			
+			SLL_outer = mask.SLL_outers.get(n);
+			// Check the first angle (0)
+			if(n == 0) {
+				if(SLL_outer.startAngle != 0) gapExistency = true;
+			}
+			
+			if(SLL_outer.stopAngle != mask.SLL_outers.get(n+1).startAngle) {
+				gapExistency = true;
+			}			
+		}
+		
+		// Check the last angle (180)
+		if(mask.SLL_outers.get(numberOfSLLOuters - 1).stopAngle != 180) {
+			gapExistency = true;
+		}
+		
+		return gapExistency;
+	}
+	
 	private void sendMessageToPane(String additionalMessage, boolean deletePreviousMessages) {
 		if (deletePreviousMessages)
 			messageToUser = additionalMessage;
