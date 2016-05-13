@@ -15,7 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
 
-public class DialogBoxForAddingMask extends JDialog {
+public class DialogBoxForEditingMaskSegment extends JDialog {
 
 	/**
 	 * 
@@ -36,7 +36,7 @@ public class DialogBoxForAddingMask extends JDialog {
 	 * @param string 
 	 * @param userInterface 
 	 */
-	public DialogBoxForAddingMask(UserInterface _frame, String _title, boolean _modal, Mask _mask) {
+	public DialogBoxForEditingMaskSegment(UserInterface _frame, String _title, boolean _modal, Mask _mask) {
 		super(_frame, _title, _modal);
 		setTitle("Add Outer Mask");
 		mask = _mask;
@@ -163,12 +163,13 @@ public class DialogBoxForAddingMask extends JDialog {
 	
 	public void setTextFields(String _maskSegmentName_textField, String _starAngle_textField, String _stopAngle_textField, String _numberOfPoints_textField, String _level_textField, String _weight_textField) {		
 		
-//		maskSegmentName_textField;
-//		starAngle_textField;
-//		stopAngle_textField;
-//		numberOfPoints_textField;
-//		level_textField;
-//		weight_textField;
+		maskSegmentName_textField.setText(_maskSegmentName_textField);
+		starAngle_textField.setText(_starAngle_textField);
+		stopAngle_textField.setText(_stopAngle_textField);
+		numberOfPoints_textField.setText(_numberOfPoints_textField);
+		level_textField.setText(_level_textField);
+		weight_textField.setText(_weight_textField);
+		
 	}
 
 }

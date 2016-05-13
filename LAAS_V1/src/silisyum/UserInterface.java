@@ -147,7 +147,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTable outerTable;
     private JList<String> outerList;
     private JButton btnAddOuterMaskSegment;
-    private DialogBoxForAddingMask dialogBoxForAddingMask;
+    private DialogBoxForAddingMaskSegment dialogBoxForAddingMask;
     private DefaultListModel<String> listModel;
     private JButton btnDeleteOuterMaskSegment;
     private JPanel maskOperations;
@@ -183,7 +183,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		setContentPane(contentPane);
 		
 		mask = new Mask();
-		dialogBoxForAddingMask = new DialogBoxForAddingMask(this, "Add a New Mask", true, mask);
+		dialogBoxForAddingMask = new DialogBoxForAddingMaskSegment(this, "Add a New Mask", true, mask);
 		
 		createTemporaryMasks();
 		
@@ -395,12 +395,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					int numberOfOuterMaskSegments = mask.outerMaskSegments.size(); 
 					Mask.MaskSegment outerMaskSegment = mask.outerMaskSegments.get(selectedMaskIndex);
 					
-//					dialogBoxForAddingMask .maskName_textField.setText("");
-//					double startAngle = Double.parseDouble(starAngle_textField.getText());
-//					double stopAngle = Double.parseDouble(stopAngle_textField.getText());
-//					int numberOfPoints = Integer.parseInt(numberOfPoints_textField.getText());
-//					double level = Double.parseDouble(level_textField.getText());
-//					double weight = Double.parseDouble(weight_textField.getText());
+					dialogBoxForAddingMask.setTextFields(outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
+							Double.toString(outerMaskSegment.stopAngle), Integer.toString(outerMaskSegment.numberOfPoints), Double.toString(outerMaskSegment.level), Double.toString(outerMaskSegment.weight));
 					
 					dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());				
 					dialogBoxForAddingMask.setVisible(true);

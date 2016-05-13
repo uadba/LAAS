@@ -29,6 +29,9 @@ public class Mask {
 		String name;
 		Double startAngle;
 		double stopAngle;
+		int numberOfPoints;
+		double level;
+		double weight;
 		double[] angles;
 		double[] levels;
 		double[] weights;
@@ -37,6 +40,9 @@ public class Mask {
 			name = _name;
 			startAngle = Double.valueOf(_startAngle);
 			stopAngle = _stopAngle;
+			numberOfPoints = _numberOfPoints;
+			level = _level;
+			weight = _weight;
 			angles = new double[_numberOfPoints];
 			levels = new double[_numberOfPoints];
 			weights = new double[_numberOfPoints];
