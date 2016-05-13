@@ -117,12 +117,12 @@ public class AntennaArray {
 	}
 	
 	public void createLongArrays() {
-		numberOfSLLOuters = mask.SLL_outers.size(); 
+		numberOfSLLOuters = mask.outerMaskSegments.size(); 
 		if (numberOfSLLOuters > 0) {
-			Mask.SidelobeLevel SLL_outer = null;
+			Mask.MaskSegment SLL_outer = null;
 			int numberOfAnglesForOuters = 0;
 			for (int n = 0; n < numberOfSLLOuters; n++) {
-				SLL_outer = mask.SLL_outers.get(n);
+				SLL_outer = mask.outerMaskSegments.get(n);
 				numberOfAnglesForOuters += SLL_outer.angles.length;
 			}
 			angleForOptimization_ForOuters = new double[numberOfAnglesForOuters];
@@ -132,12 +132,12 @@ public class AntennaArray {
 			weights_ForOuters = new double[numberOfAnglesForOuters];
 		}
 		
-		numberOfSLLInners = mask.SLL_inners.size();		
+		numberOfSLLInners = mask.innerMaskSegments.size();		
 		if (numberOfSLLInners > 0) {
-			Mask.SidelobeLevel SLL_inner = null;
+			Mask.MaskSegment SLL_inner = null;
 			int numberOfAnglesForInners = 0;
 			for (int n = 0; n < numberOfSLLInners; n++) {
-				SLL_inner = mask.SLL_inners.get(n);
+				SLL_inner = mask.innerMaskSegments.get(n);
 				numberOfAnglesForInners += SLL_inner.angles.length;
 			}
 			angleForOptimization_ForInners = new double[numberOfAnglesForInners];
@@ -158,12 +158,12 @@ public class AntennaArray {
 		
 		if (numberOfSLLOuters > 0) {
 			// ------------ for Outers ------------
-			int numberOfSLLOuters = mask.SLL_outers.size();
-			Mask.SidelobeLevel SLL_outer = null;
+			int numberOfSLLOuters = mask.outerMaskSegments.size();
+			Mask.MaskSegment SLL_outer = null;
 			i = 0;
 			while (i < angleForOptimization_ForOuters.length) {
 				for (int n = 0; n < numberOfSLLOuters; n++) {
-					SLL_outer = mask.SLL_outers.get(n);
+					SLL_outer = mask.outerMaskSegments.get(n);
 					for (int j = 0; j < SLL_outer.angles.length; j++) {
 						angleForOptimization_ForOuters[i] = SLL_outer.angles[j];
 						levels_ForOuters[i] = SLL_outer.levels[j];
@@ -184,12 +184,12 @@ public class AntennaArray {
 		
 		if (numberOfSLLInners > 0) {
 			// ------------ for Inners ------------
-			int numberOfSLLInners = mask.SLL_inners.size();
-			Mask.SidelobeLevel SLL_inner = null;
+			int numberOfSLLInners = mask.innerMaskSegments.size();
+			Mask.MaskSegment SLL_inner = null;
 			i = 0;
 			while (i < angleForOptimization_ForInners.length) {
 				for (int n = 0; n < numberOfSLLInners; n++) {
-					SLL_inner = mask.SLL_inners.get(n);
+					SLL_inner = mask.innerMaskSegments.get(n);
 					for (int j = 0; j < SLL_inner.angles.length; j++) {
 						angleForOptimization_ForInners[i] = SLL_inner.angles[j];
 						levels_ForInners[i] = SLL_inner.levels[j];

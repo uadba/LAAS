@@ -5,27 +5,27 @@ import java.util.Collections;
 import java.util.List;
 
 public class Mask {
-	List<SidelobeLevel> SLL_outers = new ArrayList<SidelobeLevel>();
-	List<SidelobeLevel> SLL_inners = new ArrayList<SidelobeLevel>();
+	List<MaskSegment> outerMaskSegments = new ArrayList<MaskSegment>();
+	List<MaskSegment> innerMaskSegments = new ArrayList<MaskSegment>();
 
-	public void addNewSLL_outer(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level, double _weight)
+	public void addNewOuterMaskSegments(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level, double _weight)
 	{
-		SLL_outers.add(new SidelobeLevel(_name, _startAngle, _stopAngle, _numberOfPoints, _level, _weight));
-		Collections.sort(SLL_outers);
+		outerMaskSegments.add(new MaskSegment(_name, _startAngle, _stopAngle, _numberOfPoints, _level, _weight));
+		Collections.sort(outerMaskSegments);
 	}
 	
-	public void deleteSLL_outer(int index)
+	public void deleteOuterMaskSegments(int index)
 	{
-		SLL_outers.remove(index);
+		outerMaskSegments.remove(index);
 	}
 	
-	public void addNewSLL_inner(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level, double _weight)
+	public void addNewInnerMaskSegments(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level, double _weight)
 	{
-		SLL_inners.add(new SidelobeLevel(_name, _startAngle, _stopAngle, _numberOfPoints, _level, _weight));
-		Collections.sort(SLL_inners);
+		innerMaskSegments.add(new MaskSegment(_name, _startAngle, _stopAngle, _numberOfPoints, _level, _weight));
+		Collections.sort(innerMaskSegments);
 	}
 	
-	public class SidelobeLevel implements Comparable<SidelobeLevel>{
+	public class MaskSegment implements Comparable<MaskSegment>{
 		String name;
 		Double startAngle;
 		double stopAngle;
@@ -33,7 +33,7 @@ public class Mask {
 		double[] levels;
 		double[] weights;
 		
-		public SidelobeLevel(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level, double _weight) {
+		public MaskSegment(String _name, double _startAngle, double _stopAngle, int _numberOfPoints, double _level, double _weight) {
 			name = _name;
 			startAngle = Double.valueOf(_startAngle);
 			stopAngle = _stopAngle;
@@ -57,7 +57,7 @@ public class Mask {
 		}
 
 		@Override
-		public int compareTo(SidelobeLevel o) {			
+		public int compareTo(MaskSegment o) {			
 			return startAngle.compareTo(o.startAngle);
 		}
 	}

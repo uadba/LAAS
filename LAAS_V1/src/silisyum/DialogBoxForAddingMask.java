@@ -22,7 +22,7 @@ public class DialogBoxForAddingMask extends JDialog {
 	 */
 	private static final long serialVersionUID = -9016107987493756122L;
 	private final JPanel contentPanel = new JPanel();
-	private JTextField maskName_textField;
+	private JTextField maskSegmentName_textField;
 	private Mask mask;
 	private JTextField starAngle_textField;
 	private JTextField stopAngle_textField;
@@ -52,10 +52,10 @@ public class DialogBoxForAddingMask extends JDialog {
 			contentPanel.add(lblMaskName, "cell 0 0,alignx trailing");
 		}
 		{
-			maskName_textField = new JTextField();
-			maskName_textField.setText("Test_SLL_03");
-			contentPanel.add(maskName_textField, "cell 1 0,growx");
-			maskName_textField.setColumns(10);
+			maskSegmentName_textField = new JTextField();
+			maskSegmentName_textField.setText("Test_SLL_03");
+			contentPanel.add(maskSegmentName_textField, "cell 1 0,growx");
+			maskSegmentName_textField.setColumns(10);
 		}
 		{
 			JLabel lblStartAngle = new JLabel("Start Angle :");
@@ -121,21 +121,21 @@ public class DialogBoxForAddingMask extends JDialog {
 				Add_btn.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						String maskName = maskName_textField.getText();
+						String maskName = maskSegmentName_textField.getText();
 						double startAngle = Double.parseDouble(starAngle_textField.getText());
 						double stopAngle = Double.parseDouble(stopAngle_textField.getText());
 						int numberOfPoints = Integer.parseInt(numberOfPoints_textField.getText());
 						double level = Double.parseDouble(level_textField.getText());
 						double weight = Double.parseDouble(weight_textField.getText());
 						
-						int numberOfSLLOuters = mask.SLL_outers.size();
-						Mask.SidelobeLevel SLL_outer;
+						int numberOfSLLOuters = mask.outerMaskSegments.size();
+						Mask.MaskSegment SLL_outer;
 						
 						boolean itIsANewName = true;
 						boolean theyAreNotOverlapped = true;
 						for (int n = 0; n < numberOfSLLOuters; n++) {	
 							//
-							SLL_outer = mask.SLL_outers.get(n);
+							SLL_outer = mask.outerMaskSegments.get(n);
 							if(maskName.equals(SLL_outer.name)) {
 								JOptionPane.showMessageDialog(null, "There is a mask in the list with a same name with which you want to add. You should change the name of the new mask.");
 								itIsANewName = false;
@@ -151,7 +151,7 @@ public class DialogBoxForAddingMask extends JDialog {
 						}
 						
 						if (itIsANewName && theyAreNotOverlapped) {
-							mask.addNewSLL_outer(maskName, startAngle, stopAngle, numberOfPoints, level, weight);
+							mask.addNewOuterMaskSegments(maskName, startAngle, stopAngle, numberOfPoints, level, weight);
 							setVisible(false);
 						}
 					}
@@ -159,6 +159,16 @@ public class DialogBoxForAddingMask extends JDialog {
 				buttonPane.add(Add_btn);
 			}
 		}
+	}
+	
+	public void setTextFields(String _maskSegmentName_textField, String _starAngle_textField, String _stopAngle_textField, String _numberOfPoints_textField, String _level_textField, String _weight_textField) {		
+		
+//		maskSegmentName_textField;
+//		starAngle_textField;
+//		stopAngle_textField;
+//		numberOfPoints_textField;
+//		level_textField;
+//		weight_textField;
 	}
 
 }
