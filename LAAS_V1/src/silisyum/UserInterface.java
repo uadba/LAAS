@@ -320,6 +320,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							ae.newStart = false;
 							ae.iterationHasNotCompletedYet = true;
 							sendMessageToPane("<font color=#006400><b>Optimization process has been <i>started</i> successfully!</b></font>", true);
+							if(isThereAnyGapInTheMask()) {
+								sendMessageToPane("<br><font color=#999900>Warning: There is at least one gap in the outer mask. It does not affect the optimization process adversely but it may be the sign of a bad designed mask.</font>", false);								
+							}
 						} else {
 							sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>restarted</i>.</b></font>", false);
 						}
