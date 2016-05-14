@@ -151,11 +151,20 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private DialogBoxForEditingMaskSegment dialogBoxForEditingMask;
     private DefaultListModel<String> listModel;
     private JButton btnDeleteOuterMaskSegment;
-    private JPanel maskOperations;
+    private JPanel outerMaskSegmentOperations;
     private JButton btnEditOuterMaskSegment;
     private JLabel lblMaskSegmentNames;
     private JLabel lblSelectedMaskValues;
 	private int selectedMaskIndex = -1;
+	private JPanel innerMaskPanel;
+	private JButton button;
+	private JButton button_1;
+	private JButton button_2;
+	private JPanel innerMaskSegmentOperations;
+	private JLabel label;
+	private JLabel label_1;
+	private JList<String> innerList;
+	private JTable innerTable;
 
 	/**
 	 * Launch the application.
@@ -165,6 +174,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			public void run() {
 				try {
 					UserInterface frame = new UserInterface();
+					frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -176,7 +186,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	/**
 	 * Create the frame.
 	 */
-	public UserInterface() {		
+	public UserInterface() {
+		setTitle("Antenna Array Synthesizer");		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1429, 991);
 		contentPane = new JPanel();
@@ -366,6 +377,40 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
 		rightPannel.add(tabbedPaneForSettings, BorderLayout.CENTER);
 		
+		innerMaskPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Inner Mask", null, innerMaskPanel, null);
+		innerMaskPanel.setLayout(new MigLayout("", "[180px,grow][grow]", "[][][grow]"));
+		
+		innerMaskSegmentOperations = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) innerMaskSegmentOperations.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		innerMaskSegmentOperations.setBorder(new TitledBorder(null, "Mask Segment Operations", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		innerMaskPanel.add(innerMaskSegmentOperations, "cell 0 0 2 1,grow");
+		
+		button = new JButton("Add");
+		innerMaskSegmentOperations.add(button);
+		
+		button_1 = new JButton("Edit");
+		innerMaskSegmentOperations.add(button_1);
+		
+		button_2 = new JButton("Delete");
+		innerMaskSegmentOperations.add(button_2);
+		
+		label = new JLabel("Mask Segment Names");
+		innerMaskPanel.add(label, "cell 0 1,alignx center");
+		
+		label_1 = new JLabel("Selected Mask Segment Values");
+		innerMaskPanel.add(label_1, "cell 1 1,alignx center");
+		
+		innerList = new JList<String>();
+		innerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane innerListScroller = new JScrollPane(innerList);
+		innerMaskPanel.add(innerListScroller, "cell 0 2,grow");
+		
+		innerTable = new JTable();
+		JScrollPane scrollPaneForInnerTable = new JScrollPane(innerTable);
+		innerMaskPanel.add(scrollPaneForInnerTable, "cell 1 2,grow");
+		
 		outerMaskPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Outer Mask", null, outerMaskPanel, null);
 		outerMaskPanel.setLayout(new MigLayout("", "[180px,grow][grow]", "[][][grow]"));
@@ -380,14 +425,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		});
 		
-		maskOperations = new JPanel();
-		maskOperations.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Mask Segment Operations", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		FlowLayout fl_maskOperations = (FlowLayout) maskOperations.getLayout();
-		fl_maskOperations.setAlignment(FlowLayout.LEFT);
-		outerMaskPanel.add(maskOperations, "cell 0 0 2 1,grow");
+		outerMaskSegmentOperations = new JPanel();
+		outerMaskSegmentOperations.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Mask Segment Operations", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		FlowLayout fl_outerMaskSegmentOperations = (FlowLayout) outerMaskSegmentOperations.getLayout();
+		fl_outerMaskSegmentOperations.setAlignment(FlowLayout.LEFT);
+		outerMaskPanel.add(outerMaskSegmentOperations, "cell 0 0 2 1,grow");
 		
 		btnAddOuterMaskSegment = new JButton("Add");
-		maskOperations.add(btnAddOuterMaskSegment);
+		outerMaskSegmentOperations.add(btnAddOuterMaskSegment);
 		
 		btnEditOuterMaskSegment = new JButton("Edit");
 		btnEditOuterMaskSegment.addMouseListener(new MouseAdapter() {
@@ -407,7 +452,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}
 			}
 		});
-		maskOperations.add(btnEditOuterMaskSegment);
+		outerMaskSegmentOperations.add(btnEditOuterMaskSegment);
 		
 		btnDeleteOuterMaskSegment = new JButton("Delete");
 		btnDeleteOuterMaskSegment.addMouseListener(new MouseAdapter() {
@@ -424,7 +469,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}
 			}
 		});
-		maskOperations.add(btnDeleteOuterMaskSegment);
+		outerMaskSegmentOperations.add(btnDeleteOuterMaskSegment);
 		btnAddOuterMaskSegment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -442,8 +487,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		lblSelectedMaskValues = new JLabel("Selected Mask Segment Values");
 		outerMaskPanel.add(lblSelectedMaskValues, "cell 1 1,alignx center");
 		outerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane listScroller = new JScrollPane(outerList);
-		outerMaskPanel.add(listScroller, "cell 0 2,grow");
+		JScrollPane outerListScroller = new JScrollPane(outerList);
+		outerMaskPanel.add(outerListScroller, "cell 0 2,grow");
 		refreshMasksList();
 		
 		outerTable = new JTable(new TableModel());
@@ -453,7 +498,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		mainControlsPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
-		mainControlsPanel.setLayout(new MigLayout("", "[510px,grow]", "[][grow]"));
+		mainControlsPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
 		
 		lblMessages = new JLabel("Messages");
 		mainControlsPanel.add(lblMessages, "cell 0 0");
