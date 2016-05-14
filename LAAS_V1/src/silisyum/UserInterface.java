@@ -396,7 +396,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				if (selectedMaskIndex != -1) {
 					Mask.MaskSegment outerMaskSegment = mask.outerMaskSegments.get(selectedMaskIndex);
 					
-					dialogBoxForEditingMask.setTextFields(outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
+					dialogBoxForEditingMask.setTextFields(selectedMaskIndex, outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
 							Double.toString(outerMaskSegment.stopAngle), Integer.toString(outerMaskSegment.numberOfPoints), Double.toString(outerMaskSegment.level), Double.toString(outerMaskSegment.weight));
 					
 					dialogBoxForEditingMask.setLocationRelativeTo(dialogBoxForEditingMask.getParent());				

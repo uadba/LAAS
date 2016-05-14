@@ -141,7 +141,6 @@ public class DialogBoxForAddingMaskSegment extends JDialog {
 								break;
 							}
 							
-							//if(!(SLL_outer.stopAngle <= startAngle || SLL_outer.startAngle >= stopAngle)) {
 							if(SLL_outer.stopAngle > startAngle && SLL_outer.startAngle < stopAngle) {
 								JOptionPane.showMessageDialog(null, "There is an overlap between one of the masks in the current list and the mask which you want to add. Please check your start and stop angle values to avoid the overlapping.");
 								theyAreNotOverlapped = false;

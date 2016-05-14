@@ -29,6 +29,7 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 	private JTextField numberOfPoints_textField;
 	private JTextField level_textField;
 	private JTextField weight_textField;
+	private int selectedMaskIndex;
 
 	/**
 	 * Create the dialog.
@@ -130,21 +131,18 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 						for (int n = 0; n < numberOfSLLOuters; n++) {	
 							//
 							SLL_outer = mask.outerMaskSegments.get(n);
-							if(maskName.equals(SLL_outer.name)) {
-								JOptionPane.showMessageDialog(null, "There is a mask in the list with a same name with which you want to add. You should change the name of the new mask.");
-								itIsANewName = false;
-								break;
-							}
 							
-							//if(!(SLL_outer.stopAngle <= startAngle || SLL_outer.startAngle >= stopAngle)) {
-							if(SLL_outer.stopAngle > startAngle && SLL_outer.startAngle < stopAngle) {
-								JOptionPane.showMessageDialog(null, "There is an overlap between one of the masks in the current list and the mask which you want to add. Please check your start and stop angle values to avoid the overlapping.");
-								theyAreNotOverlapped = false;
-								break;								
+							if(n != selectedMaskIndex) {
+								if(SLL_outer.stopAngle > startAngle && SLL_outer.startAngle < stopAngle) {
+									JOptionPane.showMessageDialog(null, "There is an overlap between one of the masks in the current list and the mask which you want to add. Please check your start and stop angle values to avoid the overlapping.");
+									theyAreNotOverlapped = false;
+									break;								
+								}							
 							}
 						}
 						
 						if (itIsANewName && theyAreNotOverlapped) {
+							mask.deleteOuterMaskSegments(selectedMaskIndex);
 							mask.addNewOuterMaskSegments(maskName, startAngle, stopAngle, numberOfPoints, level, weight);
 							setVisible(false);
 						}
@@ -155,8 +153,9 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 	}
 	
-	public void setTextFields(String _maskSegmentName_textField, String _starAngle_textField, String _stopAngle_textField, String _numberOfPoints_textField, String _level_textField, String _weight_textField) {		
+	public void setTextFields(int _selectedMaskIndex, String _maskSegmentName_textField, String _starAngle_textField, String _stopAngle_textField, String _numberOfPoints_textField, String _level_textField, String _weight_textField) {		
 		
+		selectedMaskIndex = _selectedMaskIndex;
 		maskSegmentName_textField.setText(_maskSegmentName_textField);
 		starAngle_textField.setText(_starAngle_textField);
 		stopAngle_textField.setText(_stopAngle_textField);
