@@ -53,7 +53,6 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			maskSegmentName_textField = new JTextField();
-			maskSegmentName_textField.setEditable(false);
 			contentPanel.add(maskSegmentName_textField, "cell 1 0,growx");
 			maskSegmentName_textField.setColumns(10);
 		}

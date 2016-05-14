@@ -76,8 +76,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     
     private int numberofElements = 20;
     private int problemDimension;
-    private double[] L = {0, 0, -0.05}; // initial values of amplitude, phase, and position minimum limits
-    private double[] H = {1, 10, 0.05}; // initial values of amplitude, phase, and position maximum limits    
+    private double[] L = {0, 0, -0.01}; // initial values of amplitude, phase, and position minimum limits
+    private double[] H = {1, 10, 0.01}; // initial values of amplitude, phase, and position maximum limits    
     private boolean amplitudeIsUsed = true;
     private boolean phaseIsUsed = true;
     private boolean positionIsUsed = false;
