@@ -149,13 +149,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JButton btnAddOuterMaskSegment;
     private DialogBoxForAddingMaskSegment dialogBoxForAddingMask;
     private DialogBoxForEditingMaskSegment dialogBoxForEditingMask;
-    private DefaultListModel<String> listModel;
+    private DefaultListModel<String> listModelForOuterMaskSegments;
     private JButton btnDeleteOuterMaskSegment;
     private JPanel outerMaskSegmentOperations;
     private JButton btnEditOuterMaskSegment;
     private JLabel lblMaskSegmentNames;
     private JLabel lblSelectedMaskValues;
-	private int selectedMaskIndex = -1;
+	private int selectedOuterMaskSegmentIndex = -1;
+	private int selectedInnerMaskSegmentIndex = -1;
 	private JPanel innerMaskPanel;
 	private JButton button;
 	private JButton button_1;
@@ -165,6 +166,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JLabel label_1;
 	private JList<String> innerList;
 	private JTable innerTable;
+	private DefaultListModel<String> listModelForInnerMaskSegments;
 
 	/**
 	 * Launch the application.
@@ -344,6 +346,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						startStopButton.setText("Stop Optimization");
 						terminateOptimizationButton.setVisible(false);
 						drawOuterMask();
+						drawInnerMask();
 					} else {
 						ae.keepIterating = false;
 						startStopButton.setText("Continue Optimization");
@@ -402,12 +405,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		label_1 = new JLabel("Selected Mask Segment Values");
 		innerMaskPanel.add(label_1, "cell 1 1,alignx center");
 		
-		innerList = new JList<String>();
+		listModelForInnerMaskSegments = new DefaultListModel<String>();
+		innerList = new JList<String>(listModelForInnerMaskSegments);
 		innerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane innerListScroller = new JScrollPane(innerList);
 		innerMaskPanel.add(innerListScroller, "cell 0 2,grow");
+		refreshInnerMaskSegmentsList();
 		
-		innerTable = new JTable();
+		innerTable = new JTable(new TableModelForInnerMask());
 		JScrollPane scrollPaneForInnerTable = new JScrollPane(innerTable);
 		innerMaskPanel.add(scrollPaneForInnerTable, "cell 1 2,grow");
 		
@@ -415,13 +420,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		tabbedPaneForSettings.addTab("Outer Mask", null, outerMaskPanel, null);
 		outerMaskPanel.setLayout(new MigLayout("", "[180px,grow][grow]", "[][][grow]"));
 		
-		listModel = new DefaultListModel<String>();
-		outerList = new JList<String>(listModel);
+		listModelForOuterMaskSegments = new DefaultListModel<String>();
+		outerList = new JList<String>(listModelForOuterMaskSegments);
 		outerList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				selectedMaskIndex = outerList.getSelectedIndex();				
-				refreshMaskDetailsTable();
+				selectedOuterMaskSegmentIndex = outerList.getSelectedIndex();				
+				refreshOuterMaskSegmentDetailsTable();
 			}
 		});
 		
@@ -438,16 +443,16 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnEditOuterMaskSegment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (selectedMaskIndex != -1) {
-					Mask.MaskSegment outerMaskSegment = mask.outerMaskSegments.get(selectedMaskIndex);
+				if (selectedOuterMaskSegmentIndex != -1) {
+					Mask.MaskSegment outerMaskSegment = mask.outerMaskSegments.get(selectedOuterMaskSegmentIndex);
 					
-					dialogBoxForEditingMask.setTextFields(selectedMaskIndex, outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
+					dialogBoxForEditingMask.setTextFields(selectedOuterMaskSegmentIndex, outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
 							Double.toString(outerMaskSegment.stopAngle), Integer.toString(outerMaskSegment.numberOfPoints), Double.toString(outerMaskSegment.level), Double.toString(outerMaskSegment.weight));
 					
 					dialogBoxForEditingMask.setLocationRelativeTo(dialogBoxForEditingMask.getParent());				
 					dialogBoxForEditingMask.setVisible(true);
-					refreshMasksList();
-					refreshMaskDetailsTable();
+					refreshOuterMaskSegmentsList();
+					refreshOuterMaskSegmentDetailsTable();
 					drawOuterMask();				
 				}
 			}
@@ -458,12 +463,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnDeleteOuterMaskSegment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {				
-				if (selectedMaskIndex != -1) {
+				if (selectedOuterMaskSegmentIndex != -1) {
 					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to delete THIS mask?", "Warning", JOptionPane.YES_NO_OPTION);
 					if (dialogResult == JOptionPane.YES_OPTION) {
-						mask.deleteOuterMaskSegments(selectedMaskIndex);
-						refreshMasksList();
-						refreshMaskDetailsTable();
+						mask.deleteOuterMaskSegments(selectedOuterMaskSegmentIndex);
+						refreshOuterMaskSegmentsList();
+						refreshOuterMaskSegmentDetailsTable();
 						drawOuterMask();
 					} 
 				}
@@ -475,8 +480,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			public void mouseClicked(MouseEvent arg0) {
 				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
 				dialogBoxForAddingMask.setVisible(true);
-				refreshMasksList();
-				refreshMaskDetailsTable();
+				refreshOuterMaskSegmentsList();
+				refreshOuterMaskSegmentDetailsTable();
 				drawOuterMask();
 			}
 		});
@@ -489,9 +494,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		outerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane outerListScroller = new JScrollPane(outerList);
 		outerMaskPanel.add(outerListScroller, "cell 0 2,grow");
-		refreshMasksList();
+		refreshOuterMaskSegmentsList();
 		
-		outerTable = new JTable(new TableModel());
+		outerTable = new JTable(new TableModelForOuterMask());
 		JScrollPane scrollPaneForOuterTable = new JScrollPane(outerTable);
 		outerMaskPanel.add(scrollPaneForOuterTable, "cell 1 2,grow");
 		//table.setFillsViewportHeight(true);
@@ -639,14 +644,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		differentialEvolutionPanel.add(Cr_textField, "cell 1 3,growx");
 		
 		drawOuterMask();
+		drawInnerMask();
 		
 		ae = new AlgorithmExecuter();
 		ae.execute();
 	}
-	
-	
-
-	class TableModel extends AbstractTableModel {
+		
+	//	For outer mask segment
+	class TableModelForOuterMask extends AbstractTableModel {
 		/**
 		 * 
 		 */
@@ -660,9 +665,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	    }
 	
 	    public int getRowCount() {
-	    	if(selectedMaskIndex == -1) return 0;
+	    	if(selectedOuterMaskSegmentIndex == -1) return 0;
 	    	Mask.MaskSegment SLL_outer;
-			SLL_outer = mask.outerMaskSegments.get(selectedMaskIndex);
+			SLL_outer = mask.outerMaskSegments.get(selectedOuterMaskSegmentIndex);
 			return SLL_outer.angles.length;
 	    }
 	
@@ -672,7 +677,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	    public Object getValueAt(int row, int col) {
 			Mask.MaskSegment SLL_outer;
-			SLL_outer = mask.outerMaskSegments.get(selectedMaskIndex);
+			SLL_outer = mask.outerMaskSegments.get(selectedOuterMaskSegmentIndex);
 			double returnedValue = 0;
 			if(col == 0) returnedValue = SLL_outer.angles[row];
 			if(col == 1) returnedValue = SLL_outer.levels[row];
@@ -703,7 +708,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	     */
 	    public void setValueAt(Object value, int row, int col) {
 			Mask.MaskSegment SLL_outer;
-			SLL_outer = mask.outerMaskSegments.get(selectedMaskIndex);
+			SLL_outer = mask.outerMaskSegments.get(selectedOuterMaskSegmentIndex);
 
 			//if(col == 0) SLL_outer.angles[row] = (double) value;
 			if(col == 1) SLL_outer.levels[row] = (double) value;
@@ -714,25 +719,109 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	        drawOuterMask();
 	    }
 	}
+	
+	//	For inner mask segment
+	class TableModelForInnerMask extends AbstractTableModel {
 
-	private void refreshMaskDetailsTable() {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6848149317192706675L;
+		private String[] columnNames = {"Angle (Degree)",
+                "Level (dB)",
+                "Weight"};
+	
+	    public int getColumnCount() {
+	        return columnNames.length;
+	    }
+	
+	    public int getRowCount() {
+	    	if(selectedInnerMaskSegmentIndex == -1) return 0;
+	    	Mask.MaskSegment innerMaskSegment;
+			innerMaskSegment = mask.innerMaskSegments.get(selectedInnerMaskSegmentIndex);
+			return innerMaskSegment.angles.length;
+	    }
+	
+	    public String getColumnName(int col) {
+	        return columnNames[col];
+	    }
+	
+	    public Object getValueAt(int row, int col) {
+			Mask.MaskSegment innerMaskSegment;
+			innerMaskSegment = mask.innerMaskSegments.get(selectedInnerMaskSegmentIndex);
+			double returnedValue = 0;
+			if(col == 0) returnedValue = innerMaskSegment.angles[row];
+			if(col == 1) returnedValue = innerMaskSegment.levels[row];
+			if(col == 2) returnedValue = innerMaskSegment.weights[row];
+			return returnedValue;
+	    }
+	
+	    public Class<?> getColumnClass(int c) {
+	        return getValueAt(0, c).getClass();
+	    }
+	
+	    /*
+	     * Don't need to implement this method unless your table's
+	     * editable.
+	     */
+	    public boolean isCellEditable(int row, int col) {
+	        //Note that the data/cell address is constant,
+	        //no matter where the cell appears onscreen.
+	        if (col < 1) {
+	            return false;
+	        } else {
+	            return true;
+	        }
+	    }
+	    /*
+	     * Don't need to implement this method unless your table's
+	     * data can change.
+	     */
+	    public void setValueAt(Object value, int row, int col) {
+			Mask.MaskSegment innerMaskSegment;
+			innerMaskSegment = mask.innerMaskSegments.get(selectedInnerMaskSegmentIndex);
 
-		TableModel model = (TableModel) outerTable.getModel();
+			//if(col == 0) SLL_outer.angles[row] = (double) value;
+			if(col == 1) innerMaskSegment.levels[row] = (double) value;
+			if(col == 2) innerMaskSegment.weights[row] = (double) value;
+	    	
+	        fireTableCellUpdated(row, col);
+	        
+	        drawInnerMask();
+	    }
+	}
+
+	private void refreshOuterMaskSegmentDetailsTable() {
+		TableModelForOuterMask model = (TableModelForOuterMask) outerTable.getModel();
 		model.fireTableDataChanged();		
 	}
 	
-	private void refreshMasksList() {
+	private void refreshOuterMaskSegmentsList() {
 		// ------------- Outer Mask --------------------
 		int numberOfOuterMaskSegments = mask.outerMaskSegments.size(); 
 		Mask.MaskSegment outerMaskSegment;
 		
-		listModel.removeAllElements();
+		listModelForOuterMaskSegments.removeAllElements();
 		for (int n = 0; n < numberOfOuterMaskSegments; n++) {
 			outerMaskSegment = mask.outerMaskSegments.get(n);
-			listModel.addElement(outerMaskSegment.name);
+			listModelForOuterMaskSegments.addElement(outerMaskSegment.name);
 		}
 		
-		selectedMaskIndex = outerList.getSelectedIndex();
+		selectedOuterMaskSegmentIndex = outerList.getSelectedIndex();
+	}
+	
+	private void refreshInnerMaskSegmentsList() {
+		// ------------- Inner Mask --------------------
+		int numberOfInnerMaskSegments = mask.innerMaskSegments.size(); 
+		Mask.MaskSegment innerMaskSegment;
+		
+		listModelForInnerMaskSegments.removeAllElements();
+		for (int n = 0; n < numberOfInnerMaskSegments; n++) {
+			innerMaskSegment = mask.innerMaskSegments.get(n);
+			listModelForInnerMaskSegments.addElement(innerMaskSegment.name);
+		}
+		
+		selectedOuterMaskSegmentIndex = innerList.getSelectedIndex();
 	}
 	
 	private boolean isThereAnyGapInTheMask() {
@@ -998,7 +1087,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 //		mask.addNewSLL_outer("SLL_06", 100, 110, 10, -20, 1);
 //		mask.addNewSLL_outer("SLL_07", 110, 115, 15, -40, 1);
 //		mask.addNewSLL_outer("SLL_08", 115, 180, 65, -24, 1);		
-		
+
+		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
+		mask.addNewInnerMaskSegments("SLL_01_baska", 40, 60, 30, -30, 1);
 //		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
 //		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
 //		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
