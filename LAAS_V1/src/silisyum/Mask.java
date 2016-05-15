@@ -25,6 +25,11 @@ public class Mask {
 		Collections.sort(innerMaskSegments);
 	}
 	
+	public void deleteInnerMaskSegments(int index)
+	{
+		innerMaskSegments.remove(index);
+	}
+	
 	public class MaskSegment implements Comparable<MaskSegment>{
 		String name;
 		Double startAngle;

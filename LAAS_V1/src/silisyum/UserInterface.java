@@ -148,7 +148,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JList<String> outerList;
     private JButton btnAddOuterMaskSegment;
     private DialogBoxForAddingOuterMaskSegment dialogBoxForAddingOuterMaskSegment;
-    private DialogBoxForEditingOuterMaskSegment dialogBoxForEditingMask;
+    private DialogBoxForEditingOuterMaskSegment dialogBoxForEditingOuterMaskSegment;
     private DefaultListModel<String> listModelForOuterMaskSegments;
     private JButton btnDeleteOuterMaskSegment;
     private JPanel outerMaskSegmentOperations;
@@ -168,7 +168,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JTable innerTable;
 	private DefaultListModel<String> listModelForInnerMaskSegments;
     private DialogBoxForAddingInnerMaskSegment dialogBoxForAddingInnerMaskSegment;
-//    private DialogBoxForEditingOuterMaskSegment dialogBoxForEditingMask;
+    private DialogBoxForEditingInnerMaskSegment dialogBoxForEditingInnerMaskSegment;
     
 	/**
 	 * Launch the application.
@@ -200,9 +200,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		mask = new Mask();
 		dialogBoxForAddingOuterMaskSegment = new DialogBoxForAddingOuterMaskSegment(this, "Add a New Outer Mask Segment", true, mask);
-		dialogBoxForEditingMask = new DialogBoxForEditingOuterMaskSegment(this, "Edit a Outer Mask Segment", true, mask);
+		dialogBoxForEditingOuterMaskSegment = new DialogBoxForEditingOuterMaskSegment(this, "Edit a Outer Mask Segment", true, mask);
 		
 		dialogBoxForAddingInnerMaskSegment = new DialogBoxForAddingInnerMaskSegment(this, "Add a New Inner Mask Segment", true, mask);
+		dialogBoxForEditingInnerMaskSegment = new DialogBoxForEditingInnerMaskSegment(this, "Edit a Inner Mask Segment", true, mask);
 		
 		createTemporaryMasks();
 		
@@ -408,9 +409,40 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		innerMaskSegmentOperations.add(button);
 		
 		button_1 = new JButton("Edit");
+		button_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (selectedInnerMaskSegmentIndex != -1) {
+					Mask.MaskSegment innerMaskSegment = mask.innerMaskSegments.get(selectedInnerMaskSegmentIndex);
+					
+					dialogBoxForEditingInnerMaskSegment.setTextFields(selectedInnerMaskSegmentIndex, innerMaskSegment.name, Double.toString(innerMaskSegment.startAngle),
+							Double.toString(innerMaskSegment.stopAngle), Integer.toString(innerMaskSegment.numberOfPoints), Double.toString(innerMaskSegment.level), Double.toString(innerMaskSegment.weight));
+					
+					dialogBoxForEditingInnerMaskSegment.setLocationRelativeTo(dialogBoxForEditingInnerMaskSegment.getParent());				
+					dialogBoxForEditingInnerMaskSegment.setVisible(true);
+					refreshInnerMaskSegmentsList();
+					refreshInnerMaskSegmentDetailsTable();
+					drawInnerMask();
+				}
+			}
+		});
 		innerMaskSegmentOperations.add(button_1);
 		
 		button_2 = new JButton("Delete");
+		button_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (selectedInnerMaskSegmentIndex != -1) {
+					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to delete THIS mask?", "Warning", JOptionPane.YES_NO_OPTION);
+					if (dialogResult == JOptionPane.YES_OPTION) {
+						mask.deleteInnerMaskSegments(selectedInnerMaskSegmentIndex);
+						refreshInnerMaskSegmentsList();
+						refreshInnerMaskSegmentDetailsTable();
+						drawInnerMask();
+					} 
+				}
+			}
+		});
 		innerMaskSegmentOperations.add(button_2);
 		
 		label = new JLabel("Mask Segment Names");
@@ -467,14 +499,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				if (selectedOuterMaskSegmentIndex != -1) {
 					Mask.MaskSegment outerMaskSegment = mask.outerMaskSegments.get(selectedOuterMaskSegmentIndex);
 					
-					dialogBoxForEditingMask.setTextFields(selectedOuterMaskSegmentIndex, outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
+					dialogBoxForEditingOuterMaskSegment.setTextFields(selectedOuterMaskSegmentIndex, outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
 							Double.toString(outerMaskSegment.stopAngle), Integer.toString(outerMaskSegment.numberOfPoints), Double.toString(outerMaskSegment.level), Double.toString(outerMaskSegment.weight));
 					
-					dialogBoxForEditingMask.setLocationRelativeTo(dialogBoxForEditingMask.getParent());				
-					dialogBoxForEditingMask.setVisible(true);
+					dialogBoxForEditingOuterMaskSegment.setLocationRelativeTo(dialogBoxForEditingOuterMaskSegment.getParent());				
+					dialogBoxForEditingOuterMaskSegment.setVisible(true);
 					refreshOuterMaskSegmentsList();
 					refreshOuterMaskSegmentDetailsTable();
-					drawOuterMask();				
+					drawOuterMask();
 				}
 			}
 		});
@@ -847,7 +879,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			listModelForInnerMaskSegments.addElement(innerMaskSegment.name);
 		}
 		
-		selectedOuterMaskSegmentIndex = innerList.getSelectedIndex();
+		selectedInnerMaskSegmentIndex = innerList.getSelectedIndex();
 	}
 	
 	private boolean isThereAnyGapInTheMask() {
