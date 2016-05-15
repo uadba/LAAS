@@ -15,7 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
 
-public class DialogBoxForEditingMaskSegment extends JDialog {
+public class DialogBoxForAddingInnerMaskSegment extends JDialog {
 
 	/**
 	 * 
@@ -29,7 +29,6 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 	private JTextField numberOfPoints_textField;
 	private JTextField level_textField;
 	private JTextField weight_textField;
-	private int selectedMaskIndex;
 
 	/**
 	 * Create the dialog.
@@ -37,7 +36,7 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 	 * @param string 
 	 * @param userInterface 
 	 */
-	public DialogBoxForEditingMaskSegment(UserInterface _frame, String _title, boolean _modal, Mask _mask) {
+	public DialogBoxForAddingInnerMaskSegment(UserInterface _frame, String _title, boolean _modal, Mask _mask) {
 		super(_frame, _title, _modal);
 		mask = _mask;
 		//setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -53,6 +52,7 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			maskSegmentName_textField = new JTextField();
+			maskSegmentName_textField.setText("Test_SLL_03");
 			contentPanel.add(maskSegmentName_textField, "cell 1 0,growx");
 			maskSegmentName_textField.setColumns(10);
 		}
@@ -63,6 +63,7 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			starAngle_textField = new JTextField();
+			starAngle_textField.setText("30");
 			starAngle_textField.setColumns(10);
 			contentPanel.add(starAngle_textField, "cell 1 1,growx");
 		}
@@ -73,6 +74,7 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			stopAngle_textField = new JTextField();
+			stopAngle_textField.setText("79");
 			stopAngle_textField.setColumns(10);
 			contentPanel.add(stopAngle_textField, "cell 1 2,growx");
 		}
@@ -83,6 +85,7 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			numberOfPoints_textField = new JTextField();
+			numberOfPoints_textField.setText("49");
 			numberOfPoints_textField.setColumns(10);
 			contentPanel.add(numberOfPoints_textField, "cell 1 3,growx");
 		}
@@ -93,6 +96,7 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			level_textField = new JTextField();
+			level_textField.setText("-20");
 			level_textField.setColumns(10);
 			contentPanel.add(level_textField, "cell 1 4,growx");
 		}
@@ -103,6 +107,7 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 		}
 		{
 			weight_textField = new JTextField();
+			weight_textField.setText("1");
 			weight_textField.setColumns(10);
 			contentPanel.add(weight_textField, "cell 1 5,growx");
 		}
@@ -111,8 +116,8 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton Update_btn = new JButton("Update This Outer Mask Segment");
-				Update_btn.addMouseListener(new MouseAdapter() {
+				JButton Add_btn = new JButton("Add Inner Mask Segment");
+				Add_btn.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						String maskName = maskSegmentName_textField.getText();
@@ -122,39 +127,40 @@ public class DialogBoxForEditingMaskSegment extends JDialog {
 						double level = Double.parseDouble(level_textField.getText());
 						double weight = Double.parseDouble(weight_textField.getText());
 						
-						int numberOfSLLOuters = mask.outerMaskSegments.size();
-						Mask.MaskSegment SLL_outer;
+						int numberOfInnerMaskSegments = mask.innerMaskSegments.size();
+						Mask.MaskSegment innnerMaskSegment;
 						
 						boolean itIsANewName = true;
 						boolean theyAreNotOverlapped = true;
-						for (int n = 0; n < numberOfSLLOuters; n++) {	
+						for (int n = 0; n < numberOfInnerMaskSegments; n++) {	
 							//
-							SLL_outer = mask.outerMaskSegments.get(n);
+							innnerMaskSegment = mask.innerMaskSegments.get(n);
+							if(maskName.equals(innnerMaskSegment.name)) {
+								JOptionPane.showMessageDialog(null, "There is a mask in the list with a same name with which you want to add. You should change the name of the new mask.");
+								itIsANewName = false;
+								break;
+							}
 							
-							if(n != selectedMaskIndex) {
-								if(SLL_outer.stopAngle > startAngle && SLL_outer.startAngle < stopAngle) {
-									JOptionPane.showMessageDialog(null, "There is an overlap between one of the masks in the current list and the mask which you want to add. Please check your start and stop angle values to avoid the overlapping.");
-									theyAreNotOverlapped = false;
-									break;								
-								}							
+							if(innnerMaskSegment.stopAngle > startAngle && innnerMaskSegment.startAngle < stopAngle) {
+								JOptionPane.showMessageDialog(null, "There is an overlap between one of the masks in the current list and the mask which you want to add. Please check your start and stop angle values to avoid the overlapping.");
+								theyAreNotOverlapped = false;
+								break;								
 							}
 						}
 						
 						if (itIsANewName && theyAreNotOverlapped) {
-							mask.deleteOuterMaskSegments(selectedMaskIndex);
-							mask.addNewOuterMaskSegments(maskName, startAngle, stopAngle, numberOfPoints, level, weight);
+							mask.addNewInnerMaskSegments(maskName, startAngle, stopAngle, numberOfPoints, level, weight);
 							setVisible(false);
 						}
 					}
 				});
-				buttonPane.add(Update_btn);
+				buttonPane.add(Add_btn);
 			}
 		}
 	}
 	
-	public void setTextFields(int _selectedMaskIndex, String _maskSegmentName_textField, String _starAngle_textField, String _stopAngle_textField, String _numberOfPoints_textField, String _level_textField, String _weight_textField) {		
+	public void setTextFields(String _maskSegmentName_textField, String _starAngle_textField, String _stopAngle_textField, String _numberOfPoints_textField, String _level_textField, String _weight_textField) {		
 		
-		selectedMaskIndex = _selectedMaskIndex;
 		maskSegmentName_textField.setText(_maskSegmentName_textField);
 		starAngle_textField.setText(_starAngle_textField);
 		stopAngle_textField.setText(_stopAngle_textField);

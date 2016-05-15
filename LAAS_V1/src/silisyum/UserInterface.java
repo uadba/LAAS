@@ -147,8 +147,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTable outerTable;
     private JList<String> outerList;
     private JButton btnAddOuterMaskSegment;
-    private DialogBoxForAddingMaskSegment dialogBoxForAddingMask;
-    private DialogBoxForEditingMaskSegment dialogBoxForEditingMask;
+    private DialogBoxForAddingOuterMaskSegment dialogBoxForAddingOuterMaskSegment;
+    private DialogBoxForEditingOuterMaskSegment dialogBoxForEditingMask;
     private DefaultListModel<String> listModelForOuterMaskSegments;
     private JButton btnDeleteOuterMaskSegment;
     private JPanel outerMaskSegmentOperations;
@@ -167,7 +167,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JList<String> innerList;
 	private JTable innerTable;
 	private DefaultListModel<String> listModelForInnerMaskSegments;
-
+    private DialogBoxForAddingInnerMaskSegment dialogBoxForAddingInnerMaskSegment;
+//    private DialogBoxForEditingOuterMaskSegment dialogBoxForEditingMask;
+    
 	/**
 	 * Launch the application.
 	 */
@@ -197,8 +199,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		setContentPane(contentPane);
 		
 		mask = new Mask();
-		dialogBoxForAddingMask = new DialogBoxForAddingMaskSegment(this, "Add a New Outer Mask Segment", true, mask);
-		dialogBoxForEditingMask = new DialogBoxForEditingMaskSegment(this, "Edit a Outer Mask Segment", true, mask);
+		dialogBoxForAddingOuterMaskSegment = new DialogBoxForAddingOuterMaskSegment(this, "Add a New Outer Mask Segment", true, mask);
+		dialogBoxForEditingMask = new DialogBoxForEditingOuterMaskSegment(this, "Edit a Outer Mask Segment", true, mask);
+		
+		dialogBoxForAddingInnerMaskSegment = new DialogBoxForAddingInnerMaskSegment(this, "Add a New Inner Mask Segment", true, mask);
 		
 		createTemporaryMasks();
 		
@@ -391,6 +395,16 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		innerMaskPanel.add(innerMaskSegmentOperations, "cell 0 0 2 1,grow");
 		
 		button = new JButton("Add");
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				dialogBoxForAddingInnerMaskSegment.setLocationRelativeTo(dialogBoxForAddingInnerMaskSegment.getParent());
+				dialogBoxForAddingInnerMaskSegment.setVisible(true);
+				refreshInnerMaskSegmentsList();
+				refreshInnerMaskSegmentDetailsTable();
+				drawInnerMask();
+			}
+		});
 		innerMaskSegmentOperations.add(button);
 		
 		button_1 = new JButton("Edit");
@@ -407,6 +421,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		listModelForInnerMaskSegments = new DefaultListModel<String>();
 		innerList = new JList<String>(listModelForInnerMaskSegments);
+		innerList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				selectedInnerMaskSegmentIndex = innerList.getSelectedIndex();				
+				refreshInnerMaskSegmentDetailsTable();
+			}
+		});
 		innerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane innerListScroller = new JScrollPane(innerList);
 		innerMaskPanel.add(innerListScroller, "cell 0 2,grow");
@@ -478,8 +499,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnAddOuterMaskSegment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				dialogBoxForAddingMask.setLocationRelativeTo(dialogBoxForAddingMask.getParent());
-				dialogBoxForAddingMask.setVisible(true);
+				dialogBoxForAddingOuterMaskSegment.setLocationRelativeTo(dialogBoxForAddingOuterMaskSegment.getParent());
+				dialogBoxForAddingOuterMaskSegment.setVisible(true);
 				refreshOuterMaskSegmentsList();
 				refreshOuterMaskSegmentDetailsTable();
 				drawOuterMask();
@@ -793,6 +814,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 
 	private void refreshOuterMaskSegmentDetailsTable() {
 		TableModelForOuterMask model = (TableModelForOuterMask) outerTable.getModel();
+		model.fireTableDataChanged();		
+	}
+
+	private void refreshInnerMaskSegmentDetailsTable() {
+		TableModelForInnerMask model = (TableModelForInnerMask) innerTable.getModel();
 		model.fireTableDataChanged();		
 	}
 	

@@ -15,7 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
 
-public class DialogBoxForAddingMaskSegment extends JDialog {
+public class DialogBoxForAddingOuterMaskSegment extends JDialog {
 
 	/**
 	 * 
@@ -36,7 +36,7 @@ public class DialogBoxForAddingMaskSegment extends JDialog {
 	 * @param string 
 	 * @param userInterface 
 	 */
-	public DialogBoxForAddingMaskSegment(UserInterface _frame, String _title, boolean _modal, Mask _mask) {
+	public DialogBoxForAddingOuterMaskSegment(UserInterface _frame, String _title, boolean _modal, Mask _mask) {
 		super(_frame, _title, _modal);
 		mask = _mask;
 		//setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
