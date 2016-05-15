@@ -341,8 +341,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							ae.newStart = false;
 							ae.iterationHasNotCompletedYet = true;
 							sendMessageToPane("<font color=#006400><b>Optimization process has been <i>started</i> successfully!</b></font>", true);
-							if(isThereAnyGapInTheMask()) {
-								sendMessageToPane("<br><font color=#666600>Warning: There is at least one gap in the outer mask. It does not affect the optimization process adversely but it may be the sign of a bad designed mask.</font>", false);								
+							if(isThereAnyGapInOuterMask()) {
+								sendMessageToPane("<br><font color=#666600>Warning: There is at least one gap in the <i>outer mask</i>. It does not affect the optimization process adversely but it may be the sign of a bad designed mask.</font>", false);								
+							}
+							if(isThereAnyGapInInnerMask()) {
+								sendMessageToPane("<br><font color=#666600>Warning: There is at least one gap in the <i>inner mask</i>. It does not affect the optimization process adversely but it may be the sign of a bad designed mask.</font>", false);								
 							}
 						} else {
 							sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>restarted</i>.</b></font>", false);
@@ -384,6 +387,19 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
 		rightPannel.add(tabbedPaneForSettings, BorderLayout.CENTER);
+		//table.setFillsViewportHeight(true);
+		
+		mainControlsPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
+		mainControlsPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
+		
+		lblMessages = new JLabel("Messages");
+		mainControlsPanel.add(lblMessages, "cell 0 0");
+		
+		messagePane = new JTextPane();
+		messagePane.setContentType("text/html");
+		JScrollPane scrollPaneForList = new JScrollPane(messagePane);
+		mainControlsPanel.add(scrollPaneForList, "cell 0 1,grow");		
 		
 		innerMaskPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Inner Mask", null, innerMaskPanel, null);
@@ -552,19 +568,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		outerTable = new JTable(new TableModelForOuterMask());
 		JScrollPane scrollPaneForOuterTable = new JScrollPane(outerTable);
 		outerMaskPanel.add(scrollPaneForOuterTable, "cell 1 2,grow");
-		//table.setFillsViewportHeight(true);
-		
-		mainControlsPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
-		mainControlsPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
-		
-		lblMessages = new JLabel("Messages");
-		mainControlsPanel.add(lblMessages, "cell 0 0");
-		
-		messagePane = new JTextPane();
-		messagePane.setContentType("text/html");
-		JScrollPane scrollPaneForList = new JScrollPane(messagePane);
-		mainControlsPanel.add(scrollPaneForList, "cell 0 1,grow");		
 		
 		arrayParametersPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
@@ -882,31 +885,64 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		selectedInnerMaskSegmentIndex = innerList.getSelectedIndex();
 	}
 	
-	private boolean isThereAnyGapInTheMask() {
+	private boolean isThereAnyGapInOuterMask() {
 		boolean gapExistency = false;
 		
-		int numberOfSLLOuters = mask.outerMaskSegments.size();
-		Mask.MaskSegment SLL_outer;
+		int numberOfOuterMaskSegments = mask.outerMaskSegments.size();
+		Mask.MaskSegment outerMaskSegment;
 		
-		for (int n = 0; n < numberOfSLLOuters - 1; n++) {			
-			SLL_outer = mask.outerMaskSegments.get(n);
-			// Check the first angle (0)
-			if(n == 0) {
-				if(SLL_outer.startAngle != 0) gapExistency = true;
+		if (numberOfOuterMaskSegments > 0) {
+			for (int n = 0; n < numberOfOuterMaskSegments - 1; n++) {
+				outerMaskSegment = mask.outerMaskSegments.get(n);
+				// Check the first angle (0)
+				if (n == 0) {
+					if (outerMaskSegment.startAngle != 0)
+						gapExistency = true;
+				}
+
+				if (outerMaskSegment.stopAngle != mask.outerMaskSegments.get(n + 1).startAngle) {
+					gapExistency = true;
+				}
 			}
-			
-			if(SLL_outer.stopAngle != mask.outerMaskSegments.get(n+1).startAngle) {
+			// Check the last angle (180)
+			if (mask.outerMaskSegments.get(numberOfOuterMaskSegments - 1).stopAngle != 180) {
 				gapExistency = true;
-			}			
-		}
-		
-		// Check the last angle (180)
-		if(mask.outerMaskSegments.get(numberOfSLLOuters - 1).stopAngle != 180) {
-			gapExistency = true;
+			} 
 		}
 		
 		return gapExistency;
 	}
+	
+	
+	private boolean isThereAnyGapInInnerMask() {
+		boolean gapExistency = false;
+		
+		int numberOfInnerMaskSegments = mask.innerMaskSegments.size();
+		Mask.MaskSegment innerMaskSegment;
+		
+		if (numberOfInnerMaskSegments > 0) {
+			for (int n = 0; n < numberOfInnerMaskSegments - 1; n++) {
+				innerMaskSegment = mask.innerMaskSegments.get(n);
+				// Check the first angle (0)
+				if (n == 0) {
+					if (innerMaskSegment.startAngle != 0)
+						gapExistency = true;
+				}
+				
+				if (innerMaskSegment.stopAngle != mask.innerMaskSegments.get(n + 1).startAngle) {
+					gapExistency = true;
+				}
+			}
+			// Check the last angle (180)
+			if (mask.innerMaskSegments.get(numberOfInnerMaskSegments - 1).stopAngle != 180) {
+				gapExistency = true;
+			} 
+		}
+		
+		return gapExistency;
+	}
+	
+	
 	
 	private void sendMessageToPane(String additionalMessage, boolean deletePreviousMessages) {
 		if (deletePreviousMessages)
