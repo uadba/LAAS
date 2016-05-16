@@ -74,12 +74,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
-    private int numberofElements = 20;
+    private int numberofElements = 26;
     private int problemDimension;
     private double[] L = {0, 0, -0.01}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.01}; // initial values of amplitude, phase, and position maximum limits    
     private boolean amplitudeIsUsed = true;
-    private boolean phaseIsUsed = true;
+    private boolean phaseIsUsed = false;
     private boolean positionIsUsed = false;
     private Mask mask;
     private int patterGraphResolution = 721; //721;
@@ -364,7 +364,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				} else {
 					presentErrorMessages();					
 				}
-				tabbedPaneForSettings.setSelectedIndex(0);
+				//Goto to tab 0. Is it necessary?
+				//tabbedPaneForSettings.setSelectedIndex(0);
 			}
 		});
 		startStopPanel.add(startStopButton, "cell 1 1,alignx center,aligny top");
@@ -400,6 +401,89 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		messagePane.setContentType("text/html");
 		JScrollPane scrollPaneForList = new JScrollPane(messagePane);
 		mainControlsPanel.add(scrollPaneForList, "cell 0 1,grow");		
+		
+		outerMaskPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Outer Mask", null, outerMaskPanel, null);
+		outerMaskPanel.setLayout(new MigLayout("", "[180px,grow][grow]", "[][][grow]"));
+		listModelForOuterMaskSegments = new DefaultListModel<String>();		
+		outerList = new JList<String>(listModelForOuterMaskSegments);
+		outerList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				selectedOuterMaskSegmentIndex = outerList.getSelectedIndex();				
+				refreshOuterMaskSegmentDetailsTable();
+			}
+		});
+		
+		outerMaskSegmentOperations = new JPanel();
+		outerMaskSegmentOperations.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Mask Segment Operations", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		FlowLayout fl_outerMaskSegmentOperations = (FlowLayout) outerMaskSegmentOperations.getLayout();
+		fl_outerMaskSegmentOperations.setAlignment(FlowLayout.LEFT);
+		outerMaskPanel.add(outerMaskSegmentOperations, "cell 0 0 2 1,grow");
+		
+		btnAddOuterMaskSegment = new JButton("Add");
+		outerMaskSegmentOperations.add(btnAddOuterMaskSegment);
+		
+		btnEditOuterMaskSegment = new JButton("Edit");
+		btnEditOuterMaskSegment.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (selectedOuterMaskSegmentIndex != -1) {
+					Mask.MaskSegment outerMaskSegment = mask.outerMaskSegments.get(selectedOuterMaskSegmentIndex);
+					
+					dialogBoxForEditingOuterMaskSegment.setTextFields(selectedOuterMaskSegmentIndex, outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
+							Double.toString(outerMaskSegment.stopAngle), Integer.toString(outerMaskSegment.numberOfPoints), Double.toString(outerMaskSegment.level), Double.toString(outerMaskSegment.weight));
+					
+					dialogBoxForEditingOuterMaskSegment.setLocationRelativeTo(dialogBoxForEditingOuterMaskSegment.getParent());				
+					dialogBoxForEditingOuterMaskSegment.setVisible(true);
+					refreshOuterMaskSegmentsList();
+					refreshOuterMaskSegmentDetailsTable();
+					drawOuterMask();
+				}
+			}
+		});
+		outerMaskSegmentOperations.add(btnEditOuterMaskSegment);
+		
+		btnDeleteOuterMaskSegment = new JButton("Delete");
+		btnDeleteOuterMaskSegment.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {				
+				if (selectedOuterMaskSegmentIndex != -1) {
+					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to delete THIS mask?", "Warning", JOptionPane.YES_NO_OPTION);
+					if (dialogResult == JOptionPane.YES_OPTION) {
+						mask.deleteOuterMaskSegments(selectedOuterMaskSegmentIndex);
+						refreshOuterMaskSegmentsList();
+						refreshOuterMaskSegmentDetailsTable();
+						drawOuterMask();
+					} 
+				}
+			}
+		});
+		outerMaskSegmentOperations.add(btnDeleteOuterMaskSegment);
+		btnAddOuterMaskSegment.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				dialogBoxForAddingOuterMaskSegment.setLocationRelativeTo(dialogBoxForAddingOuterMaskSegment.getParent());
+				dialogBoxForAddingOuterMaskSegment.setVisible(true);
+				refreshOuterMaskSegmentsList();
+				refreshOuterMaskSegmentDetailsTable();
+				drawOuterMask();
+			}
+		});
+		
+		lblMaskSegmentNames = new JLabel("Mask Segment Names");
+		outerMaskPanel.add(lblMaskSegmentNames, "cell 0 1,alignx center");
+		
+		lblSelectedMaskValues = new JLabel("Selected Mask Segment Values");
+		outerMaskPanel.add(lblSelectedMaskValues, "cell 1 1,alignx center");
+		outerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane outerListScroller = new JScrollPane(outerList);
+		outerMaskPanel.add(outerListScroller, "cell 0 2,grow");
+		refreshOuterMaskSegmentsList();
+		
+		outerTable = new JTable(new TableModelForOuterMask());
+		JScrollPane scrollPaneForOuterTable = new JScrollPane(outerTable);
+		outerMaskPanel.add(scrollPaneForOuterTable, "cell 1 2,grow");
 		
 		innerMaskPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Inner Mask", null, innerMaskPanel, null);
@@ -484,90 +568,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		innerTable = new JTable(new TableModelForInnerMask());
 		JScrollPane scrollPaneForInnerTable = new JScrollPane(innerTable);
 		innerMaskPanel.add(scrollPaneForInnerTable, "cell 1 2,grow");
-		
-		outerMaskPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Outer Mask", null, outerMaskPanel, null);
-		outerMaskPanel.setLayout(new MigLayout("", "[180px,grow][grow]", "[][][grow]"));
-		
-		listModelForOuterMaskSegments = new DefaultListModel<String>();
-		outerList = new JList<String>(listModelForOuterMaskSegments);
-		outerList.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
-				selectedOuterMaskSegmentIndex = outerList.getSelectedIndex();				
-				refreshOuterMaskSegmentDetailsTable();
-			}
-		});
-		
-		outerMaskSegmentOperations = new JPanel();
-		outerMaskSegmentOperations.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Mask Segment Operations", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		FlowLayout fl_outerMaskSegmentOperations = (FlowLayout) outerMaskSegmentOperations.getLayout();
-		fl_outerMaskSegmentOperations.setAlignment(FlowLayout.LEFT);
-		outerMaskPanel.add(outerMaskSegmentOperations, "cell 0 0 2 1,grow");
-		
-		btnAddOuterMaskSegment = new JButton("Add");
-		outerMaskSegmentOperations.add(btnAddOuterMaskSegment);
-		
-		btnEditOuterMaskSegment = new JButton("Edit");
-		btnEditOuterMaskSegment.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (selectedOuterMaskSegmentIndex != -1) {
-					Mask.MaskSegment outerMaskSegment = mask.outerMaskSegments.get(selectedOuterMaskSegmentIndex);
-					
-					dialogBoxForEditingOuterMaskSegment.setTextFields(selectedOuterMaskSegmentIndex, outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
-							Double.toString(outerMaskSegment.stopAngle), Integer.toString(outerMaskSegment.numberOfPoints), Double.toString(outerMaskSegment.level), Double.toString(outerMaskSegment.weight));
-					
-					dialogBoxForEditingOuterMaskSegment.setLocationRelativeTo(dialogBoxForEditingOuterMaskSegment.getParent());				
-					dialogBoxForEditingOuterMaskSegment.setVisible(true);
-					refreshOuterMaskSegmentsList();
-					refreshOuterMaskSegmentDetailsTable();
-					drawOuterMask();
-				}
-			}
-		});
-		outerMaskSegmentOperations.add(btnEditOuterMaskSegment);
-		
-		btnDeleteOuterMaskSegment = new JButton("Delete");
-		btnDeleteOuterMaskSegment.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {				
-				if (selectedOuterMaskSegmentIndex != -1) {
-					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to delete THIS mask?", "Warning", JOptionPane.YES_NO_OPTION);
-					if (dialogResult == JOptionPane.YES_OPTION) {
-						mask.deleteOuterMaskSegments(selectedOuterMaskSegmentIndex);
-						refreshOuterMaskSegmentsList();
-						refreshOuterMaskSegmentDetailsTable();
-						drawOuterMask();
-					} 
-				}
-			}
-		});
-		outerMaskSegmentOperations.add(btnDeleteOuterMaskSegment);
-		btnAddOuterMaskSegment.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				dialogBoxForAddingOuterMaskSegment.setLocationRelativeTo(dialogBoxForAddingOuterMaskSegment.getParent());
-				dialogBoxForAddingOuterMaskSegment.setVisible(true);
-				refreshOuterMaskSegmentsList();
-				refreshOuterMaskSegmentDetailsTable();
-				drawOuterMask();
-			}
-		});
-		
-		lblMaskSegmentNames = new JLabel("Mask Segment Names");
-		outerMaskPanel.add(lblMaskSegmentNames, "cell 0 1,alignx center");
-		
-		lblSelectedMaskValues = new JLabel("Selected Mask Segment Values");
-		outerMaskPanel.add(lblSelectedMaskValues, "cell 1 1,alignx center");
-		outerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane outerListScroller = new JScrollPane(outerList);
-		outerMaskPanel.add(outerListScroller, "cell 0 2,grow");
-		refreshOuterMaskSegmentsList();
-		
-		outerTable = new JTable(new TableModelForOuterMask());
-		JScrollPane scrollPaneForOuterTable = new JScrollPane(outerTable);
-		outerMaskPanel.add(scrollPaneForOuterTable, "cell 1 2,grow");
 		
 		arrayParametersPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
@@ -1182,44 +1182,29 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void createTemporaryMasks() {
 		
-		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
-		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
-////		mask.addNewSLL_outer("SLL_03", 30, 79, 49, -20, 1);
-//		mask.addNewSLL_outer("SLL_04", 79, 80, 5, -60, 1);
-//		mask.addNewSLL_outer("SLL_05", 80, 100, 20, 0, 1);
-//		mask.addNewSLL_outer("SLL_06", 100, 110, 10, -20, 1);
-//		mask.addNewSLL_outer("SLL_07", 110, 115, 15, -40, 1);
-//		mask.addNewSLL_outer("SLL_08", 115, 180, 65, -24, 1);		
-
-		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
-		mask.addNewInnerMaskSegments("SLL_01_baska", 40, 60, 30, -30, 1);
-//		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
-//		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
-//		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
-//		mask.addNewSLL_inner("SLL_01", 70, 150, 3, -95, 1);
-//		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
-//		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);
-		
-//		mask.addNewSLL_outer("SLL_01", 0, 60, 60, -25, 1);
-//		mask.addNewSLL_outer("SLL_01", 60, 65, 20, -70, 1);
-//		mask.addNewSLL_outer("SLL_01", 65, 80, 50, -25, 1);
-//		mask.addNewSLL_outer("SLL_01", 80, 100, 20, 0, 1);
-//		mask.addNewSLL_outer("SLL_01", 100, 110, 10, -25, 1);
-//		mask.addNewSLL_outer("SLL_01", 110, 115, 5, -25, 1);
-//		mask.addNewSLL_outer("SLL_01", 115, 180, 65, -25, 1);		
+//		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
+//		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
+//		mask.addNewOuterMaskSegments("SLL_03", 30, 79, 49, -20, 1);
+//		mask.addNewOuterMaskSegments("SLL_04", 79, 80, 5, -60, 1);
+//		mask.addNewOuterMaskSegments("SLL_05", 80, 100, 20, 0, 1);
+//		mask.addNewOuterMaskSegments("SLL_06", 100, 110, 10, -20, 1);
+//		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
+//		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
 //
-//		mask.addNewSLL_inner("SLL_01", 0, 86, 3, -95, 1);
-//		mask.addNewSLL_inner("SLL_01", 86, 94, 20, -5, 1);
-//		mask.addNewSLL_inner("SLL_01", 94, 180, 3, -95, 1);
+//		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
+//		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
+//		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
+//		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 3, -95, 1);
+//		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -40, 1);
+//		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
 		
-//		mask.addNewSLL_inner("SLL_01", 0, 40, 3, -95, 1);
-//		mask.addNewSLL_inner("SLL_01", 40, 60, 30, -30, 1);
-//		mask.addNewSLL_inner("SLL_01", 60, 70, 20, -35, 1);
-//		mask.addNewSLL_inner("SLL_01", 70, 86, 3, -95, 1);
-//		mask.addNewSLL_inner("SLL_01", 86, 94, 3, -5, 1);
-//		mask.addNewSLL_inner("SLL_01", 94, 150, 3, -95, 1);
-//		mask.addNewSLL_inner("SLL_01", 150, 160, 10, -40, 1);
-//		mask.addNewSLL_inner("SLL_01", 160, 180, 3, -95, 1);	
+		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 81, -35, 1);
+		mask.addNewOuterMaskSegments("SLL_02_out", 83, 97, 2, 0, 1);
+		mask.addNewOuterMaskSegments("SLL_03_out", 97, 180, 81, -35, 1);
+
+		mask.addNewInnerMaskSegments("SLL_01_in", 0, 88, 2, -95, 1);
+		mask.addNewInnerMaskSegments("SLL_02_in", 88, 92, 2, -3, 1);
+		mask.addNewInnerMaskSegments("SLL_03_in", 92, 180, 2, -95, 1);
 		
 	}
 }
