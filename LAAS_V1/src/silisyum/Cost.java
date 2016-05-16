@@ -60,7 +60,11 @@ public class Cost {
 			for (int z = 0; z < aA.angleForOptimization_ForOuters.length; z++) {
 				aA.patternForOptimization_dB_ForOuters[z] = 20 * Math.log10(aA.patternForOptimization_ForOuters[z] / aA.biggestOne);
 				if (aA.patternForOptimization_dB_ForOuters[z] > aA.levels_ForOuters[z])
+				{
 					result += aA.weights_ForOuters[z] * (aA.patternForOptimization_dB_ForOuters[z] - aA.levels_ForOuters[z]);
+//					if(z == 83) System.out.println(aA.patternForOptimization_dB_ForOuters[z] - aA.levels_ForOuters[z]);
+//					if(z == 83) System.out.println(aA.levels_ForOuters[z]);
+				}
 			}
 		}
 		
