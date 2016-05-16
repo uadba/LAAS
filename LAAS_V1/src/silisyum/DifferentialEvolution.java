@@ -150,6 +150,11 @@ public class DifferentialEvolution {
 			if(fitnessOfTrial < memberFitness[bestMember]) {
 				bestMember = individual;
 				fitnessOfBestMember = memberFitness[individual];
+				if (fitnessOfBestMember<5)
+					{
+						System.out.println(fitnessOfBestMember);
+						
+					}
 			}
 		}
 		

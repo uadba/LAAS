@@ -76,13 +76,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     
     private int numberofElements = 26;
     private int problemDimension;
-    private double[] L = {0, 0, -0.01}; // initial values of amplitude, phase, and position minimum limits
-    private double[] H = {1, 10, 0.01}; // initial values of amplitude, phase, and position maximum limits    
+    private double[] L = {0, 0, -0.1}; // initial values of amplitude, phase, and position minimum limits
+    private double[] H = {1, 10, 0.1}; // initial values of amplitude, phase, and position maximum limits    
     private boolean amplitudeIsUsed = true;
     private boolean phaseIsUsed = false;
-    private boolean positionIsUsed = false;
+    private boolean positionIsUsed = true;
     private Mask mask;
-    private int patterGraphResolution = 721; //721;
+    private int patterGraphResolution = 181; //721;
     private int populationNumber = 70;
     private int maximumIterationNumber = 2000;
     private double F = 0.7;
@@ -300,6 +300,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		panelConvergenceGraphProperties = new JPanel();
 		panelConvergence.add(panelConvergenceGraphProperties);
 		
+		lblNewLabel = new JLabel("Iteration Number:");
+		panelConvergenceGraphProperties.add(lblNewLabel);
+		
 		iterationText = new JTextField();
 		panelConvergenceGraphProperties.add(iterationText);
 		iterationText.setEditable(false);
@@ -312,9 +315,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		panelConvergenceGraphProperties.add(costText);
 		costText.setEditable(false);
 		costText.setColumns(20);
-		
-		lblNewLabel = new JLabel("Iteration Number:");
-		panelConvergenceGraphProperties.add(lblNewLabel);
 		
 		rightPannel = new JPanel();
 		contentPane.add(rightPannel, BorderLayout.EAST);
@@ -1075,7 +1075,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		iterationText.setText(Integer.toString(differentialEvolution.iterationIndex));
 		costText.setText(Double.toString(differentialEvolution.fitnessOfBestMember));		
 
-		//drawOuterMask();
+		
 		
 		drawInnerMask();
 		
@@ -1198,9 +1198,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 //		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -40, 1);
 //		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
 		
-		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 81, -35, 1);
+		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 84, -35, 1);
 		mask.addNewOuterMaskSegments("SLL_02_out", 83, 97, 2, 0, 1);
-		mask.addNewOuterMaskSegments("SLL_03_out", 97, 180, 81, -35, 1);
+		mask.addNewOuterMaskSegments("SLL_03_out", 97, 180, 84, -35, 1);
 
 		mask.addNewInnerMaskSegments("SLL_01_in", 0, 88, 2, -95, 1);
 		mask.addNewInnerMaskSegments("SLL_02_in", 88, 92, 2, -3, 1);

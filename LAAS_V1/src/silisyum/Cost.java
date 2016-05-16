@@ -72,8 +72,8 @@ public class Cost {
 					result += aA.weights_ForInners[z] * (aA.levels_ForInners[z] - aA.patternForOptimization_dB_ForInners[z]);
 				}
 			} 
-		}
-		
+		}		
+
 		return result;
 	}
 
