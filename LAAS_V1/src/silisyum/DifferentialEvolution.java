@@ -158,7 +158,7 @@ public class DifferentialEvolution {
 						aA.createPatternForOptimization();
 						for (int z = 0; z < aA.angleForOptimization_ForOuters.length; z++) {
 							aA.patternForOptimization_dB_ForOuters[z] = 20 * Math.log10(aA.patternForOptimization_ForOuters[z] / aA.biggestOne);
-							System.out.println("z:" + z +": "+ aA.patternForOptimization_dB_ForOuters[z]);
+							System.out.println("zee:" + z +": "+ aA.patternForOptimization_dB_ForOuters[z]);
 						}
 					}
 			}
