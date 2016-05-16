@@ -172,7 +172,7 @@ public class AntennaArray {
 					}
 				}
 			}
-			angleForOptimization_ForOuters[0] = 0;
+			//angleForOptimization_ForOuters[0] = 0; // No need to use !
 			biggestOne = patternFunction(angleForOptimization_ForOuters[0]);
 			patternForOptimization_ForOuters[0] = patternFunction(angleForOptimization_ForOuters[0]);
 			for (int z = 1; z < angleForOptimization_ForOuters.length; z++) { // Attention please it starts from "1"
@@ -198,7 +198,7 @@ public class AntennaArray {
 					}
 				}
 			}
-			angleForOptimization_ForInners[0] = 0;
+			//angleForOptimization_ForInners[0] = 0; // No need to use !
 			if (numberOfSLLOuters < 1) biggestOne = patternFunction(angleForOptimization_ForInners[0]);
 			patternForOptimization_ForInners[0] = patternFunction(angleForOptimization_ForInners[0]);
 			for (int z = 1; z < angleForOptimization_ForInners.length; z++) { // Attention please it starts from "1"
