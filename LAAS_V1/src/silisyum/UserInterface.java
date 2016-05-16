@@ -595,7 +595,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		lblMaximumValueAmplitude.setHorizontalAlignment(SwingConstants.RIGHT);
 		arrayParametersPanel.add(lblMaximumValueAmplitude, "cell 0 2,alignx trailing");
 		
-		textField_maximumValueAmplitude = new JTextField();
+		textField_maximumValueAmplitude = new JTextField(Double.toString(H[0]));
 		arrayParametersPanel.add(textField_maximumValueAmplitude, "cell 1 2,growx");
 		textField_maximumValueAmplitude.setColumns(10);
 		
@@ -603,7 +603,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		lblMinimumValueAmplitude.setHorizontalAlignment(SwingConstants.RIGHT);
 		arrayParametersPanel.add(lblMinimumValueAmplitude, "cell 0 3,alignx trailing");
 		
-		textField_minimumValueAmplitude = new JTextField();
+		textField_minimumValueAmplitude = new JTextField(Double.toString(L[0]));
 		arrayParametersPanel.add(textField_minimumValueAmplitude, "cell 1 3,growx");
 		textField_minimumValueAmplitude.setColumns(10);
 		
@@ -621,7 +621,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		lblMaximumValuePhase.setHorizontalAlignment(SwingConstants.RIGHT);
 		arrayParametersPanel.add(lblMaximumValuePhase, "cell 0 5,alignx trailing");
 		
-		textField_maximumValuePhase = new JTextField();
+		textField_maximumValuePhase = new JTextField(Double.toString(H[1]));
 		arrayParametersPanel.add(textField_maximumValuePhase, "cell 1 5,growx");
 		textField_maximumValuePhase.setColumns(10);
 		
@@ -629,7 +629,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		lblMinimumValuePhase.setHorizontalAlignment(SwingConstants.RIGHT);
 		arrayParametersPanel.add(lblMinimumValuePhase, "cell 0 6,alignx trailing");
 		
-		textField_minimumValuePhase = new JTextField();
+		textField_minimumValuePhase = new JTextField(Double.toString(L[1]));
 		arrayParametersPanel.add(textField_minimumValuePhase, "cell 1 6,growx");
 		textField_minimumValuePhase.setColumns(10);
 		
@@ -647,7 +647,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		lblMaximumValuePosition.setHorizontalAlignment(SwingConstants.RIGHT);
 		arrayParametersPanel.add(lblMaximumValuePosition, "cell 0 8,alignx trailing");
 		
-		textField_maximumValuePosition = new JTextField();
+		textField_maximumValuePosition = new JTextField(Double.toString(H[2]));
 		arrayParametersPanel.add(textField_maximumValuePosition, "cell 1 8,growx");
 		textField_maximumValuePosition.setColumns(10);
 		
@@ -655,7 +655,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		lblMinimumValuePosition.setHorizontalAlignment(SwingConstants.RIGHT);
 		arrayParametersPanel.add(lblMinimumValuePosition, "cell 0 9,alignx trailing");
 		
-		textField_minimumValuePosition = new JTextField();
+		textField_minimumValuePosition = new JTextField(Double.toString(L[2]));
 		arrayParametersPanel.add(textField_minimumValuePosition, "cell 1 9,growx");
 		textField_minimumValuePosition.setColumns(10);
 		
@@ -996,11 +996,20 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	}
 	
 	private void getParametersFromUserInterface() {
+		// DE parameters
 		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
 	    populationNumber = Integer.parseInt(populationNumber_textField.getText());
 	    maximumIterationNumber = Integer.parseInt(maximumIterationNumber_textField.getText());
 	    F = Double.parseDouble(F_textField.getText());
 	    Cr = Double.parseDouble(Cr_textField.getText());
+	    
+	    // Antenna array parameters
+	    H[0] = Double.parseDouble(textField_maximumValueAmplitude.getText());
+	    L[0] = Double.parseDouble(textField_minimumValueAmplitude.getText());
+	    H[1] = Double.parseDouble(textField_maximumValuePhase.getText());
+	    L[1] = Double.parseDouble(textField_minimumValuePhase.getText());
+	    H[2] = Double.parseDouble(textField_maximumValuePosition.getText());
+	    L[2] = Double.parseDouble(textField_minimumValuePosition.getText());	    
 	}
 	
 	private void calculateProblemDimension() {
