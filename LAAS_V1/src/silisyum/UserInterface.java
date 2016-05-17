@@ -175,6 +175,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTable tableAmplitude;
     private JTable tablePhase;
     private JTable tablePosition;
+    private JButton btnSetElementNumber;
     
 	/**
 	 * Launch the application.
@@ -399,13 +400,38 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
 		arrayParametersPanel.setLayout(new MigLayout("", "[110px][:110px:110px][110px][:110px:110px][110px][:110px:110px]", "[20px][][][][][grow]"));
 		
-		numberOfElements_Label = new JLabel("Number of Antenna Array Elements");
-		arrayParametersPanel.add(numberOfElements_Label, "cell 1 0 2 1,alignx right,aligny center");
+		numberOfElements_Label = new JLabel("Number of Antenna Array Elements :");
+		arrayParametersPanel.add(numberOfElements_Label, "cell 0 0 2 1,alignx right,aligny center");
 		
 		numberOfElements_Field = new JTextField();
+		numberOfElements_Field.setEditable(false);
 		numberOfElements_Field.setText(Integer.toString(numberofElements));
-		arrayParametersPanel.add(numberOfElements_Field, "cell 3 0,growx,aligny center");
+		arrayParametersPanel.add(numberOfElements_Field, "cell 2 0,growx,aligny center");
 		numberOfElements_Field.setColumns(10);
+		
+		btnSetElementNumber = new JButton("Set the Number of Antenna Array Elements");
+		btnSetElementNumber.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				Object[] possibilities = {"good", "bad", "uggly"};
+				String s = (String)JOptionPane.showInputDialog(
+				                    null,
+				                    "Complete the sentence:\n"
+				                    + "\"Green eggs and...\"",
+				                    "Number of Antenna Array Elements",
+				                    JOptionPane.PLAIN_MESSAGE,
+				                    null,
+				                    possibilities,
+				                    "ham");
+
+				//If a string was returned, say so.
+				if ((s != null) && (s.length() > 0)) {
+				    //setLabel("Green eggs and... " + s + "!");
+				    return;
+				}
+			}
+		});
+		arrayParametersPanel.add(btnSetElementNumber, "cell 3 0 3 1");
 		
 		lblAmplitudeValues = new JLabel("Amplitude Values");
 		arrayParametersPanel.add(lblAmplitudeValues, "cell 0 1");
