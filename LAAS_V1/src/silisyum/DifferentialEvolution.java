@@ -28,7 +28,6 @@ public class DifferentialEvolution {
     private boolean positionIsUsed;
 	private Cost c;
 	private boolean iterationState = true;
-	private AntennaArray aA;
 	
 	public DifferentialEvolution(int _numberofElements, int _populationNumber, int _maximumIterationNumber, double _F, double _Cr, double[] _L, double[] _H, AntennaArray _aA, Mask _mask, boolean _amplitudeIsUsed, boolean _phaseIsUsed, boolean _positionIsUsed) {
 		
@@ -39,7 +38,6 @@ public class DifferentialEvolution {
 		Cr = _Cr;
 		L = _L;
 		H = _H;
-		aA = _aA;
 	    amplitudeIsUsed = _amplitudeIsUsed;
 	    phaseIsUsed = _phaseIsUsed;
 	    positionIsUsed = _positionIsUsed;
@@ -152,15 +150,6 @@ public class DifferentialEvolution {
 			if(fitnessOfTrial < memberFitness[bestMember]) {
 				bestMember = individual;
 				fitnessOfBestMember = memberFitness[individual];
-				if (fitnessOfBestMember<5)
-					{
-						System.out.println(fitnessOfBestMember);
-						aA.createPatternForOptimization();
-						for (int z = 0; z < aA.angleForOptimization_ForOuters.length; z++) {
-							aA.patternForOptimization_dB_ForOuters[z] = 20 * Math.log10(aA.patternForOptimization_ForOuters[z] / aA.biggestOne);
-							System.out.println("zee:" + z +": "+ aA.patternForOptimization_dB_ForOuters[z]);
-						}
-					}
 			}
 		}
 		

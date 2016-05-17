@@ -1199,7 +1199,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 //		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
 		
 		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 84, -35, 1);
-		mask.addNewOuterMaskSegments("SLL_02_out", 83, 97, 2, 0, 1);
+		mask.addNewOuterMaskSegments("SLL_02_out", 83, 97, 3, 0, 1);
 		mask.addNewOuterMaskSegments("SLL_03_out", 97, 180, 84, -35, 1);
 
 		mask.addNewInnerMaskSegments("SLL_01_in", 0, 88, 2, -95, 1);

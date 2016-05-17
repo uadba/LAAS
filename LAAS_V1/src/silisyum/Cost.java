@@ -17,11 +17,7 @@ public class Cost {
 	    positionIsUsed = _positionIsUsed;
 	
 		aA.createLongArrays();
-				
-//		for (int i = 0; i < mask.SLL_outers.get(0).angles.length; i++) {
-//			Mask.SidelobeLevel temp = mask.SLL_outers.get(0);
-//			System.out.println(" " + temp.angles[i] + " " + temp.levels[i]);			
-//		}
+		
 	}
 	
 	public double function(double[] theVector) {
@@ -62,8 +58,6 @@ public class Cost {
 				if (aA.patternForOptimization_dB_ForOuters[z] > aA.levels_ForOuters[z])
 				{
 					result += aA.weights_ForOuters[z] * (aA.patternForOptimization_dB_ForOuters[z] - aA.levels_ForOuters[z]);
-//					if(z == 83) System.out.println(aA.patternForOptimization_dB_ForOuters[z] - aA.levels_ForOuters[z]);
-//					if(z == 83) System.out.println(aA.levels_ForOuters[z]);
 				}
 			}
 		}
