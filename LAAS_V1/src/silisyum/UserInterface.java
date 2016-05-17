@@ -100,7 +100,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTextField iterationText;
     private JLabel lblNewLabel;
     private JLabel lblNewLabel_1;
-    private AlgorithmExecuter ae;
+    private AlgorithmExecuter algorithmExecuter;
     private JTabbedPane tabbedPaneForPlots;
     private JPanel panelPatternGraphProperties;
     private JLabel lblNewLabel_2;
@@ -336,8 +336,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if(validateParameters()) {
-					if(ae.keepIterating == false) {
-						if(ae.newStart) {
+					if(algorithmExecuter.keepIterating == false) {
+						if(algorithmExecuter.newStart) {
 							getParametersFromUserInterface();
 							calculateProblemDimension();
 							createMainObjects();
@@ -345,8 +345,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							maskOuter.clear();
 							maskInner.clear();
 							convergenceSeries.clear();
-							ae.newStart = false;
-							ae.iterationHasNotCompletedYet = true;
+							algorithmExecuter.newStart = false;
+							algorithmExecuter.iterationHasNotCompletedYet = true;
 							sendMessageToPane("<font color=#006400><b>Optimization process has been <i>started</i> successfully!</b></font>", true);
 							if(isThereAnyGapInOuterMask()) {
 								sendMessageToPane("<br><font color=#666600>Warning: There is at least one gap in the <i>outer mask</i>. It does not affect the optimization process adversely but it may be the sign of a bad designed mask.</font>", false);								
@@ -357,13 +357,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						} else {
 							sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>restarted</i>.</b></font>", false);
 						}
-						ae.keepIterating = true;
+						algorithmExecuter.keepIterating = true;
 						startStopButton.setText("Stop Optimization");
 						terminateOptimizationButton.setVisible(false);
 						drawOuterMask();
 						drawInnerMask();
 					} else {
-						ae.keepIterating = false;
+						algorithmExecuter.keepIterating = false;
 						startStopButton.setText("Continue Optimization");
 						terminateOptimizationButton.setVisible(true);
 						sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>stopped</i>.</b></font>", false);
@@ -381,8 +381,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		terminateOptimizationButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				ae.keepIterating = false;
-				ae.newStart = true;
+				algorithmExecuter.keepIterating = false;
+				algorithmExecuter.newStart = true;
 				terminateOptimizationButton.setVisible(false);
 				startStopButton.setText("Start Optimization");
 				sendMessageToPane("<br><font color=#006400><b>Optimization process has been </b></font> <font color=red><b><i>terminated</i></b></font> <font color=#006400><b>by the user</b></font>.", false);
@@ -428,6 +428,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					refreshAmplitudeTable();
 					refreshPhaseTable();
 					refreshPositionTable();
+					drawPlotWithInitialParameterValues();
 				}			
 
 			}
@@ -763,14 +764,16 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		refreshPositionTable();
 		drawOuterMask();
 		drawInnerMask();
+		drawPlotWithInitialParameterValues();		
 		
-		ae = new AlgorithmExecuter();
-		ae.execute();
+		algorithmExecuter = new AlgorithmExecuter();
+		algorithmExecuter.execute();
 	}
 		
 	protected void createAntennaArray() {
 		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
-		antennaArray = new AntennaArray(numberofElements, patterGraphResolution, mask);		
+		antennaArray = new AntennaArray(numberofElements, patterGraphResolution, mask);
+		antennaArrayForPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
 	}
 
 	//	For outer mask segment
@@ -973,9 +976,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	    public void setValueAt(Object value, int row, int col) {
 
 			//if(col == 0) SLL_outer.angles[row] = (double) value;
-			if(col == 1) antennaArray.amplitude[row] = (double) value;
+			if(col == 1) antennaArray.amplitude[row] = (double) value;			
 	    	
 	        fireTableCellUpdated(row, col);
+	        drawPlotWithInitialParameterValues();
 	        
 	        drawOuterMask();
 	    }
@@ -1043,6 +1047,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			if(col == 1) antennaArray.phase[row] = (double) value;
 	    	
 	        fireTableCellUpdated(row, col);
+	        drawPlotWithInitialParameterValues();
 	        
 	        drawOuterMask();
 	    }
@@ -1110,6 +1115,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			if(col == 1) antennaArray.position[row] = (double) value;
 	    	
 	        fireTableCellUpdated(row, col);
+	        drawPlotWithInitialParameterValues();
 	        
 	        drawOuterMask();
 	    }
@@ -1304,7 +1310,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	}
 	
 	private void createMainObjects() {		
-		antennaArrayForPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
 		differentialEvolution = new DifferentialEvolution(numberofElements, populationNumber, maximumIterationNumber, F, Cr, L, H, antennaArray, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
 	}
 	
@@ -1314,6 +1319,23 @@ public class UserInterface extends JFrame implements ChartMouseListener{
         container.revalidate();
     }
 
+	protected void drawPlotWithInitialParameterValues() {
+
+		// it should not be a new implementation of AntennaArray class
+		// We don't want to use the same instance which the other thread uses
+		// This new instance can be another member function of this class
+		// Its name may be aAforPresentation;
+		// CONSIDER THIS!
+
+		antennaArray.createPattern();
+		
+		for(int x=0; x<antennaArray.numberofSamplePoints; x++)
+		{				
+			seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
+		}
+		
+	}
+	
 	protected void drawPlot() {
 
 		// it should not be a new implementation of AntennaArray class
@@ -1357,12 +1379,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		convergenceSeries.add(differentialEvolution.iterationIndex, differentialEvolution.fitnessOfBestMember);
 		iterationText.setText(Integer.toString(differentialEvolution.iterationIndex));
 		costText.setText(Double.toString(differentialEvolution.fitnessOfBestMember));		
-
-		
-		
-		drawInnerMask();
-		
-
 	}
 
 	private void drawOuterMask() {
