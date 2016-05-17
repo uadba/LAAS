@@ -413,22 +413,23 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnSetElementNumber.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				Object[] possibilities = {"good", "bad", "uggly"};
 				String s = (String)JOptionPane.showInputDialog(
 				                    null,
-				                    "Complete the sentence:\n"
-				                    + "\"Green eggs and...\"",
+				                    "Please enter the number of antenna array elements",
 				                    "Number of Antenna Array Elements",
 				                    JOptionPane.PLAIN_MESSAGE,
 				                    null,
-				                    possibilities,
-				                    "ham");
+				                    null,
+				                    Integer.toString(numberofElements));
+				
+				if ((s != null) && (s.length() > 0)) {					
+					numberOfElements_Field.setText(s);					
+					createAntennaArray();
+					refreshAmplitudeTable();
+					refreshPhaseTable();
+					refreshPositionTable();
+				}			
 
-				//If a string was returned, say so.
-				if ((s != null) && (s.length() > 0)) {
-				    //setLabel("Green eggs and... " + s + "!");
-				    return;
-				}
 			}
 		});
 		arrayParametersPanel.add(btnSetElementNumber, "cell 3 0 3 1");
@@ -458,6 +459,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				phaseIsUsed = chckbxPhase.isSelected();
+				refreshPhaseTable();
 			}
 		});
 		chckbxPhase.setSelected(phaseIsUsed);
@@ -468,6 +470,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				positionIsUsed = chckbxPosition.isSelected();
+				refreshPositionTable();
 			}
 		});
 		chckbxPosition.setSelected(positionIsUsed);
@@ -525,11 +528,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		JScrollPane scrollPaneForTableAmplitude = new JScrollPane(tableAmplitude);
 		arrayParametersPanel.add(scrollPaneForTableAmplitude, "cell 0 5 2 1,grow");
 		
-		tablePhase = new JTable();
+		tablePhase = new JTable(new TableModelForPhase());
 		JScrollPane scrollPaneForTablePhase = new JScrollPane(tablePhase);
 		arrayParametersPanel.add(scrollPaneForTablePhase, "cell 2 5 2 1,grow");
 		
-		tablePosition = new JTable();
+		tablePosition = new JTable(new TableModelForPosition());
 		JScrollPane scrollPaneForTablePosition = new JScrollPane(tablePosition);
 		arrayParametersPanel.add(scrollPaneForTablePosition, "cell 4 5 2 1,grow");
 		
@@ -754,7 +757,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		refreshOuterMaskSegmentsList();
 		refreshInnerMaskSegmentsList();
 		
+		createAntennaArray();
 		refreshAmplitudeTable();
+		refreshPhaseTable();
+		refreshPositionTable();
 		drawOuterMask();
 		drawInnerMask();
 		
@@ -762,6 +768,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		ae.execute();
 	}
 		
+	protected void createAntennaArray() {
+		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
+		antennaArray = new AntennaArray(numberofElements, patterGraphResolution, mask);		
+	}
+
 	//	For outer mask segment
 	class TableModelForOuterMask extends AbstractTableModel {
 		/**
@@ -903,7 +914,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	    }
 	}
 	
-	//	For outer mask segment
+	//	For amplitude
 	class TableModelForAmplitude extends AbstractTableModel {
 
 		/**
@@ -920,6 +931,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	    public int getRowCount() {
 	    	int length = 0;
 	    	if (antennaArray != null) length = antennaArray.amplitude.length;
+	    	if (chckbxAmplitude.isSelected()) length = 0;
 	    	return length;
 	    }
 	
@@ -968,9 +980,154 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	        drawOuterMask();
 	    }
 	}
+
+	//	For phase
+	class TableModelForPhase extends AbstractTableModel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2008679132150819237L;
+		private String[] columnNames = {"Number",
+                "Value"};
+	
+	    public int getColumnCount() {
+	        return columnNames.length;
+	    }
+	
+	    public int getRowCount() {
+	    	int length = 0;
+	    	if (antennaArray != null) length = antennaArray.phase.length;
+	    	if (chckbxPhase.isSelected()) length = 0;
+	    	return length;
+	    }
+	
+	    public String getColumnName(int col) {
+	        return columnNames[col];
+	    }
+	
+	    public Object getValueAt(int row, int col) {
+
+	    	double returnedValue = 0;
+
+			if(col == 0) returnedValue = row;
+			if(col == 1) returnedValue = antennaArray.phase[row];
+			
+			return returnedValue;
+	    }
+	
+	    public Class<?> getColumnClass(int c) {
+	        return getValueAt(0, c).getClass();
+	    }
+	
+	    /*
+	     * Don't need to implement this method unless your table's
+	     * editable.
+	     */
+	    public boolean isCellEditable(int row, int col) {
+	        //Note that the data/cell address is constant,
+	        //no matter where the cell appears onscreen.
+	        if (col < 1) {
+	            return false;
+	        } else {
+	            return true;
+	        }
+	    }
+	    /*
+	     * Don't need to implement this method unless your table's
+	     * data can change.
+	     */
+	    public void setValueAt(Object value, int row, int col) {
+
+			//if(col == 0) SLL_outer.angles[row] = (double) value;
+			if(col == 1) antennaArray.phase[row] = (double) value;
+	    	
+	        fireTableCellUpdated(row, col);
+	        
+	        drawOuterMask();
+	    }
+	}
+
+	//	For position
+	class TableModelForPosition extends AbstractTableModel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2847289441614578433L;
+		private String[] columnNames = {"Number",
+                "Value"};
+	
+	    public int getColumnCount() {
+	        return columnNames.length;
+	    }
+	
+	    public int getRowCount() {
+	    	int length = 0;
+	    	if (antennaArray != null) length = antennaArray.position.length;
+	    	if (chckbxPosition.isSelected()) length = 0;
+	    	return length;
+	    }
+	
+	    public String getColumnName(int col) {
+	        return columnNames[col];
+	    }
+	
+	    public Object getValueAt(int row, int col) {
+
+	    	double returnedValue = 0;
+
+			if(col == 0) returnedValue = row;
+			if(col == 1) returnedValue = antennaArray.position[row];
+			
+			return returnedValue;
+	    }
+	
+	    public Class<?> getColumnClass(int c) {
+	        return getValueAt(0, c).getClass();
+	    }
+	
+	    /*
+	     * Don't need to implement this method unless your table's
+	     * editable.
+	     */
+	    public boolean isCellEditable(int row, int col) {
+	        //Note that the data/cell address is constant,
+	        //no matter where the cell appears onscreen.
+	        if (col < 1) {
+	            return false;
+	        } else {
+	            return true;
+	        }
+	    }
+	    /*
+	     * Don't need to implement this method unless your table's
+	     * data can change.
+	     */
+	    public void setValueAt(Object value, int row, int col) {
+
+			//if(col == 0) SLL_outer.angles[row] = (double) value;
+			if(col == 1) antennaArray.position[row] = (double) value;
+	    	
+	        fireTableCellUpdated(row, col);
+	        
+	        drawOuterMask();
+	    }
+	}
+
 	
 	private void refreshAmplitudeTable() {
 		TableModelForAmplitude model = (TableModelForAmplitude) tableAmplitude.getModel();
+		model.fireTableDataChanged();
+	}
+	
+	private void refreshPhaseTable() {
+		TableModelForPhase model = (TableModelForPhase) tablePhase.getModel();
+		model.fireTableDataChanged();
+	}
+	
+	private void refreshPositionTable() {
+		TableModelForPosition model = (TableModelForPosition) tablePosition.getModel();
 		model.fireTableDataChanged();
 	}
 
@@ -1124,7 +1281,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void getParametersFromUserInterface() {
 		// DE parameters
-		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
+		// numberOfElements = Integer.parseInt(numberOfElements_Field.getText()); // numberOfElements was already assigned.
 	    populationNumber = Integer.parseInt(populationNumber_textField.getText());
 	    maximumIterationNumber = Integer.parseInt(maximumIterationNumber_textField.getText());
 	    F = Double.parseDouble(F_textField.getText());
@@ -1146,8 +1303,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (positionIsUsed) problemDimension += numberofElements;
 	}
 	
-	private void createMainObjects() {
-		antennaArray = new AntennaArray(numberofElements, patterGraphResolution, mask);
+	private void createMainObjects() {		
 		antennaArrayForPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
 		differentialEvolution = new DifferentialEvolution(numberofElements, populationNumber, maximumIterationNumber, F, Cr, L, H, antennaArray, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
 	}
