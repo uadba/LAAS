@@ -6,9 +6,9 @@ public class AntennaArray {
 	double beta = 2*Math.PI/lambda;
 	//static double[] a = {1.0, 0.9295, 1.2126, 1.4383, 1.5568, 1.5568, 1.4383, 1.2126, 0.9295, 1.0};
 	int numberofElements;
-	public double[] a;
-	public double[] d;
-	public double[] alpha;
+	public double[] amplitude;
+	public double[] position;
+	public double[] phase;
 	public int numberofSamplePoints;
 	public double[] angle = new double[numberofSamplePoints];	
 	private double[] pattern = new double[numberofSamplePoints];
@@ -40,9 +40,9 @@ public class AntennaArray {
 	
 
 	public void createArrays() {
-		a = new double[numberofElements];
-		d = new double[numberofElements];
-		alpha = new double[numberofElements];		
+		amplitude = new double[numberofElements];
+		position = new double[numberofElements];
+		phase = new double[numberofElements];		
 		angle = new double[numberofSamplePoints];
 		pattern = new double[numberofSamplePoints];
 		pattern_dB = new double[numberofSamplePoints];		
@@ -67,16 +67,16 @@ public class AntennaArray {
 		
 		for (int i = 0; i < numberofElements; i++)
 		{
-			a[i] = 1;
+			amplitude[i] = 1;
 			//a[i] = thesis_seven_weight[i];
 			//a[i] = temp_a[i]; // seeker
 			
-			alpha[i] = 0;
+			phase[i] = 0;
 			// alpha[i] = thesis_seven_alpha[i];
 			//alpha[i] = temp_alpha[i]; // seeker
 			//alpha[i] = alpha_example[i]; // ismail th
 			
-			d[i] = i*0.5*lambda;
+			position[i] = i*0.5*lambda;
 			//d[i] = seeker_position[i]*lambda;
 			//d[i] = temp_d_10[i]*0.5*lambda;
 			//d[i] = temp_d_32[i]*0.5*lambda;
@@ -93,8 +93,8 @@ public class AntennaArray {
 		double result_img = 0;
 		for (int e = 0; e<numberofElements; e++)
 		{
-			result_real = result_real + a[e]*Math.cos(d[e]*beta*Math.cos((theta)/180*Math.PI) + ((alpha[e])/180*Math.PI));
-			result_img = result_img + a[e]*Math.sin(d[e]*beta*Math.cos((theta)/180*Math.PI) + ((alpha[e])/180*Math.PI));			
+			result_real = result_real + amplitude[e]*Math.cos(position[e]*beta*Math.cos((theta)/180*Math.PI) + ((phase[e])/180*Math.PI));
+			result_img = result_img + amplitude[e]*Math.sin(position[e]*beta*Math.cos((theta)/180*Math.PI) + ((phase[e])/180*Math.PI));			
 		}
 		result = Math.sqrt(result_real*result_real + result_img*result_img);
 					

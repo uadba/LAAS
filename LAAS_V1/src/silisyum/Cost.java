@@ -28,7 +28,7 @@ public class Cost {
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
 			for (int index = 0; index < numberofElements; index++) {
-				aA.a[index] = theVector[index];
+				aA.amplitude[index] = theVector[index];
 			}
 			delta = numberofElements;
 		}
@@ -36,16 +36,16 @@ public class Cost {
 		if (phaseIsUsed) {
 			// this is for phases
 			for (int index = 0; index < numberofElements; index++) {
-				aA.alpha[index] = theVector[index + delta];
+				aA.phase[index] = theVector[index + delta];
 			}
 			delta += numberofElements;
 		}
 		
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
-			aA.d[0] = 0;
+			aA.position[0] = 0;
 			for (int index = 1; index < numberofElements; index++) {
-				aA.d[index] = aA.d[index - 1] + 0.5 + theVector[index + delta];
+				aA.position[index] = aA.position[index - 1] + 0.5 + theVector[index + delta];
 			} 
 		}
 		

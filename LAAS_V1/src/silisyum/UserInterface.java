@@ -169,6 +169,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private DefaultListModel<String> listModelForInnerMaskSegments;
     private DialogBoxForAddingInnerMaskSegment dialogBoxForAddingInnerMaskSegment;
     private DialogBoxForEditingInnerMaskSegment dialogBoxForEditingInnerMaskSegment;
+    private JLabel lblAmplitudeValues;
+    private JLabel lblPhaseValues;
+    private JLabel lblPositionValues;
+    private JTable tableAmplitude;
+    private JTable tablePhase;
+    private JTable tablePosition;
     
 	/**
 	 * Launch the application.
@@ -388,19 +394,118 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
 		rightPannel.add(tabbedPaneForSettings, BorderLayout.CENTER);
-		//table.setFillsViewportHeight(true);
 		
-		mainControlsPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
-		mainControlsPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
+		arrayParametersPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
+		arrayParametersPanel.setLayout(new MigLayout("", "[110px][:110px:110px][110px][:110px:110px][110px][:110px:110px]", "[20px][][][][][grow]"));
 		
-		lblMessages = new JLabel("Messages");
-		mainControlsPanel.add(lblMessages, "cell 0 0");
+		numberOfElements_Label = new JLabel("Number of Antenna Array Elements");
+		arrayParametersPanel.add(numberOfElements_Label, "cell 1 0 2 1,alignx right,aligny center");
 		
-		messagePane = new JTextPane();
-		messagePane.setContentType("text/html");
-		JScrollPane scrollPaneForList = new JScrollPane(messagePane);
-		mainControlsPanel.add(scrollPaneForList, "cell 0 1,grow");		
+		numberOfElements_Field = new JTextField();
+		numberOfElements_Field.setText(Integer.toString(numberofElements));
+		arrayParametersPanel.add(numberOfElements_Field, "cell 3 0,growx,aligny center");
+		numberOfElements_Field.setColumns(10);
+		
+		lblAmplitudeValues = new JLabel("Amplitude Values");
+		arrayParametersPanel.add(lblAmplitudeValues, "cell 0 1");
+		
+		lblPhaseValues = new JLabel("Phase Values");
+		arrayParametersPanel.add(lblPhaseValues, "cell 2 1");
+		
+		lblPositionValues = new JLabel("Position Values");
+		arrayParametersPanel.add(lblPositionValues, "cell 4 1");
+		
+		chckbxAmplitude = new JCheckBox("Amplitude");
+		chckbxAmplitude.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				amplitudeIsUsed = chckbxAmplitude.isSelected();
+				refreshAmplitudeTable();
+			}
+		});
+		chckbxAmplitude.setSelected(amplitudeIsUsed);
+		arrayParametersPanel.add(chckbxAmplitude, "cell 0 2 2 1");
+		
+		chckbxPhase = new JCheckBox("Phase");
+		chckbxPhase.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				phaseIsUsed = chckbxPhase.isSelected();
+			}
+		});
+		chckbxPhase.setSelected(phaseIsUsed);
+		arrayParametersPanel.add(chckbxPhase, "cell 2 2 2 1");
+		
+		chckbxPosition = new JCheckBox("Position");
+		chckbxPosition.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				positionIsUsed = chckbxPosition.isSelected();
+			}
+		});
+		chckbxPosition.setSelected(positionIsUsed);
+		arrayParametersPanel.add(chckbxPosition, "cell 4 2 2 1");
+		
+		lblMaximumValueAmplitude = new JLabel("Maximum Value :");
+		lblMaximumValueAmplitude.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMaximumValueAmplitude, "cell 0 3,alignx trailing");
+		
+		textField_maximumValueAmplitude = new JTextField(Double.toString(H[0]));
+		arrayParametersPanel.add(textField_maximumValueAmplitude, "cell 1 3,growx");
+		textField_maximumValueAmplitude.setColumns(10);
+		
+		lblMaximumValuePhase = new JLabel("Maximum Value :");
+		lblMaximumValuePhase.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMaximumValuePhase, "cell 2 3,alignx trailing");
+		
+		textField_maximumValuePhase = new JTextField(Double.toString(H[1]));
+		arrayParametersPanel.add(textField_maximumValuePhase, "cell 3 3,growx");
+		textField_maximumValuePhase.setColumns(10);
+		
+		lblMaximumValuePosition = new JLabel("Maximum Value :");
+		lblMaximumValuePosition.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMaximumValuePosition, "cell 4 3,alignx trailing");
+		
+		textField_maximumValuePosition = new JTextField(Double.toString(H[2]));
+		arrayParametersPanel.add(textField_maximumValuePosition, "cell 5 3,growx");
+		textField_maximumValuePosition.setColumns(10);
+		
+		lblMinimumValueAmplitude = new JLabel("Minimum Value :");
+		lblMinimumValueAmplitude.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMinimumValueAmplitude, "cell 0 4,alignx trailing");
+		
+		textField_minimumValueAmplitude = new JTextField(Double.toString(L[0]));
+		arrayParametersPanel.add(textField_minimumValueAmplitude, "cell 1 4,growx");
+		textField_minimumValueAmplitude.setColumns(10);
+		
+		lblMinimumValuePhase = new JLabel("Minimum Value :");
+		lblMinimumValuePhase.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMinimumValuePhase, "cell 2 4,alignx trailing");
+		
+		textField_minimumValuePhase = new JTextField(Double.toString(L[1]));
+		arrayParametersPanel.add(textField_minimumValuePhase, "cell 3 4,growx");
+		textField_minimumValuePhase.setColumns(10);
+		
+		lblMinimumValuePosition = new JLabel("Minimum Value :");
+		lblMinimumValuePosition.setHorizontalAlignment(SwingConstants.RIGHT);
+		arrayParametersPanel.add(lblMinimumValuePosition, "cell 4 4,alignx trailing");
+		
+		textField_minimumValuePosition = new JTextField(Double.toString(L[2]));
+		arrayParametersPanel.add(textField_minimumValuePosition, "cell 5 4,growx");
+		textField_minimumValuePosition.setColumns(10);
+		
+		tableAmplitude = new JTable(new TableModelForAmplitude());
+		JScrollPane scrollPaneForTableAmplitude = new JScrollPane(tableAmplitude);
+		arrayParametersPanel.add(scrollPaneForTableAmplitude, "cell 0 5 2 1,grow");
+		
+		tablePhase = new JTable();
+		JScrollPane scrollPaneForTablePhase = new JScrollPane(tablePhase);
+		arrayParametersPanel.add(scrollPaneForTablePhase, "cell 2 5 2 1,grow");
+		
+		tablePosition = new JTable();
+		JScrollPane scrollPaneForTablePosition = new JScrollPane(tablePosition);
+		arrayParametersPanel.add(scrollPaneForTablePosition, "cell 4 5 2 1,grow");
 		
 		outerMaskPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Outer Mask", null, outerMaskPanel, null);
@@ -479,7 +584,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		outerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane outerListScroller = new JScrollPane(outerList);
 		outerMaskPanel.add(outerListScroller, "cell 0 2,grow");
-		refreshOuterMaskSegmentsList();
 		
 		outerTable = new JTable(new TableModelForOuterMask());
 		JScrollPane scrollPaneForOuterTable = new JScrollPane(outerTable);
@@ -562,102 +666,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		});
 		innerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane innerListScroller = new JScrollPane(innerList);
-		innerMaskPanel.add(innerListScroller, "cell 0 2,grow");
-		refreshInnerMaskSegmentsList();
+		innerMaskPanel.add(innerListScroller, "cell 0 2,grow");		
 		
 		innerTable = new JTable(new TableModelForInnerMask());
 		JScrollPane scrollPaneForInnerTable = new JScrollPane(innerTable);
 		innerMaskPanel.add(scrollPaneForInnerTable, "cell 1 2,grow");
-		
-		arrayParametersPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
-		arrayParametersPanel.setLayout(new MigLayout("", "[170px][86px,grow]", "[20px][][][][][][][][][]"));
-		
-		numberOfElements_Label = new JLabel("Number of Antenna Array Elements");
-		arrayParametersPanel.add(numberOfElements_Label, "cell 0 0,alignx right,aligny center");
-		
-		numberOfElements_Field = new JTextField();
-		numberOfElements_Field.setText(Integer.toString(numberofElements));
-		arrayParametersPanel.add(numberOfElements_Field, "cell 1 0,growx,aligny center");
-		numberOfElements_Field.setColumns(10);
-		
-		chckbxAmplitude = new JCheckBox("Amplitude");
-		chckbxAmplitude.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				amplitudeIsUsed = chckbxAmplitude.isSelected();
-			}
-		});
-		chckbxAmplitude.setSelected(amplitudeIsUsed);
-		arrayParametersPanel.add(chckbxAmplitude, "cell 0 1");
-		
-		lblMaximumValueAmplitude = new JLabel("Maximum Value :");
-		lblMaximumValueAmplitude.setHorizontalAlignment(SwingConstants.RIGHT);
-		arrayParametersPanel.add(lblMaximumValueAmplitude, "cell 0 2,alignx trailing");
-		
-		textField_maximumValueAmplitude = new JTextField(Double.toString(H[0]));
-		arrayParametersPanel.add(textField_maximumValueAmplitude, "cell 1 2,growx");
-		textField_maximumValueAmplitude.setColumns(10);
-		
-		lblMinimumValueAmplitude = new JLabel("Minimum Value :");
-		lblMinimumValueAmplitude.setHorizontalAlignment(SwingConstants.RIGHT);
-		arrayParametersPanel.add(lblMinimumValueAmplitude, "cell 0 3,alignx trailing");
-		
-		textField_minimumValueAmplitude = new JTextField(Double.toString(L[0]));
-		arrayParametersPanel.add(textField_minimumValueAmplitude, "cell 1 3,growx");
-		textField_minimumValueAmplitude.setColumns(10);
-		
-		chckbxPhase = new JCheckBox("Phase");
-		chckbxPhase.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				phaseIsUsed = chckbxPhase.isSelected();
-			}
-		});
-		chckbxPhase.setSelected(phaseIsUsed);
-		arrayParametersPanel.add(chckbxPhase, "cell 0 4");
-		
-		lblMaximumValuePhase = new JLabel("Maximum Value :");
-		lblMaximumValuePhase.setHorizontalAlignment(SwingConstants.RIGHT);
-		arrayParametersPanel.add(lblMaximumValuePhase, "cell 0 5,alignx trailing");
-		
-		textField_maximumValuePhase = new JTextField(Double.toString(H[1]));
-		arrayParametersPanel.add(textField_maximumValuePhase, "cell 1 5,growx");
-		textField_maximumValuePhase.setColumns(10);
-		
-		lblMinimumValuePhase = new JLabel("Minimum Value :");
-		lblMinimumValuePhase.setHorizontalAlignment(SwingConstants.RIGHT);
-		arrayParametersPanel.add(lblMinimumValuePhase, "cell 0 6,alignx trailing");
-		
-		textField_minimumValuePhase = new JTextField(Double.toString(L[1]));
-		arrayParametersPanel.add(textField_minimumValuePhase, "cell 1 6,growx");
-		textField_minimumValuePhase.setColumns(10);
-		
-		chckbxPosition = new JCheckBox("Position");
-		chckbxPosition.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				positionIsUsed = chckbxPosition.isSelected();
-			}
-		});
-		chckbxPosition.setSelected(positionIsUsed);
-		arrayParametersPanel.add(chckbxPosition, "cell 0 7");
-		
-		lblMaximumValuePosition = new JLabel("Maximum Value :");
-		lblMaximumValuePosition.setHorizontalAlignment(SwingConstants.RIGHT);
-		arrayParametersPanel.add(lblMaximumValuePosition, "cell 0 8,alignx trailing");
-		
-		textField_maximumValuePosition = new JTextField(Double.toString(H[2]));
-		arrayParametersPanel.add(textField_maximumValuePosition, "cell 1 8,growx");
-		textField_maximumValuePosition.setColumns(10);
-		
-		lblMinimumValuePosition = new JLabel("Minimum Value :");
-		lblMinimumValuePosition.setHorizontalAlignment(SwingConstants.RIGHT);
-		arrayParametersPanel.add(lblMinimumValuePosition, "cell 0 9,alignx trailing");
-		
-		textField_minimumValuePosition = new JTextField(Double.toString(L[2]));
-		arrayParametersPanel.add(textField_minimumValuePosition, "cell 1 9,growx");
-		textField_minimumValuePosition.setColumns(10);
 		
 		differentialEvolutionPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Differential Evolution", null, differentialEvolutionPanel, null);
@@ -698,7 +711,24 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		Cr_textField.setText(Double.toString(Cr));
 		Cr_textField.setColumns(10);
 		differentialEvolutionPanel.add(Cr_textField, "cell 1 3,growx");
+		//table.setFillsViewportHeight(true);
 		
+		mainControlsPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
+		mainControlsPanel.setLayout(new MigLayout("", "[660px,grow]", "[][grow]"));
+		
+		lblMessages = new JLabel("Messages");
+		mainControlsPanel.add(lblMessages, "cell 0 0");
+		
+		messagePane = new JTextPane();
+		messagePane.setContentType("text/html");
+		JScrollPane scrollPaneForList = new JScrollPane(messagePane);
+		mainControlsPanel.add(scrollPaneForList, "cell 0 1,grow");		
+		
+		refreshOuterMaskSegmentsList();
+		refreshInnerMaskSegmentsList();
+		
+		refreshAmplitudeTable();
 		drawOuterMask();
 		drawInnerMask();
 		
@@ -845,6 +875,77 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	        
 	        drawInnerMask();
 	    }
+	}
+	
+	//	For outer mask segment
+	class TableModelForAmplitude extends AbstractTableModel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4560924156431649107L;
+		private String[] columnNames = {"Number",
+                "Value"};
+	
+	    public int getColumnCount() {
+	        return columnNames.length;
+	    }
+	
+	    public int getRowCount() {
+	    	int length = 0;
+	    	if (antennaArray != null) length = antennaArray.amplitude.length;
+	    	return length;
+	    }
+	
+	    public String getColumnName(int col) {
+	        return columnNames[col];
+	    }
+	
+	    public Object getValueAt(int row, int col) {
+
+	    	double returnedValue = 0;
+
+			if(col == 0) returnedValue = row;
+			if(col == 1) returnedValue = antennaArray.amplitude[row];
+			
+			return returnedValue;
+	    }
+	
+	    public Class<?> getColumnClass(int c) {
+	        return getValueAt(0, c).getClass();
+	    }
+	
+	    /*
+	     * Don't need to implement this method unless your table's
+	     * editable.
+	     */
+	    public boolean isCellEditable(int row, int col) {
+	        //Note that the data/cell address is constant,
+	        //no matter where the cell appears onscreen.
+	        if (col < 1) {
+	            return false;
+	        } else {
+	            return true;
+	        }
+	    }
+	    /*
+	     * Don't need to implement this method unless your table's
+	     * data can change.
+	     */
+	    public void setValueAt(Object value, int row, int col) {
+
+			//if(col == 0) SLL_outer.angles[row] = (double) value;
+			if(col == 1) antennaArray.amplitude[row] = (double) value;
+	    	
+	        fireTableCellUpdated(row, col);
+	        
+	        drawOuterMask();
+	    }
+	}
+	
+	private void refreshAmplitudeTable() {
+		TableModelForAmplitude model = (TableModelForAmplitude) tableAmplitude.getModel();
+		model.fireTableDataChanged();
 	}
 
 	private void refreshOuterMaskSegmentDetailsTable() {
@@ -1043,7 +1144,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
 			for (int index = 0; index < numberofElements; index++) {
-				antennaArrayForPresentation.a[index] = bestValues.valuesOfBestMember[index];
+				antennaArrayForPresentation.amplitude[index] = bestValues.valuesOfBestMember[index];
 			}
 			delta = numberofElements;
 		}
@@ -1051,16 +1152,16 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (phaseIsUsed) {
 			// this is for phases
 			for (int index = 0; index < numberofElements; index++) {
-				antennaArrayForPresentation.alpha[index] = bestValues.valuesOfBestMember[index + delta];
+				antennaArrayForPresentation.phase[index] = bestValues.valuesOfBestMember[index + delta];
 			}
 			delta += numberofElements;
 		}
 		
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
-			antennaArrayForPresentation.d[0] = 0;
+			antennaArrayForPresentation.position[0] = 0;
 			for (int index = 1; index < numberofElements; index++) {
-				antennaArrayForPresentation.d[index] = antennaArrayForPresentation.d[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
+				antennaArrayForPresentation.position[index] = antennaArrayForPresentation.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
 			}
 		}
 		
