@@ -555,18 +555,37 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				
 				//In response to a button click:
 				int returnVal = fc.showOpenDialog(null);
-		        if (returnVal == JFileChooser.APPROVE_OPTION) {
-		        
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {		        	
 		        	List<String> lines = null;
 		            File file = fc.getSelectedFile();
 		            Path path = Paths.get(file.getAbsolutePath());
+		            int loopLength = antennaArray.amplitude.length;
 					try {
-						lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+						lines = Files.readAllLines(path, StandardCharsets.UTF_8);						
+						if(lines.size() < antennaArray.amplitude.length) {
+							int difference = antennaArray.amplitude.length - lines.size();
+							for(int addition = 0; addition < difference; addition++)
+							{
+								lines.add("0");
+							}							
+						}
+						System.out.println(lines.size());
+						
+						for (int conversion = 0; conversion < loopLength; conversion++) {
+							double amplitudeFromFile = 0;							
+							try {
+								amplitudeFromFile = Double.parseDouble(lines.get(conversion));
+							} catch (NumberFormatException e) {
+								amplitudeFromFile = 0;
+							}				
+							
+							antennaArray.amplitude[conversion] = amplitudeFromFile;							
+						}
+						refreshAmplitudeTable();
+						drawPlotWithInitialParameterValues();						
 					} catch (IOException e) {
 						e.printStackTrace();
-					}
-					
-					System.out.println(lines.get(0));
+					}					
 		        } else {
 		            // Cancelled by the user.
 		        }
