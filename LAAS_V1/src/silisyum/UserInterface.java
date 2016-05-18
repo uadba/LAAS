@@ -30,6 +30,13 @@ import org.jfree.ui.RectangleEdge;
 
 import javax.swing.SwingWorker;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTabbedPane;
@@ -47,6 +54,7 @@ import java.awt.GridBagConstraints;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JTextPane;
 import javax.swing.JTable;
 import javax.swing.JList;
@@ -88,7 +96,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private double F = 0.7;
     private double Cr = 0.95;
     private AntennaArray antennaArray;
-    private AntennaArray antennaArrayForPresentation;
+    //private AntennaArray antennaArrayForPresentation;
     private DifferentialEvolution differentialEvolution;
     private BestValues bestValues;
     private JTabbedPane tabbedPaneForSettings;
@@ -176,6 +184,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTable tablePhase;
     private JTable tablePosition;
     private JButton btnSetElementNumber;
+    private JButton btnLoadAmplitudes;
     
 	/**
 	 * Launch the application.
@@ -398,7 +407,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		arrayParametersPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
-		arrayParametersPanel.setLayout(new MigLayout("", "[110px][:110px:110px][110px][:110px:110px][110px][:110px:110px]", "[20px][][][][][grow]"));
+		arrayParametersPanel.setLayout(new MigLayout("", "[110px][:110px:110px][110px][:110px:110px][110px][:110px:110px]", "[20px][][][][][grow][]"));
 		
 		numberOfElements_Label = new JLabel("Number of Antenna Array Elements :");
 		arrayParametersPanel.add(numberOfElements_Label, "cell 0 0 2 1,alignx right,aligny center");
@@ -536,6 +545,35 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		tablePosition = new JTable(new TableModelForPosition());
 		JScrollPane scrollPaneForTablePosition = new JScrollPane(tablePosition);
 		arrayParametersPanel.add(scrollPaneForTablePosition, "cell 4 5 2 1,grow");
+		
+		btnLoadAmplitudes = new JButton("Load Amplitude Values From a File");
+		btnLoadAmplitudes.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				//Create a file chooser
+				final JFileChooser fc = new JFileChooser();
+				
+				//In response to a button click:
+				int returnVal = fc.showOpenDialog(null);
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		        
+		        	List<String> lines = null;
+		            File file = fc.getSelectedFile();
+		            Path path = Paths.get(file.getAbsolutePath());
+					try {
+						lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+					System.out.println(lines.get(0));
+		        } else {
+		            // Cancelled by the user.
+		        }
+						
+			}
+		});
+		arrayParametersPanel.add(btnLoadAmplitudes, "cell 0 6 2 1,alignx center");
 		
 		outerMaskPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Outer Mask", null, outerMaskPanel, null);
@@ -773,7 +811,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	protected void createAntennaArray() {
 		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
 		antennaArray = new AntennaArray(numberofElements, patterGraphResolution, mask);
-		antennaArrayForPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
+		//antennaArrayForPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
 	}
 
 	//	For outer mask segment
@@ -1348,7 +1386,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
 			for (int index = 0; index < numberofElements; index++) {
-				antennaArrayForPresentation.amplitude[index] = bestValues.valuesOfBestMember[index];
+//				antennaArrayForPresentation.amplitude[index] = bestValues.valuesOfBestMember[index];
+				antennaArray.amplitude[index] = bestValues.valuesOfBestMember[index];
 			}
 			delta = numberofElements;
 		}
@@ -1356,24 +1395,30 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (phaseIsUsed) {
 			// this is for phases
 			for (int index = 0; index < numberofElements; index++) {
-				antennaArrayForPresentation.phase[index] = bestValues.valuesOfBestMember[index + delta];
+//				antennaArrayForPresentation.phase[index] = bestValues.valuesOfBestMember[index + delta];
+				antennaArray.phase[index] = bestValues.valuesOfBestMember[index + delta];
 			}
 			delta += numberofElements;
 		}
 		
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
-			antennaArrayForPresentation.position[0] = 0;
+//			antennaArrayForPresentation.position[0] = 0;
+			antennaArray.position[0] = 0;
 			for (int index = 1; index < numberofElements; index++) {
-				antennaArrayForPresentation.position[index] = antennaArrayForPresentation.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
+//				antennaArrayForPresentation.position[index] = antennaArrayForPresentation.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
+				antennaArray.position[index] = antennaArray.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
 			}
 		}
 		
-		antennaArrayForPresentation.createPattern();
+//		antennaArrayForPresentation.createPattern();
+		antennaArray.createPattern();
 		
-		for(int x=0; x<antennaArrayForPresentation.numberofSamplePoints; x++)
+//		for(int x=0; x<antennaArrayForPresentation.numberofSamplePoints; x++)
+		for(int x=0; x<antennaArray.numberofSamplePoints; x++)
 		{				
-			seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
+//			seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
+			seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
 		}
 		
 		convergenceSeries.add(differentialEvolution.iterationIndex, differentialEvolution.fitnessOfBestMember);
