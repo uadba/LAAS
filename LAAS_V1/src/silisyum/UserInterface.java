@@ -96,7 +96,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private double F = 0.7;
     private double Cr = 0.95;
     private AntennaArray antennaArray;
-    //private AntennaArray antennaArrayForPresentation;
+    private AntennaArray antennaArrayForPresentation;
     private DifferentialEvolution differentialEvolution;
     private BestValues bestValues;
     private JTabbedPane tabbedPaneForSettings;
@@ -569,7 +569,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 								lines.add("0");
 							}							
 						}
-						System.out.println(lines.size());
 						
 						for (int conversion = 0; conversion < loopLength; conversion++) {
 							double amplitudeFromFile = 0;							
@@ -830,7 +829,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	protected void createAntennaArray() {
 		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
 		antennaArray = new AntennaArray(numberofElements, patterGraphResolution, mask);
-		//antennaArrayForPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
+		antennaArrayForPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
 	}
 
 	//	For outer mask segment
@@ -1405,39 +1404,51 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
 			for (int index = 0; index < numberofElements; index++) {
-//				antennaArrayForPresentation.amplitude[index] = bestValues.valuesOfBestMember[index];
-				antennaArray.amplitude[index] = bestValues.valuesOfBestMember[index];
+				antennaArrayForPresentation.amplitude[index] = bestValues.valuesOfBestMember[index];
+//				antennaArray.amplitude[index] = bestValues.valuesOfBestMember[index];
 			}
 			delta = numberofElements;
+		} else {
+			for (int index = 0; index < numberofElements; index++) {
+				antennaArrayForPresentation.amplitude[index] = antennaArray.amplitude[index];
+			}
 		}
 		
 		if (phaseIsUsed) {
 			// this is for phases
 			for (int index = 0; index < numberofElements; index++) {
-//				antennaArrayForPresentation.phase[index] = bestValues.valuesOfBestMember[index + delta];
-				antennaArray.phase[index] = bestValues.valuesOfBestMember[index + delta];
+				antennaArrayForPresentation.phase[index] = bestValues.valuesOfBestMember[index + delta];
+//				antennaArray.phase[index] = bestValues.valuesOfBestMember[index + delta];
 			}
 			delta += numberofElements;
+		} else {
+			for (int index = 0; index < numberofElements; index++) {
+				antennaArrayForPresentation.phase[index] = antennaArray.phase[index];
+			}
 		}
 		
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
-//			antennaArrayForPresentation.position[0] = 0;
-			antennaArray.position[0] = 0;
+			antennaArrayForPresentation.position[0] = 0;
+//			antennaArray.position[0] = 0;
 			for (int index = 1; index < numberofElements; index++) {
-//				antennaArrayForPresentation.position[index] = antennaArrayForPresentation.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
-				antennaArray.position[index] = antennaArray.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
+				antennaArrayForPresentation.position[index] = antennaArrayForPresentation.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
+//				antennaArray.position[index] = antennaArray.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
 			}
+		} else {
+			for (int index = 1; index < numberofElements; index++) {
+				antennaArrayForPresentation.position[index] = antennaArray.position[index];
+			}			
 		}
 		
-//		antennaArrayForPresentation.createPattern();
-		antennaArray.createPattern();
+		antennaArrayForPresentation.createPattern();
+//		antennaArray.createPattern();
 		
-//		for(int x=0; x<antennaArrayForPresentation.numberofSamplePoints; x++)
-		for(int x=0; x<antennaArray.numberofSamplePoints; x++)
+		for(int x=0; x<antennaArrayForPresentation.numberofSamplePoints; x++)
+//		for(int x=0; x<antennaArray.numberofSamplePoints; x++)
 		{				
-//			seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
-			seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
+			seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
+//			seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
 		}
 		
 		convergenceSeries.add(differentialEvolution.iterationIndex, differentialEvolution.fitnessOfBestMember);
@@ -1560,10 +1571,17 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 //		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 3, -95, 1);
 //		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -40, 1);
 //		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
+
+		// simple mask
+//		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 84, -35, 1);
+//		mask.addNewOuterMaskSegments("SLL_02_out", 83, 97, 3, 0, 1);
+//		mask.addNewOuterMaskSegments("SLL_03_out", 97, 180, 84, -35, 1);
 		
-		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 84, -35, 1);
-		mask.addNewOuterMaskSegments("SLL_02_out", 83, 97, 3, 0, 1);
-		mask.addNewOuterMaskSegments("SLL_03_out", 97, 180, 84, -35, 1);
+		mask.addNewOuterMaskSegments("SLL_01_out", 0, 14.999, 14, -24, 1);
+		mask.addNewOuterMaskSegments("SLL_null_out", 14.999, 15.001, 70, -145.40, 1);
+		mask.addNewOuterMaskSegments("SLL_ara_out", 15.001, 82, 70, -24, 1);	
+		mask.addNewOuterMaskSegments("SLL_02_out", 82, 98, 3, 0, 1);
+		mask.addNewOuterMaskSegments("SLL_03_out", 98, 180, 84, -24, 1);
 
 		mask.addNewInnerMaskSegments("SLL_01_in", 0, 88, 2, -95, 1);
 		mask.addNewInnerMaskSegments("SLL_02_in", 88, 92, 2, -3, 1);
