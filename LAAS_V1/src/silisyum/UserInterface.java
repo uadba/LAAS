@@ -82,7 +82,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
-    private int numberofElements = 26;
+    private int numberofElements = 20;
     private int problemDimension;
     private double[] L = {0, 0, -0.1}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.1}; // initial values of amplitude, phase, and position maximum limits    
@@ -90,7 +90,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private boolean phaseIsUsed = true;
     private boolean positionIsUsed = false;
     private Mask mask;
-    private int patterGraphResolution = 181; //721;
+    private int patterGraphResolution = 721; //721;
     private int populationNumber = 70;
     private int maximumIterationNumber = 2000;
     private double F = 0.7;
@@ -1670,9 +1670,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 //		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 84, -35, 1);
 //		mask.addNewOuterMaskSegments("SLL_02_out", 83, 97, 3, 0, 1);
 //		mask.addNewOuterMaskSegments("SLL_03_out", 97, 180, 84, -35, 1);
-		
+
+		// phase nulling
 		mask.addNewOuterMaskSegments("SLL_01_out", 0, 14.999, 14, -24, 1);
-		mask.addNewOuterMaskSegments("SLL_null_out", 14.999, 15.001, 70, -145.40, 1);
+		mask.addNewOuterMaskSegments("SLL_null_out", 14.9999, 15.0001, 3, -145.40, 10);
 		mask.addNewOuterMaskSegments("SLL_ara_out", 15.001, 82, 70, -24, 1);	
 		mask.addNewOuterMaskSegments("SLL_02_out", 82, 98, 3, 0, 1);
 		mask.addNewOuterMaskSegments("SLL_03_out", 98, 180, 84, -24, 1);
