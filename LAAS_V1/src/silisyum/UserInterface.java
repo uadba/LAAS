@@ -86,9 +86,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private int problemDimension;
     private double[] L = {0, 0, -0.1}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.1}; // initial values of amplitude, phase, and position maximum limits    
-    private boolean amplitudeIsUsed = true;
-    private boolean phaseIsUsed = false;
-    private boolean positionIsUsed = true;
+    private boolean amplitudeIsUsed = false;
+    private boolean phaseIsUsed = true;
+    private boolean positionIsUsed = false;
     private Mask mask;
     private int patterGraphResolution = 181; //721;
     private int populationNumber = 70;
@@ -185,6 +185,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTable tablePosition;
     private JButton btnSetElementNumber;
     private JButton btnLoadAmplitudes;
+    private JButton btnLoadPhases;
+    private JButton btnLoadPositions;
     
 	/**
 	 * Launch the application.
@@ -407,7 +409,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		arrayParametersPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
-		arrayParametersPanel.setLayout(new MigLayout("", "[110px][:110px:110px][110px][:110px:110px][110px][:110px:110px]", "[20px][][][][][grow][]"));
+		arrayParametersPanel.setLayout(new MigLayout("", "[120px][:120px:120px][120px][:120px:120px][120px][:120px:120px]", "[20px][][][][][grow][]"));
 		
 		numberOfElements_Label = new JLabel("Number of Antenna Array Elements :");
 		arrayParametersPanel.add(numberOfElements_Label, "cell 0 0 2 1,alignx right,aligny center");
@@ -592,6 +594,98 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		});
 		arrayParametersPanel.add(btnLoadAmplitudes, "cell 0 6 2 1,alignx center");
+		
+		btnLoadPhases = new JButton("Load Phase Values From a File");
+		btnLoadPhases.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				//Create a file chooser
+				final JFileChooser fc = new JFileChooser();
+				
+				//In response to a button click:
+				int returnVal = fc.showOpenDialog(null);
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {		        	
+		        	List<String> lines = null;
+		            File file = fc.getSelectedFile();
+		            Path path = Paths.get(file.getAbsolutePath());
+		            int loopLength = antennaArray.phase.length;
+					try {
+						lines = Files.readAllLines(path, StandardCharsets.UTF_8);						
+						if(lines.size() < antennaArray.phase.length) {
+							int difference = antennaArray.phase.length - lines.size();
+							for(int addition = 0; addition < difference; addition++)
+							{
+								lines.add("0");
+							}							
+						}
+						
+						for (int conversion = 0; conversion < loopLength; conversion++) {
+							double phaseFromFile = 0;							
+							try {
+								phaseFromFile = Double.parseDouble(lines.get(conversion));
+							} catch (NumberFormatException e) {
+								phaseFromFile = 0;
+							}				
+							
+							antennaArray.phase[conversion] = phaseFromFile;							
+						}
+						refreshPhaseTable();
+						drawPlotWithInitialParameterValues();						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}					
+		        } else {
+		            // Cancelled by the user.
+		        }				
+			}
+		});
+		arrayParametersPanel.add(btnLoadPhases, "cell 2 6 2 1,alignx center");
+		
+		btnLoadPositions = new JButton("Load Phase Values From a File");
+		btnLoadPositions.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				//Create a file chooser
+				final JFileChooser fc = new JFileChooser();
+				
+				//In response to a button click:
+				int returnVal = fc.showOpenDialog(null);
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {		        	
+		        	List<String> lines = null;
+		            File file = fc.getSelectedFile();
+		            Path path = Paths.get(file.getAbsolutePath());
+		            int loopLength = antennaArray.position.length;
+					try {
+						lines = Files.readAllLines(path, StandardCharsets.UTF_8);						
+						if(lines.size() < antennaArray.position.length) {
+							int difference = antennaArray.position.length - lines.size();
+							for(int addition = 0; addition < difference; addition++)
+							{
+								lines.add("0");
+							}							
+						}
+						
+						for (int conversion = 0; conversion < loopLength; conversion++) {
+							double positionFromFile = 0;							
+							try {
+								positionFromFile = Double.parseDouble(lines.get(conversion));
+							} catch (NumberFormatException e) {
+								positionFromFile = 0;
+							}				
+							
+							antennaArray.position[conversion] = positionFromFile;							
+						}
+						refreshPositionTable();
+						drawPlotWithInitialParameterValues();						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}					
+		        } else {
+		            // Cancelled by the user.
+		        }
+			}
+		});
+		arrayParametersPanel.add(btnLoadPositions, "cell 4 6 2 1,alignx center");
 		
 		outerMaskPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Outer Mask", null, outerMaskPanel, null);
@@ -1583,9 +1677,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		mask.addNewOuterMaskSegments("SLL_02_out", 82, 98, 3, 0, 1);
 		mask.addNewOuterMaskSegments("SLL_03_out", 98, 180, 84, -24, 1);
 
-		mask.addNewInnerMaskSegments("SLL_01_in", 0, 88, 2, -95, 1);
-		mask.addNewInnerMaskSegments("SLL_02_in", 88, 92, 2, -3, 1);
-		mask.addNewInnerMaskSegments("SLL_03_in", 92, 180, 2, -95, 1);
+//		mask.addNewInnerMaskSegments("SLL_01_in", 0, 88, 2, -95, 1);
+//		mask.addNewInnerMaskSegments("SLL_02_in", 88, 92, 2, -3, 1);
+//		mask.addNewInnerMaskSegments("SLL_03_in", 92, 180, 2, -95, 1);
 		
 	}
 }
