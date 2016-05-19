@@ -32,7 +32,6 @@ import javax.swing.SwingWorker;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,6 +62,10 @@ import javax.swing.ListSelectionModel;
 import java.awt.FlowLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.UIManager;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -187,6 +190,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JButton btnLoadAmplitudes;
     private JButton btnLoadPhases;
     private JButton btnLoadPositions;
+    private double startTimeForPatternGraph;
+	private int periodForPatternGraph = 0;
+	private JComboBox<String> comboBoxForPatternGraph;
+	private JLabel lblUpdateTheGraph;
+	public boolean firstDraw = false;
     
 	/**
 	 * Launch the application.
@@ -285,6 +293,25 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		panelPatternGraphProperties = new JPanel();
 		panelPattern.add(panelPatternGraphProperties, BorderLayout.CENTER);
 		
+		lblUpdateTheGraph = new JLabel("Update the graph ");
+		panelPatternGraphProperties.add(lblUpdateTheGraph);
+		
+		comboBoxForPatternGraph = new JComboBox<String>();
+		comboBoxForPatternGraph.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(comboBoxForPatternGraph.getSelectedIndex() == 0) periodForPatternGraph = 0;
+				if(comboBoxForPatternGraph.getSelectedIndex() == 1) periodForPatternGraph = 1000;
+				if(comboBoxForPatternGraph.getSelectedIndex() == 2) periodForPatternGraph = 3000;
+				if(comboBoxForPatternGraph.getSelectedIndex() == 3) periodForPatternGraph = 7000;
+				if(comboBoxForPatternGraph.getSelectedIndex() == 4) periodForPatternGraph = 15000;
+				if(comboBoxForPatternGraph.getSelectedIndex() == 5) periodForPatternGraph = 60000;
+				if(comboBoxForPatternGraph.getSelectedIndex() == 6) periodForPatternGraph = -1;
+				System.out.println(comboBoxForPatternGraph.getSelectedIndex() + " periodForPatternGraph:" + periodForPatternGraph);
+			}
+		});
+		comboBoxForPatternGraph.setModel(new DefaultComboBoxModel<String>(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "never till end of optimization"}));
+		panelPatternGraphProperties.add(comboBoxForPatternGraph);
+		
 		lblNewLabel_2 = new JLabel("New label");
 		panelPatternGraphProperties.add(lblNewLabel_2);
 		
@@ -373,6 +400,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						terminateOptimizationButton.setVisible(false);
 						drawOuterMask();
 						drawInnerMask();
+						firstDraw = true;
+						startTimeForPatternGraph = System.currentTimeMillis();
 					} else {
 						algorithmExecuter.keepIterating = false;
 						startStopButton.setText("Continue Optimization");
@@ -1641,30 +1670,38 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				String tempMessage = messagePane.getText();
 				tempMessage += "<br>Iterion has been completed";
 				messagePane.setText(tempMessage);
-			}
-				
-			drawPlot();
+			}			
+			
+			double currentTime = System.currentTimeMillis();
+			double elapsedTimeForPatternGraph = currentTime - startTimeForPatternGraph;
+			if(periodForPatternGraph != -1) {
+				if(periodForPatternGraph == 0 || elapsedTimeForPatternGraph > periodForPatternGraph || firstDraw) {
+					startTimeForPatternGraph = currentTime;
+					drawPlot();
+					firstDraw = false;
+				}
+			}			
 			
 		}
 	}
 	
 	private void createTemporaryMasks() {
 		
-//		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
-//		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
-//		mask.addNewOuterMaskSegments("SLL_03", 30, 79, 49, -20, 1);
-//		mask.addNewOuterMaskSegments("SLL_04", 79, 80, 5, -60, 1);
-//		mask.addNewOuterMaskSegments("SLL_05", 80, 100, 20, 0, 1);
-//		mask.addNewOuterMaskSegments("SLL_06", 100, 110, 10, -20, 1);
-//		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
-//		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
-//
-//		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
-//		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
-//		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
-//		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 3, -95, 1);
-//		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -40, 1);
-//		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
+		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
+		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
+		mask.addNewOuterMaskSegments("SLL_03", 30, 79, 49, -20, 1);
+		mask.addNewOuterMaskSegments("SLL_04", 79, 80, 5, -60, 1);
+		mask.addNewOuterMaskSegments("SLL_05", 80, 100, 20, 0, 1);
+		mask.addNewOuterMaskSegments("SLL_06", 100, 110, 10, -20, 1);
+		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
+		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
+
+		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
+		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
+		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
+		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 3, -95, 1);
+		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -40, 1);
+		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
 
 		// simple mask
 //		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 84, -35, 1);
@@ -1672,11 +1709,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 //		mask.addNewOuterMaskSegments("SLL_03_out", 97, 180, 84, -35, 1);
 
 		// phase nulling
-		mask.addNewOuterMaskSegments("SLL_01_out", 0, 14.999, 14, -24, 1);
-		mask.addNewOuterMaskSegments("SLL_null_out", 14.9999, 15.0001, 3, -145.40, 10);
-		mask.addNewOuterMaskSegments("SLL_ara_out", 15.001, 82, 70, -24, 1);	
-		mask.addNewOuterMaskSegments("SLL_02_out", 82, 98, 3, 0, 1);
-		mask.addNewOuterMaskSegments("SLL_03_out", 98, 180, 84, -24, 1);
+//		mask.addNewOuterMaskSegments("SLL_01_out", 0, 14.999, 14, -24, 1);
+//		mask.addNewOuterMaskSegments("SLL_null_out", 14.9999, 15.0001, 3, -145.40, 10);
+//		mask.addNewOuterMaskSegments("SLL_ara_out", 15.001, 82, 70, -24, 1);	
+//		mask.addNewOuterMaskSegments("SLL_02_out", 82, 98, 3, 0, 1);
+//		mask.addNewOuterMaskSegments("SLL_03_out", 98, 180, 84, -24, 1);
 
 //		mask.addNewInnerMaskSegments("SLL_01_in", 0, 88, 2, -95, 1);
 //		mask.addNewInnerMaskSegments("SLL_02_in", 88, 92, 2, -3, 1);
