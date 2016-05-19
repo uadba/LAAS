@@ -28,6 +28,7 @@ public class DifferentialEvolution {
     private boolean positionIsUsed;
 	private Cost c;
 	private boolean iterationState = true;
+	public double[] costValues;
 	
 	public DifferentialEvolution(int _numberofElements, int _populationNumber, int _maximumIterationNumber, double _F, double _Cr, double[] _L, double[] _H, AntennaArray _aA, Mask _mask, boolean _amplitudeIsUsed, boolean _phaseIsUsed, boolean _positionIsUsed) {
 		
@@ -50,6 +51,7 @@ public class DifferentialEvolution {
 		r = new Random();		
 		createArrays();
 		initialize();
+		costValues = new double[maximumIterationNumber];
 	}
 	
 	private void createArrays() {
@@ -153,6 +155,8 @@ public class DifferentialEvolution {
 			}
 		}
 		
+		costValues[iterationIndex] = fitnessOfBestMember; // They are stored for the convergence curve graph
+		System.out.println(costValues[iterationIndex]);
 		iterationIndex++;
 		
 		if(iterationIndex == maximumIterationNumber)

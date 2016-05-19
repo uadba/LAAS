@@ -191,12 +191,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JButton btnLoadPhases;
     private JButton btnLoadPositions;
     private double startTimeForPatternGraph;
+    private double startTimeForConvergenceGraph;
 	private int periodForPatternGraph = 0;
+	private int periodForConvergenceGraph = 0;
 	private JComboBox<String> comboBoxForPatternGraph;
 	private JLabel lblUpdateTheGraph;
 	public boolean firstDraw = false;
 	private JComboBox<String> comboBoxForConvergenceGraph;
-	private JLabel label_2;
+	private JLabel lblUpdateTheConvergence;
+	private int unplottedIterationIndexBeginning = 0;
     
 	/**
 	 * Launch the application.
@@ -295,7 +298,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		panelPatternGraphProperties = new JPanel();
 		panelPattern.add(panelPatternGraphProperties, BorderLayout.CENTER);
 		
-		lblUpdateTheGraph = new JLabel("Update the graph ");
+		lblUpdateTheGraph = new JLabel("Update the pattern graph ");
 		panelPatternGraphProperties.add(lblUpdateTheGraph);
 		
 		comboBoxForPatternGraph = new JComboBox<String>();
@@ -308,7 +311,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				if(comboBoxForPatternGraph.getSelectedIndex() == 4) periodForPatternGraph = 15000;
 				if(comboBoxForPatternGraph.getSelectedIndex() == 5) periodForPatternGraph = 60000;
 				if(comboBoxForPatternGraph.getSelectedIndex() == 6) periodForPatternGraph = -1;
-				System.out.println(comboBoxForPatternGraph.getSelectedIndex() + " periodForPatternGraph:" + periodForPatternGraph);
 			}
 		});
 		comboBoxForPatternGraph.setModel(new DefaultComboBoxModel<String>(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "never till end of optimization"}));
@@ -347,11 +349,22 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		panelConvergenceGraphProperties = new JPanel();
 		panelConvergence.add(panelConvergenceGraphProperties);
 		
-		label_2 = new JLabel("Update the graph ");
-		panelConvergenceGraphProperties.add(label_2);
+		lblUpdateTheConvergence = new JLabel("Update the convergence curve graph ");
+		panelConvergenceGraphProperties.add(lblUpdateTheConvergence);
 		
 		comboBoxForConvergenceGraph = new JComboBox<String>();
-		comboBoxForConvergenceGraph.setModel(new DefaultComboBoxModel(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "never till end of optimization"}));
+		comboBoxForConvergenceGraph.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(comboBoxForConvergenceGraph.getSelectedIndex() == 0) periodForConvergenceGraph = 0;
+				if(comboBoxForConvergenceGraph.getSelectedIndex() == 1) periodForConvergenceGraph = 1000;
+				if(comboBoxForConvergenceGraph.getSelectedIndex() == 2) periodForConvergenceGraph = 3000;
+				if(comboBoxForConvergenceGraph.getSelectedIndex() == 3) periodForConvergenceGraph = 7000;
+				if(comboBoxForConvergenceGraph.getSelectedIndex() == 4) periodForConvergenceGraph = 15000;
+				if(comboBoxForConvergenceGraph.getSelectedIndex() == 5) periodForConvergenceGraph = 60000;
+				if(comboBoxForConvergenceGraph.getSelectedIndex() == 6) periodForConvergenceGraph = -1;
+			}
+		});
+		comboBoxForConvergenceGraph.setModel(new DefaultComboBoxModel<String>(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "never till end of optimization"}));
 		panelConvergenceGraphProperties.add(comboBoxForConvergenceGraph);
 		
 		lblNewLabel = new JLabel("Iteration Number:");
@@ -392,6 +405,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							maskOuter.clear();
 							maskInner.clear();
 							convergenceSeries.clear();
+							unplottedIterationIndexBeginning = 0;
 							algorithmExecuter.newStart = false;
 							algorithmExecuter.iterationHasNotCompletedYet = true;
 							sendMessageToPane("<font color=#006400><b>Optimization process has been <i>started</i> successfully!</b></font>", true);
@@ -400,7 +414,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							}
 							if(isThereAnyGapInInnerMask()) {
 								sendMessageToPane("<br><font color=#666600>Warning: There is at least one gap in the <i>inner mask</i>. It does not affect the optimization process adversely but it may be the sign of a bad designed mask.</font>", false);								
-							}
+							}							
 						} else {
 							sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>restarted</i>.</b></font>", false);
 						}
@@ -411,6 +425,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						drawInnerMask();
 						firstDraw = true;
 						startTimeForPatternGraph = System.currentTimeMillis();
+						startTimeForConvergenceGraph = System.currentTimeMillis();
 					} else {
 						algorithmExecuter.keepIterating = false;
 						startStopButton.setText("Continue Optimization");
@@ -1524,7 +1539,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 	}
 	
-	protected void drawPlot() {
+	protected void drawPlotOfPattern() {
 
 		// it should not be a new implementation of AntennaArray class
 		// We don't want to use the same instance which the other thread uses
@@ -1581,11 +1596,23 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		{				
 			seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
 //			seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
+		}		
+	}
+	
+	protected void drawPlotOfConvergence() {
+		int currentIterationIndex = differentialEvolution.iterationIndex;
+		int index = 0;
+		for(index = unplottedIterationIndexBeginning; index < currentIterationIndex; index++) {
+			convergenceSeries.add(index, differentialEvolution.costValues[index]);			
 		}
+		unplottedIterationIndexBeginning = index;
 		
-		convergenceSeries.add(differentialEvolution.iterationIndex, differentialEvolution.fitnessOfBestMember);
+		
+		
+		
+//		convergenceSeries.add(differentialEvolution.iterationIndex, differentialEvolution.fitnessOfBestMember);
 		iterationText.setText(Integer.toString(differentialEvolution.iterationIndex));
-		costText.setText(Double.toString(differentialEvolution.fitnessOfBestMember));		
+		costText.setText(Double.toString(differentialEvolution.fitnessOfBestMember));
 	}
 
 	private void drawOuterMask() {
@@ -1686,11 +1713,18 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			if(periodForPatternGraph != -1) {
 				if(periodForPatternGraph == 0 || elapsedTimeForPatternGraph > periodForPatternGraph || firstDraw) {
 					startTimeForPatternGraph = currentTime;
-					drawPlot();
+					drawPlotOfPattern();
+				}
+			}
+			
+			double elapsedTimeForConvergenceGraph = currentTime - startTimeForConvergenceGraph;
+			if(periodForConvergenceGraph != -1) {
+				if(periodForConvergenceGraph == 0 || elapsedTimeForConvergenceGraph > periodForConvergenceGraph || firstDraw) {
+					startTimeForConvergenceGraph = currentTime;
+					drawPlotOfConvergence();
 					firstDraw = false;
 				}
 			}			
-			
 		}
 	}
 	
