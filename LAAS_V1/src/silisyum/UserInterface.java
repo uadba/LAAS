@@ -66,6 +66,8 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Component;
+import javax.swing.Box;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -115,8 +117,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JTabbedPane tabbedPaneForPlots;
     private JPanel panelPatternGraphProperties;
     private JLabel lblNewLabel_2;
-    private JButton btnNewButton;
-    private JTextField textField;
+    private JButton btnRescalePatternGraph;
+    private JTextField arrayFactorScale_textField;
     private JPanel panelPatternGraph;
     private JPanel panelConvergenceGraph;
     private JPanel panelConvergenceGraphProperties;
@@ -200,6 +202,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JComboBox<String> comboBoxForConvergenceGraph;
 	private JLabel lblUpdateTheConvergence;
 	private int unplottedIterationIndexBeginning = 0;
+	private JButton btnResetAmplitudeValues;
+	private JButton btnResetPhaseValues;
+	private JButton btnResetDistancesTo;
+	private Component horizontalStrut;
     
 	/**
 	 * Launch the application.
@@ -313,18 +319,23 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				if(comboBoxForPatternGraph.getSelectedIndex() == 6) periodForPatternGraph = -1;
 			}
 		});
-		comboBoxForPatternGraph.setModel(new DefaultComboBoxModel(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "only at the begining and end"}));
+		comboBoxForPatternGraph.setModel(new DefaultComboBoxModel<String>(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "only at the begining and end"}));
 		panelPatternGraphProperties.add(comboBoxForPatternGraph);
 		
-		lblNewLabel_2 = new JLabel("New label");
+		horizontalStrut = Box.createHorizontalStrut(20);
+		horizontalStrut.setMinimumSize(new Dimension(30, 0));
+		horizontalStrut.setPreferredSize(new Dimension(30, 0));
+		panelPatternGraphProperties.add(horizontalStrut);
+		
+		lblNewLabel_2 = new JLabel("Array Factor Scale: ");
 		panelPatternGraphProperties.add(lblNewLabel_2);
 		
-		textField = new JTextField();
-		panelPatternGraphProperties.add(textField);
-		textField.setColumns(10);
+		arrayFactorScale_textField = new JTextField();
+		panelPatternGraphProperties.add(arrayFactorScale_textField);
+		arrayFactorScale_textField.setColumns(10);
 		
-		btnNewButton = new JButton("New button");
-		panelPatternGraphProperties.add(btnNewButton);
+		btnRescalePatternGraph = new JButton("Rescale Pattern Graph");
+		panelPatternGraphProperties.add(btnRescalePatternGraph);
 		
 		panelConvergence = new JPanel();
 		tabbedPaneForPlots.addTab("Convergence Curve of Optimization Process", null, panelConvergence, null);
@@ -364,7 +375,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				if(comboBoxForConvergenceGraph.getSelectedIndex() == 6) periodForConvergenceGraph = -1;
 			}
 		});
-		comboBoxForConvergenceGraph.setModel(new DefaultComboBoxModel(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "only at the begining and end"}));
+		comboBoxForConvergenceGraph.setModel(new DefaultComboBoxModel<String>(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "only at the begining and end"}));
 		panelConvergenceGraphProperties.add(comboBoxForConvergenceGraph);
 		
 		lblNewLabel = new JLabel("Iteration Number:");
@@ -462,7 +473,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		arrayParametersPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Array Parameters", null, arrayParametersPanel, null);
-		arrayParametersPanel.setLayout(new MigLayout("", "[120px][:120px:120px][120px][:120px:120px][120px][:120px:120px]", "[20px][][][][][grow][]"));
+		arrayParametersPanel.setLayout(new MigLayout("", "[120px][:120px:120px][120px][:120px:120px][120px][:120px:120px]", "[20px][][][][][][grow][]"));
 		
 		numberOfElements_Label = new JLabel("Number of Antenna Array Elements :");
 		arrayParametersPanel.add(numberOfElements_Label, "cell 0 0 2 1,alignx right,aligny center");
@@ -589,17 +600,56 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		arrayParametersPanel.add(textField_minimumValuePosition, "cell 5 4,growx");
 		textField_minimumValuePosition.setColumns(10);
 		
+		btnResetAmplitudeValues = new JButton("Reset Amplitude Values to Ones");
+		btnResetAmplitudeValues.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				for (int d = 0; d < numberofElements ; d++) {
+					antennaArray.amplitude[d] = 1;
+					refreshAmplitudeTable();
+					drawPlotWithInitialParameterValues();
+				}
+			}
+		});
+		arrayParametersPanel.add(btnResetAmplitudeValues, "cell 0 5 2 1,alignx center");
+		
+		btnResetPhaseValues = new JButton("Reset Phase Values to Zeros");
+		btnResetPhaseValues.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				for (int d = 0; d < numberofElements ; d++) {
+					antennaArray.phase[d] = 0;
+					refreshPhaseTable();
+					drawPlotWithInitialParameterValues();
+				}
+			}
+		});
+		arrayParametersPanel.add(btnResetPhaseValues, "cell 2 5 2 1,alignx center");
+		
+		btnResetDistancesTo = new JButton("Reset Distances to Half-wavelength");
+		btnResetDistancesTo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				for (int d = 0; d < numberofElements ; d++) {
+					antennaArray.position[d] = d*0.5;
+					refreshPositionTable();
+					drawPlotWithInitialParameterValues();
+				}
+			}
+		});
+		arrayParametersPanel.add(btnResetDistancesTo, "cell 4 5 2 1,alignx center");
+		
 		tableAmplitude = new JTable(new TableModelForAmplitude());
 		JScrollPane scrollPaneForTableAmplitude = new JScrollPane(tableAmplitude);
-		arrayParametersPanel.add(scrollPaneForTableAmplitude, "cell 0 5 2 1,grow");
+		arrayParametersPanel.add(scrollPaneForTableAmplitude, "cell 0 6 2 1,grow");
 		
 		tablePhase = new JTable(new TableModelForPhase());
 		JScrollPane scrollPaneForTablePhase = new JScrollPane(tablePhase);
-		arrayParametersPanel.add(scrollPaneForTablePhase, "cell 2 5 2 1,grow");
+		arrayParametersPanel.add(scrollPaneForTablePhase, "cell 2 6 2 1,grow");
 		
 		tablePosition = new JTable(new TableModelForPosition());
 		JScrollPane scrollPaneForTablePosition = new JScrollPane(tablePosition);
-		arrayParametersPanel.add(scrollPaneForTablePosition, "cell 4 5 2 1,grow");
+		arrayParametersPanel.add(scrollPaneForTablePosition, "cell 4 6 2 1,grow");
 		
 		btnLoadAmplitudes = new JButton("Load Amplitude Values From a File");
 		btnLoadAmplitudes.addMouseListener(new MouseAdapter() {
@@ -646,7 +696,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						
 			}
 		});
-		arrayParametersPanel.add(btnLoadAmplitudes, "cell 0 6 2 1,alignx center");
+		arrayParametersPanel.add(btnLoadAmplitudes, "cell 0 7 2 1,alignx center");
 		
 		btnLoadPhases = new JButton("Load Phase Values From a File");
 		btnLoadPhases.addMouseListener(new MouseAdapter() {
@@ -692,9 +742,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		        }				
 			}
 		});
-		arrayParametersPanel.add(btnLoadPhases, "cell 2 6 2 1,alignx center");
+		arrayParametersPanel.add(btnLoadPhases, "cell 2 7 2 1,alignx center");
 		
-		btnLoadPositions = new JButton("Load Phase Values From a File");
+		btnLoadPositions = new JButton("Load Position Values From a File");
 		btnLoadPositions.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -738,7 +788,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		        }
 			}
 		});
-		arrayParametersPanel.add(btnLoadPositions, "cell 4 6 2 1,alignx center");
+		arrayParametersPanel.add(btnLoadPositions, "cell 4 7 2 1,alignx center");
 		
 		outerMaskPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Outer Mask", null, outerMaskPanel, null);
@@ -1604,7 +1654,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		int index = 0;
 		for(index = unplottedIterationIndexBeginning; index < currentIterationIndex; index++) {
 			convergenceSeries.add(index, differentialEvolution.costValues[index]);
-			System.out.println(index + ", " + differentialEvolution.costValues[index]);
 		}
 		unplottedIterationIndexBeginning = index;		
 		
