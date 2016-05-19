@@ -195,6 +195,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JComboBox<String> comboBoxForPatternGraph;
 	private JLabel lblUpdateTheGraph;
 	public boolean firstDraw = false;
+	private JComboBox<String> comboBoxForConvergenceGraph;
+	private JLabel label_2;
     
 	/**
 	 * Launch the application.
@@ -344,6 +346,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		panelConvergenceGraphProperties = new JPanel();
 		panelConvergence.add(panelConvergenceGraphProperties);
+		
+		label_2 = new JLabel("Update the graph ");
+		panelConvergenceGraphProperties.add(label_2);
+		
+		comboBoxForConvergenceGraph = new JComboBox<String>();
+		comboBoxForConvergenceGraph.setModel(new DefaultComboBoxModel(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "never till end of optimization"}));
+		panelConvergenceGraphProperties.add(comboBoxForConvergenceGraph);
 		
 		lblNewLabel = new JLabel("Iteration Number:");
 		panelConvergenceGraphProperties.add(lblNewLabel);
