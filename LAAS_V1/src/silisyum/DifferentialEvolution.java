@@ -156,7 +156,6 @@ public class DifferentialEvolution {
 		}
 		
 		costValues[iterationIndex] = fitnessOfBestMember; // They are stored for the convergence curve graph
-		System.out.println(costValues[iterationIndex]);
 		iterationIndex++;
 		
 		if(iterationIndex == maximumIterationNumber)

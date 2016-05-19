@@ -89,7 +89,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private int problemDimension;
     private double[] L = {0, 0, -0.1}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.1}; // initial values of amplitude, phase, and position maximum limits    
-    private boolean amplitudeIsUsed = false;
+    private boolean amplitudeIsUsed = true;
     private boolean phaseIsUsed = true;
     private boolean positionIsUsed = false;
     private Mask mask;
@@ -196,7 +196,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private int periodForConvergenceGraph = 0;
 	private JComboBox<String> comboBoxForPatternGraph;
 	private JLabel lblUpdateTheGraph;
-	public boolean firstDraw = false;
+	public boolean firstOrLastPlot = false;
 	private JComboBox<String> comboBoxForConvergenceGraph;
 	private JLabel lblUpdateTheConvergence;
 	private int unplottedIterationIndexBeginning = 0;
@@ -313,7 +313,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				if(comboBoxForPatternGraph.getSelectedIndex() == 6) periodForPatternGraph = -1;
 			}
 		});
-		comboBoxForPatternGraph.setModel(new DefaultComboBoxModel<String>(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "never till end of optimization"}));
+		comboBoxForPatternGraph.setModel(new DefaultComboBoxModel(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "only at the begining and end"}));
 		panelPatternGraphProperties.add(comboBoxForPatternGraph);
 		
 		lblNewLabel_2 = new JLabel("New label");
@@ -364,7 +364,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				if(comboBoxForConvergenceGraph.getSelectedIndex() == 6) periodForConvergenceGraph = -1;
 			}
 		});
-		comboBoxForConvergenceGraph.setModel(new DefaultComboBoxModel<String>(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "never till end of optimization"}));
+		comboBoxForConvergenceGraph.setModel(new DefaultComboBoxModel(new String[] {"as often as possible", "every 1 second", "every 3 seconds", "every 7 seconds", "every 15 seconds", "every 1 minute", "only at the begining and end"}));
 		panelConvergenceGraphProperties.add(comboBoxForConvergenceGraph);
 		
 		lblNewLabel = new JLabel("Iteration Number:");
@@ -423,7 +423,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						terminateOptimizationButton.setVisible(false);
 						drawOuterMask();
 						drawInnerMask();
-						firstDraw = true;
+						firstOrLastPlot = true;
 						startTimeForPatternGraph = System.currentTimeMillis();
 						startTimeForConvergenceGraph = System.currentTimeMillis();
 					} else {
@@ -1603,15 +1603,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		int currentIterationIndex = differentialEvolution.iterationIndex;
 		int index = 0;
 		for(index = unplottedIterationIndexBeginning; index < currentIterationIndex; index++) {
-			convergenceSeries.add(index, differentialEvolution.costValues[index]);			
+			convergenceSeries.add(index, differentialEvolution.costValues[index]);
+			System.out.println(index + ", " + differentialEvolution.costValues[index]);
 		}
-		unplottedIterationIndexBeginning = index;
+		unplottedIterationIndexBeginning = index;		
 		
-		
-		
-		
-//		convergenceSeries.add(differentialEvolution.iterationIndex, differentialEvolution.fitnessOfBestMember);
-		iterationText.setText(Integer.toString(differentialEvolution.iterationIndex));
+		iterationText.setText(Integer.toString(differentialEvolution.iterationIndex - 1)); // we remove one from iterationIndex because this number was increased by algorithm but it does not match the current fitnessOfBestMember 
 		costText.setText(Double.toString(differentialEvolution.fitnessOfBestMember));
 	}
 
@@ -1689,6 +1686,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					for (int d = 0; d < problemDimension; d++) {
 						valuesOfBestMember[d] = differentialEvolution.members[d][differentialEvolution.bestMember];
 					}
+					if(iterationHasNotCompletedYet == false) firstOrLastPlot = true;
 					publish(new BestValues(differentialEvolution.bestMember, differentialEvolution.fitnessOfBestMember, valuesOfBestMember));
 				}
 			}			
@@ -1710,19 +1708,19 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			
 			double currentTime = System.currentTimeMillis();
 			double elapsedTimeForPatternGraph = currentTime - startTimeForPatternGraph;
-			if(periodForPatternGraph != -1) {
-				if(periodForPatternGraph == 0 || elapsedTimeForPatternGraph > periodForPatternGraph || firstDraw) {
+			if(periodForPatternGraph != -1 || firstOrLastPlot) {
+				if(periodForPatternGraph == 0 || elapsedTimeForPatternGraph > periodForPatternGraph || firstOrLastPlot) {
 					startTimeForPatternGraph = currentTime;
 					drawPlotOfPattern();
 				}
 			}
 			
 			double elapsedTimeForConvergenceGraph = currentTime - startTimeForConvergenceGraph;
-			if(periodForConvergenceGraph != -1) {
-				if(periodForConvergenceGraph == 0 || elapsedTimeForConvergenceGraph > periodForConvergenceGraph || firstDraw) {
+			if(periodForConvergenceGraph != -1 || firstOrLastPlot) {
+				if(periodForConvergenceGraph == 0 || elapsedTimeForConvergenceGraph > periodForConvergenceGraph || firstOrLastPlot) {
 					startTimeForConvergenceGraph = currentTime;
 					drawPlotOfConvergence();
-					firstDraw = false;
+					firstOrLastPlot = false;
 				}
 			}			
 		}
