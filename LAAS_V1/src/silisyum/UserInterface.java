@@ -70,6 +70,8 @@ import java.awt.Component;
 import javax.swing.Box;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import javax.swing.JSeparator;
+import javax.swing.JProgressBar;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -209,6 +211,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JButton btnResetDistancesTo;
 	private Component horizontalStrut;
 	private int arrayFactorAxisMinValue = -100;
+	private JSeparator separator;
+	private JProgressBar progressBar;
     
 	/**
 	 * Launch the application.
@@ -330,7 +334,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		horizontalStrut.setPreferredSize(new Dimension(30, 0));
 		panelPatternGraphProperties.add(horizontalStrut);
 		
-		lblNewLabel_2 = new JLabel("Array Factor Scale: From 0 to ");
+		lblNewLabel_2 = new JLabel("Vertical axis scale: From 0 to ");
 		panelPatternGraphProperties.add(lblNewLabel_2);
 		
 		arrayFactorAxisMinValue_textField = new JTextField();
@@ -419,7 +423,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		startStopPanel = new JPanel();
 		rightPannel.add(startStopPanel, BorderLayout.NORTH);
-		startStopPanel.setLayout(new MigLayout("", "[170px][170px][170px]", "[][23px]"));
+		startStopPanel.setLayout(new MigLayout("", "[grow][170px][grow]", "[][23px][][][]"));
 		
 		startStopButton = new JButton("Start Optimization");
 		startStopButton.addMouseListener(new MouseAdapter() {
@@ -471,6 +475,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		});
 		startStopPanel.add(startStopButton, "cell 1 1,alignx center,aligny top");
 		
+		progressBar = new JProgressBar();
+		startStopPanel.add(progressBar, "cell 0 2 3 1,alignx center");
+		
 		terminateOptimizationButton = new JButton("Terminate Optimization");
 		terminateOptimizationButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -485,7 +492,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		terminateOptimizationButton.setVisible(false);
 		terminateOptimizationButton.setForeground(new Color(255, 255, 255));
 		terminateOptimizationButton.setBackground(new Color(255, 69, 0));
-		startStopPanel.add(terminateOptimizationButton, "cell 2 1,alignx center");
+		startStopPanel.add(terminateOptimizationButton, "cell 1 3,alignx center");
+		
+		separator = new JSeparator(SwingConstants.HORIZONTAL);
+		separator.setPreferredSize(new Dimension(370, 2));
+		startStopPanel.add(separator, "cell 0 4 3 1,alignx center");
 		
 		tabbedPaneForSettings = new JTabbedPane(JTabbedPane.TOP);
 		rightPannel.add(tabbedPaneForSettings, BorderLayout.CENTER);
