@@ -155,7 +155,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JLabel lblMinimumValuePosition;
     private JTextField textField_maximumValuePosition;
     private JTextField textField_minimumValuePosition;
-    private JPanel mainControlsPanel;
+    private JPanel mainMessagesPanel;
     private JLabel lblMessages;
     private JTextPane messagePane;
     List<String> messagesOfErrors = new ArrayList<String>();
@@ -213,6 +213,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private int arrayFactorAxisMinValue = -100;
 	private JSeparator separator;
 	private JProgressBar progressBar;
+	private JPanel helpPanel;
     
 	/**
 	 * Launch the application.
@@ -423,7 +424,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		startStopPanel = new JPanel();
 		rightPannel.add(startStopPanel, BorderLayout.NORTH);
-		startStopPanel.setLayout(new MigLayout("", "[grow][170px][grow]", "[][23px][][][]"));
+		startStopPanel.setLayout(new MigLayout("", "[240px,grow][240px][240px,grow]", "[][23px][][][]"));
 		
 		startStopButton = new JButton("Start Optimization");
 		startStopButton.addMouseListener(new MouseAdapter() {
@@ -475,9 +476,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		});
 		startStopPanel.add(startStopButton, "cell 1 1,alignx center,aligny top");
 		
-		progressBar = new JProgressBar();
-		startStopPanel.add(progressBar, "cell 0 2 3 1,alignx center");
-		
 		terminateOptimizationButton = new JButton("Terminate Optimization");
 		terminateOptimizationButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -487,12 +485,19 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				terminateOptimizationButton.setVisible(false);
 				startStopButton.setText("Start Optimization");
 				sendMessageToPane("<br><font color=#006400><b>Optimization process has been </b></font> <font color=red><b><i>terminated</i></b></font> <font color=#006400><b>by the user</b></font>.", false);
+				progressBar.setValue(0);
 			}
 		});
 		terminateOptimizationButton.setVisible(false);
 		terminateOptimizationButton.setForeground(new Color(255, 255, 255));
 		terminateOptimizationButton.setBackground(new Color(255, 69, 0));
-		startStopPanel.add(terminateOptimizationButton, "cell 1 3,alignx center");
+		startStopPanel.add(terminateOptimizationButton, "cell 2 1,alignx center");
+		
+		progressBar = new JProgressBar();
+		progressBar.setForeground(new Color(51, 204, 51));
+		progressBar.setToolTipText("Iteration Progress Bar");
+		progressBar.setPreferredSize(new Dimension(240, 14));
+		startStopPanel.add(progressBar, "cell 0 2 3 1,alignx center");
 		
 		separator = new JSeparator(SwingConstants.HORIZONTAL);
 		separator.setPreferredSize(new Dimension(370, 2));
@@ -1026,17 +1031,21 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		differentialEvolutionPanel.add(Cr_textField, "cell 1 3,growx");
 		//table.setFillsViewportHeight(true);
 		
-		mainControlsPanel = new JPanel();
-		tabbedPaneForSettings.addTab("Main Controls", null, mainControlsPanel, null);
-		mainControlsPanel.setLayout(new MigLayout("", "[660px,grow]", "[][grow]"));
+		mainMessagesPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Messages", null, mainMessagesPanel, null);
+		mainMessagesPanel.setLayout(new MigLayout("", "[660px,grow]", "[][grow]"));
 		
 		lblMessages = new JLabel("Messages");
-		mainControlsPanel.add(lblMessages, "cell 0 0");
+		mainMessagesPanel.add(lblMessages, "cell 0 0");
 		
 		messagePane = new JTextPane();
+		messagePane.setEditable(false);
 		messagePane.setContentType("text/html");
 		JScrollPane scrollPaneForList = new JScrollPane(messagePane);
-		mainControlsPanel.add(scrollPaneForList, "cell 0 1,grow");		
+		mainMessagesPanel.add(scrollPaneForList, "cell 0 1,grow");		
+		
+		helpPanel = new JPanel();
+		tabbedPaneForSettings.addTab("Help", null, helpPanel, null);
 		
 		refreshOuterMaskSegmentsList();
 		refreshInnerMaskSegmentsList();
@@ -1775,6 +1784,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		@Override
 		protected void process(List<BestValues> chunks) {
 			bestValues = chunks.get(chunks.size()-1);
+			int progress = (int) (100*differentialEvolution.iterationIndex / differentialEvolution.maximumIterationNumber);
+			progressBar.setValue(progress);
 			if(iterationHasNotCompletedYet == false)
 			{	
 				keepIterating = false;
