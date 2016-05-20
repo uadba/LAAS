@@ -214,6 +214,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JSeparator separator;
 	private JProgressBar progressBar;
 	private JPanel helpPanel;
+	private JButton btnShowCurrentResults;
     
 	/**
 	 * Launch the application.
@@ -456,6 +457,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						algorithmExecuter.keepIterating = true;
 						startStopButton.setText("Stop Optimization");
 						terminateOptimizationButton.setVisible(false);
+						btnShowCurrentResults.setVisible(false);
 						drawOuterMask();
 						drawInnerMask();
 						firstOrLastPlot = true;
@@ -465,15 +467,30 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						algorithmExecuter.keepIterating = false;
 						startStopButton.setText("Continue Optimization");
 						terminateOptimizationButton.setVisible(true);
+						btnShowCurrentResults.setVisible(true);
 						sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>stopped</i>.</b></font>", false);
 					}
 				} else {
-					presentErrorMessages();					
+					presentErrorMessages();
+					tabbedPaneForSettings.setSelectedIndex(4);
 				}
 				//Goto to tab 0. Is it necessary?
 				//tabbedPaneForSettings.setSelectedIndex(0);
 			}
 		});
+		
+		btnShowCurrentResults = new JButton("Show Current Results");
+		btnShowCurrentResults.setVisible(false);
+		btnShowCurrentResults.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				tabbedPaneForSettings.setSelectedIndex(4);
+				showCurrentResults();				
+			}
+		});
+		btnShowCurrentResults.setForeground(new Color(255, 255, 255));
+		btnShowCurrentResults.setBackground(new Color(51, 153, 255));
+		startStopPanel.add(btnShowCurrentResults, "cell 0 1,alignx center");
 		startStopPanel.add(startStopButton, "cell 1 1,alignx center,aligny top");
 		
 		terminateOptimizationButton = new JButton("Terminate Optimization");
@@ -483,6 +500,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				algorithmExecuter.keepIterating = false;
 				algorithmExecuter.newStart = true;
 				terminateOptimizationButton.setVisible(false);
+				btnShowCurrentResults.setVisible(false);
 				startStopButton.setText("Start Optimization");
 				sendMessageToPane("<br><font color=#006400><b>Optimization process has been </b></font> <font color=red><b><i>terminated</i></b></font> <font color=#006400><b>by the user</b></font>.", false);
 				progressBar.setValue(0);
@@ -1674,7 +1692,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		} else {
 			for (int index = 1; index < numberofElements; index++) {
 				antennaArrayForPresentation.position[index] = antennaArray.position[index];
-			}			
+			}
 		}
 		
 		antennaArrayForPresentation.createPattern();
@@ -1814,6 +1832,65 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}
 			}			
 		}
+	}
+	
+	private void showCurrentResults() {
+		String currentResults;
+		currentResults = "<hr><b>Results:</b><br>amplitudes = [<br>";
+		
+		int delta = 0;
+
+		if (amplitudeIsUsed) {
+			// this is for amplitudes	
+			for (int index = 0; index < numberofElements; index++) {
+				currentResults += Double.toString(bestValues.valuesOfBestMember[index]);
+				currentResults += "<br>";
+			}
+			delta = numberofElements;
+		} else {
+			for (int index = 0; index < numberofElements; index++) {
+				currentResults += Double.toString(antennaArray.amplitude[index]);
+				currentResults += "<br>";				
+			}
+		}
+		currentResults += "]";
+		
+		currentResults += "<br><br>phases = [<br>";
+		if (phaseIsUsed) {
+			// this is for phases
+			for (int index = 0; index < numberofElements; index++) {
+				currentResults += Double.toString(bestValues.valuesOfBestMember[index]);
+				currentResults += "<br>";
+			}
+			delta += numberofElements;
+		} else {
+			for (int index = 0; index < numberofElements; index++) {
+				currentResults += Double.toString(antennaArray.phase[index]);
+				currentResults += "<br>";				
+			}
+		}
+		currentResults += "]";
+		
+		currentResults += "<br><br>positions = [<br>";
+		currentResults += "0<br>";
+		double previousElementPosition = 0;		
+		if (positionIsUsed) {
+			// this is for positions. It starts with 1 instead of 0			
+			for (int index = 1; index < numberofElements; index++) {
+				currentResults += Double.toString(previousElementPosition + 0.5 + bestValues.valuesOfBestMember[index + delta]);
+				previousElementPosition += 0.5 + bestValues.valuesOfBestMember[index + delta];
+				currentResults += "<br>";
+			}
+		} else {
+			for (int index = 1; index < numberofElements; index++) {
+				currentResults += Double.toString(antennaArray.position[index]);
+				currentResults += "<br>";
+			}
+		}
+		currentResults += "]";		
+		
+		sendMessageToPane(currentResults, false);
+		
 	}
 	
 	private void createTemporaryMasks() {
