@@ -68,6 +68,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Component;
 import javax.swing.Box;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -118,7 +120,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JPanel panelPatternGraphProperties;
     private JLabel lblNewLabel_2;
     private JButton btnRescalePatternGraph;
-    private JTextField arrayFactorScale_textField;
+    private JTextField arrayFactorAxisMinValue_textField;
     private JPanel panelPatternGraph;
     private JPanel panelConvergenceGraph;
     private JPanel panelConvergenceGraphProperties;
@@ -206,6 +208,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JButton btnResetPhaseValues;
 	private JButton btnResetDistancesTo;
 	private Component horizontalStrut;
+	private int arrayFactorAxisMinValue = -100;
     
 	/**
 	 * Launch the application.
@@ -271,7 +274,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
         crosshairOverlay.addRangeCrosshair(yCrosshair);
 		
 		grafik.getXYPlot().getDomainAxis().setRange(0, 180); // x axis
-		grafik.getXYPlot().getRangeAxis().setRange(-100, 0);
+		grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 0);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
 		tabbedPaneForPlots = new JTabbedPane(JTabbedPane.TOP);
@@ -327,14 +330,30 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		horizontalStrut.setPreferredSize(new Dimension(30, 0));
 		panelPatternGraphProperties.add(horizontalStrut);
 		
-		lblNewLabel_2 = new JLabel("Array Factor Scale: ");
+		lblNewLabel_2 = new JLabel("Array Factor Scale: From 0 to ");
 		panelPatternGraphProperties.add(lblNewLabel_2);
 		
-		arrayFactorScale_textField = new JTextField();
-		panelPatternGraphProperties.add(arrayFactorScale_textField);
-		arrayFactorScale_textField.setColumns(10);
+		arrayFactorAxisMinValue_textField = new JTextField();
+		arrayFactorAxisMinValue_textField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				grafik.getXYPlot().getDomainAxis().setRange(0, 180); // x axis
+				arrayFactorAxisMinValue = Integer.parseInt(arrayFactorAxisMinValue_textField.getText());
+				grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 0);				
+			}
+		});
+		arrayFactorAxisMinValue_textField.setText(Integer.toString(arrayFactorAxisMinValue));
+		panelPatternGraphProperties.add(arrayFactorAxisMinValue_textField);
+		arrayFactorAxisMinValue_textField.setColumns(10);
 		
 		btnRescalePatternGraph = new JButton("Rescale Pattern Graph");
+		btnRescalePatternGraph.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				grafik.getXYPlot().getDomainAxis().setRange(0, 180); // x axis
+				grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 0);
+			}
+		});
 		panelPatternGraphProperties.add(btnRescalePatternGraph);
 		
 		panelConvergence = new JPanel();
