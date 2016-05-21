@@ -72,6 +72,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JSeparator;
 import javax.swing.JProgressBar;
+import javax.swing.JTree;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -215,6 +216,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JProgressBar progressBar;
 	private JPanel helpPanel;
 	private JButton btnShowCurrentResults;
+	private JTree helpTree;
     
 	/**
 	 * Launch the application.
@@ -1064,6 +1066,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		helpPanel = new JPanel();
 		tabbedPaneForSettings.addTab("Help", null, helpPanel, null);
+		helpPanel.setLayout(new MigLayout("", "[grow]", "[grow]"));
+		
+		helpTree = new JTree();
+		helpTree.setBackground(UIManager.getColor("CheckBox.background"));
+		helpPanel.add(helpTree, "cell 0 0,grow");
 		
 		refreshOuterMaskSegmentsList();
 		refreshInnerMaskSegmentsList();
@@ -1837,6 +1844,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private void showCurrentResults() {
 		String currentResults;
 		currentResults = "<hr><b>Results:</b><br>amplitudes = [<br>";
+		currentResults = "<a name=\"map\">[content]</a>"; ///////////////////////////////////////////
 		
 		int delta = 0;
 
@@ -1887,7 +1895,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				currentResults += "<br>";
 			}
 		}
-		currentResults += "]";		
+		currentResults += "]";
+		currentResults += "<a href=\"#map\">look</a>"; ////////////////////////////////////////
 		
 		sendMessageToPane(currentResults, false);
 		
