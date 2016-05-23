@@ -173,9 +173,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private int selectedOuterMaskSegmentIndex = -1;
 	private int selectedInnerMaskSegmentIndex = -1;
 	private JPanel innerMaskPanel;
-	private JButton button;
-	private JButton button_1;
-	private JButton button_2;
+	private JButton btnAddInnerMaskSegment;
+	private JButton btnEditInnerMaskSegment;
+	private JButton btnDeleteInnerMaskSegment;
 	private JPanel innerMaskSegmentOperations;
 	private JLabel label;
 	private JLabel label_1;
@@ -453,7 +453,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							}
 							if(isThereAnyGapInInnerMask()) {
 								sendMessageToPane("<br><font color=#666600>Warning: There is at least one gap in the <i>inner mask</i>. It does not affect the optimization process adversely but it may be the sign of a bad designed mask.</font>", false);								
-							}							
+							}
+							makeComponentsPassive(false);
 						} else {
 							sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>restarted</i>.</b></font>", false);
 						}
@@ -507,6 +508,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				startStopButton.setText("Start Optimization");
 				sendMessageToPane("<br><font color=#006400><b>Optimization process has been </b></font> <font color=red><b><i>terminated</i></b></font> <font color=#006400><b>by the user</b></font>.", false);
 				progressBar.setValue(0);
+				makeComponentsPassive(true);
 			}
 		});
 		terminateOptimizationButton.setVisible(false);
@@ -541,17 +543,16 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		numberOfElements_Field.setColumns(10);
 		
 		btnSetElementNumber = new JButton("Set the Number of Antenna Array Elements");
-		btnSetElementNumber.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		btnSetElementNumber.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				String s = (String)JOptionPane.showInputDialog(
-				                    null,
-				                    "Please enter the number of antenna array elements",
-				                    "Number of Antenna Array Elements",
-				                    JOptionPane.PLAIN_MESSAGE,
-				                    null,
-				                    null,
-				                    Integer.toString(numberofElements));
+	                    null,
+	                    "Please enter the number of antenna array elements",
+	                    "Number of Antenna Array Elements",
+	                    JOptionPane.PLAIN_MESSAGE,
+	                    null,
+	                    null,
+	                    Integer.toString(numberofElements));
 				
 				if ((s != null) && (s.length() > 0)) {					
 					numberOfElements_Field.setText(s);					
@@ -560,8 +561,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					refreshPhaseTable();
 					refreshPositionTable();
 					drawPlotWithInitialParameterValues();
-				}			
-
+				}
 			}
 		});
 		arrayParametersPanel.add(btnSetElementNumber, "cell 3 0 3 1");
@@ -953,8 +953,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		innerMaskSegmentOperations.setBorder(new TitledBorder(null, "Mask Segment Operations", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		innerMaskPanel.add(innerMaskSegmentOperations, "cell 0 0 2 1,grow");
 		
-		button = new JButton("Add");
-		button.addMouseListener(new MouseAdapter() {
+		btnAddInnerMaskSegment = new JButton("Add");
+		btnAddInnerMaskSegment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				dialogBoxForAddingInnerMaskSegment.setLocationRelativeTo(dialogBoxForAddingInnerMaskSegment.getParent());
@@ -964,10 +964,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				drawInnerMask();
 			}
 		});
-		innerMaskSegmentOperations.add(button);
+		innerMaskSegmentOperations.add(btnAddInnerMaskSegment);
 		
-		button_1 = new JButton("Edit");
-		button_1.addMouseListener(new MouseAdapter() {
+		btnEditInnerMaskSegment = new JButton("Edit");
+		btnEditInnerMaskSegment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (selectedInnerMaskSegmentIndex != -1) {
@@ -984,10 +984,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}
 			}
 		});
-		innerMaskSegmentOperations.add(button_1);
+		innerMaskSegmentOperations.add(btnEditInnerMaskSegment);
 		
-		button_2 = new JButton("Delete");
-		button_2.addMouseListener(new MouseAdapter() {
+		btnDeleteInnerMaskSegment = new JButton("Delete");
+		btnDeleteInnerMaskSegment.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (selectedInnerMaskSegmentIndex != -1) {
@@ -1001,7 +1001,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}
 			}
 		});
-		innerMaskSegmentOperations.add(button_2);
+		innerMaskSegmentOperations.add(btnDeleteInnerMaskSegment);
 		
 		label = new JLabel("Mask Segment Names");
 		innerMaskPanel.add(label, "cell 0 1,alignx center");
@@ -1905,6 +1905,41 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		sendMessageToPane(currentResults, false);
 		
+	}
+	
+	private void makeComponentsPassive(boolean enabled) {
+		btnSetElementNumber.setEnabled(enabled);
+		
+		chckbxAmplitude.setEnabled(enabled);			
+		textField_maximumValueAmplitude.setEnabled(enabled);
+		textField_minimumValueAmplitude.setEnabled(enabled);
+		btnResetAmplitudeValues.setEnabled(enabled);
+		btnLoadAmplitudes.setEnabled(enabled);
+
+		chckbxPhase.setEnabled(enabled);
+		textField_maximumValuePhase.setEnabled(enabled);
+		textField_minimumValuePhase.setEnabled(enabled);
+		btnResetPhaseValues.setEnabled(enabled);
+		btnLoadPhases.setEnabled(enabled);
+		
+		chckbxPosition.setEnabled(enabled);
+		textField_maximumValuePosition.setEnabled(enabled);
+		textField_minimumValuePosition.setEnabled(enabled);
+		btnResetDistancesTo.setEnabled(enabled);
+		btnLoadPositions.setEnabled(enabled);
+		
+		btnAddOuterMaskSegment.setEnabled(enabled);
+		btnEditOuterMaskSegment.setEnabled(enabled);
+		btnDeleteOuterMaskSegment.setEnabled(enabled);
+		
+		btnAddInnerMaskSegment.setEnabled(enabled);
+		btnEditInnerMaskSegment.setEnabled(enabled);
+		btnDeleteInnerMaskSegment.setEnabled(enabled);
+		
+		populationNumber_textField.setEnabled(enabled);
+		maximumIterationNumber_textField.setEnabled(enabled);
+		F_textField.setEnabled(enabled);
+		Cr_textField.setEnabled(enabled);
 	}
 	
 	private void createTemporaryMasks() {
