@@ -93,8 +93,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private int problemDimension;
     private double[] L = {0, 0, -0.1}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.1}; // initial values of amplitude, phase, and position maximum limits    
-    private boolean amplitudeIsUsed = false;
-    private boolean phaseIsUsed = false;
+    private boolean amplitudeIsUsed = true;
+    private boolean phaseIsUsed = true;
     private boolean positionIsUsed = false;
     private Mask mask;
     private int patterGraphResolution = 721; //721;
@@ -1824,9 +1824,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				keepIterating = false;
 				newStart = true;
 				startStopButton.setText("Start Optimization");
-				String tempMessage = messagePane.getText();
-				tempMessage += "<br>Iterion has been completed";
-				messagePane.setText(tempMessage);
+				sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>completed</i> successfully!</b></font>", false);
+				showCurrentResults();
 			}			
 			
 			double currentTime = System.currentTimeMillis();
