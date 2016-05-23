@@ -66,13 +66,10 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Component;
-import javax.swing.Box;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JSeparator;
 import javax.swing.JProgressBar;
-import javax.swing.JTree;
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -96,8 +93,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private int problemDimension;
     private double[] L = {0, 0, -0.1}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.1}; // initial values of amplitude, phase, and position maximum limits    
-    private boolean amplitudeIsUsed = true;
-    private boolean phaseIsUsed = true;
+    private boolean amplitudeIsUsed = false;
+    private boolean phaseIsUsed = false;
     private boolean positionIsUsed = false;
     private Mask mask;
     private int patterGraphResolution = 721; //721;
@@ -218,6 +215,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JLabel lblAmplitudeValuesComment;
 	private JLabel lblPhaseValuesComment;
 	private JLabel lblPositionValuesComment;
+	private String fixedOrOptimized;
+	private String willBeOptimized = "<html>will be <font color=red>optimized</font></html>";
+	private String areFixed = "<html>are <font color=green>fixed</font></html>";
     
 	/**
 	 * Launch the application.
@@ -569,13 +569,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		lblAmplitudeValues = new JLabel("Amplitude values");
 		arrayParametersPanel.add(lblAmplitudeValues, "cell 0 4,alignx right");
 		
-		lblAmplitudeValuesComment = new JLabel("<html>will be <font color=red>optimized</font></html>");
+		fixedOrOptimized = (amplitudeIsUsed) ? willBeOptimized : areFixed;
+		lblAmplitudeValuesComment = new JLabel(fixedOrOptimized);
 		arrayParametersPanel.add(lblAmplitudeValuesComment, "cell 1 4,alignx left");
 		
 		lblPhaseValues = new JLabel("Phase Values");
 		arrayParametersPanel.add(lblPhaseValues, "cell 2 4,alignx right");
 		
-		lblPhaseValuesComment = new JLabel("<html>will be <font color=red>optimized</font></html>");
+		fixedOrOptimized = (phaseIsUsed) ? willBeOptimized : areFixed;
+		lblPhaseValuesComment = new JLabel(fixedOrOptimized);
 		arrayParametersPanel.add(lblPhaseValuesComment, "cell 3 4,alignx left");
 		
 		lblPositionValues = new JLabel("Position Values");
@@ -586,6 +588,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				amplitudeIsUsed = chckbxAmplitude.isSelected();
+				lblAmplitudeValuesComment.setText((amplitudeIsUsed) ? willBeOptimized : areFixed);
 				refreshAmplitudeTable();
 			}
 		});
@@ -597,6 +600,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				phaseIsUsed = chckbxPhase.isSelected();
+				lblPhaseValuesComment.setText((phaseIsUsed) ? willBeOptimized : areFixed);
 				refreshPhaseTable();
 			}
 		});
@@ -608,6 +612,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				positionIsUsed = chckbxPosition.isSelected();
+				lblPositionValuesComment.setText((positionIsUsed) ? willBeOptimized : areFixed);
 				refreshPositionTable();
 			}
 		});
@@ -674,7 +679,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		});
 		
-		lblPositionValuesComment = new JLabel("<html>are <font color=green>fixed</font></html>");
+		fixedOrOptimized = (positionIsUsed) ? willBeOptimized : areFixed;
+		lblPositionValuesComment = new JLabel(fixedOrOptimized);
 		arrayParametersPanel.add(lblPositionValuesComment, "cell 5 4,alignx left");
 		arrayParametersPanel.add(btnResetAmplitudeValues, "cell 0 5 2 1,alignx center");
 		
