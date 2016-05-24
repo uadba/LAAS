@@ -324,9 +324,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		panelPatternGraphProperties.add(lblUpdateTheGraph, "cell 1 1,alignx right");
 		
 		btnRescalePatternGraph = new JButton("Rescale Pattern Graph");
-		btnRescalePatternGraph.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+		btnRescalePatternGraph.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				grafik.getXYPlot().getDomainAxis().setRange(0, 180); // x axis
 				grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 0);
 			}
@@ -431,9 +430,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		startStopPanel.setLayout(new MigLayout("", "[240px,grow][240px][240px,grow]", "[][23px][][][]"));
 		
 		startPauseButton = new JButton("Start Optimization");
-		startPauseButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		startPauseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				if(validateParameters()) {
 					if(algorithmExecuter.keepIterating == false) {
 						if(algorithmExecuter.newStart) {
@@ -484,23 +482,21 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		});
 		
 		btnShowCurrentResults = new JButton("Show Current Results");
-		btnShowCurrentResults.setVisible(false);
-		btnShowCurrentResults.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		btnShowCurrentResults.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				tabbedPaneForSettings.setSelectedIndex(4);
-				showCurrentResults();				
+				showCurrentResults();	
 			}
 		});
+		btnShowCurrentResults.setVisible(false);
 		btnShowCurrentResults.setForeground(new Color(255, 255, 255));
 		btnShowCurrentResults.setBackground(new Color(51, 153, 255));
 		startStopPanel.add(btnShowCurrentResults, "cell 0 1,alignx center");
 		startStopPanel.add(startPauseButton, "cell 1 1,alignx center,aligny top");
 		
 		terminateOptimizationButton = new JButton("Terminate Optimization");
-		terminateOptimizationButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		terminateOptimizationButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				algorithmExecuter.keepIterating = false;
 				algorithmExecuter.newStart = true;
 				terminateOptimizationButton.setVisible(false);
@@ -585,9 +581,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		arrayParametersPanel.add(lblPositionValues, "cell 4 4,alignx right");
 		
 		chckbxAmplitude = new JCheckBox("Amplitude");
-		chckbxAmplitude.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		chckbxAmplitude.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				amplitudeIsUsed = chckbxAmplitude.isSelected();
 				lblAmplitudeValuesComment.setText((amplitudeIsUsed) ? willBeOptimized : areFixed);
 				refreshAmplitudeTable();
@@ -597,9 +592,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		arrayParametersPanel.add(chckbxAmplitude, "cell 0 1,alignx right");
 		
 		chckbxPhase = new JCheckBox("Phase");
-		chckbxPhase.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+		chckbxPhase.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				phaseIsUsed = chckbxPhase.isSelected();
 				lblPhaseValuesComment.setText((phaseIsUsed) ? willBeOptimized : areFixed);
 				refreshPhaseTable();
@@ -609,9 +603,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		arrayParametersPanel.add(chckbxPhase, "cell 2 1,alignx right");
 		
 		chckbxPosition = new JCheckBox("Position");
-		chckbxPosition.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+		chckbxPosition.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				positionIsUsed = chckbxPosition.isSelected();
 				lblPositionValuesComment.setText((positionIsUsed) ? willBeOptimized : areFixed);
 				refreshPositionTable();
@@ -669,9 +662,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		textField_minimumValuePosition.setColumns(10);
 		
 		btnResetAmplitudeValues = new JButton("Reset Amplitude Values to Ones");
-		btnResetAmplitudeValues.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		btnResetAmplitudeValues.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				for (int d = 0; d < numberofElements ; d++) {
 					antennaArray.amplitude[d] = 1;
 					refreshAmplitudeTable();
@@ -686,9 +678,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		arrayParametersPanel.add(btnResetAmplitudeValues, "cell 0 5 2 1,alignx center");
 		
 		btnResetPhaseValues = new JButton("Reset Phase Values to Zeros");
-		btnResetPhaseValues.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+		btnResetPhaseValues.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				for (int d = 0; d < numberofElements ; d++) {
 					antennaArray.phase[d] = 0;
 					refreshPhaseTable();
@@ -699,9 +690,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		arrayParametersPanel.add(btnResetPhaseValues, "cell 2 5 2 1,alignx center");
 		
 		btnResetDistancesTo = new JButton("Reset Distances to Half-wavelength");
-		btnResetDistancesTo.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+		btnResetDistancesTo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				for (int d = 0; d < numberofElements ; d++) {
 					antennaArray.position[d] = d*0.5;
 					refreshPositionTable();
@@ -724,9 +714,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		arrayParametersPanel.add(scrollPaneForTablePosition, "cell 4 6 2 1,grow");
 		
 		btnLoadAmplitudes = new JButton("Load Amplitude Values From a File");
-		btnLoadAmplitudes.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		btnLoadAmplitudes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				//Create a file chooser
 				final JFileChooser fc = new JFileChooser();
 				
@@ -751,7 +740,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							double amplitudeFromFile = 0;							
 							try {
 								amplitudeFromFile = Double.parseDouble(lines.get(conversion));
-							} catch (NumberFormatException e) {
+							} catch (NumberFormatException ex) {
 								amplitudeFromFile = 0;
 							}				
 							
@@ -759,21 +748,19 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						}
 						refreshAmplitudeTable();
 						drawPlotWithInitialParameterValues();						
-					} catch (IOException e) {
-						e.printStackTrace();
+					} catch (IOException ex) {
+						ex.printStackTrace();
 					}					
 		        } else {
 		            // Cancelled by the user.
 		        }
-						
 			}
 		});
 		arrayParametersPanel.add(btnLoadAmplitudes, "cell 0 7 2 1,alignx center");
 		
 		btnLoadPhases = new JButton("Load Phase Values From a File");
-		btnLoadPhases.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		btnLoadPhases.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				//Create a file chooser
 				final JFileChooser fc = new JFileChooser();
 				
@@ -798,7 +785,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							double phaseFromFile = 0;							
 							try {
 								phaseFromFile = Double.parseDouble(lines.get(conversion));
-							} catch (NumberFormatException e) {
+							} catch (NumberFormatException ex) {
 								phaseFromFile = 0;
 							}				
 							
@@ -806,20 +793,19 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						}
 						refreshPhaseTable();
 						drawPlotWithInitialParameterValues();						
-					} catch (IOException e) {
-						e.printStackTrace();
+					} catch (IOException ex) {
+						ex.printStackTrace();
 					}					
 		        } else {
 		            // Cancelled by the user.
-		        }				
+		        }	
 			}
 		});
 		arrayParametersPanel.add(btnLoadPhases, "cell 2 7 2 1,alignx center");
 		
 		btnLoadPositions = new JButton("Load Position Values From a File");
-		btnLoadPositions.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		btnLoadPositions.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				//Create a file chooser
 				final JFileChooser fc = new JFileChooser();
 				
@@ -844,7 +830,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							double positionFromFile = 0;							
 							try {
 								positionFromFile = Double.parseDouble(lines.get(conversion));
-							} catch (NumberFormatException e) {
+							} catch (NumberFormatException ex) {
 								positionFromFile = 0;
 							}				
 							
@@ -852,8 +838,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						}
 						refreshPositionTable();
 						drawPlotWithInitialParameterValues();						
-					} catch (IOException e) {
-						e.printStackTrace();
+					} catch (IOException ex) {
+						ex.printStackTrace();
 					}					
 		        } else {
 		            // Cancelled by the user.
@@ -882,47 +868,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		outerMaskPanel.add(outerMaskSegmentOperations, "cell 0 0 2 1,grow");
 		
 		btnAddOuterMaskSegment = new JButton("Add");
-		outerMaskSegmentOperations.add(btnAddOuterMaskSegment);
-		
-		btnEditOuterMaskSegment = new JButton("Edit");
-		btnEditOuterMaskSegment.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (selectedOuterMaskSegmentIndex != -1) {
-					Mask.MaskSegment outerMaskSegment = mask.outerMaskSegments.get(selectedOuterMaskSegmentIndex);
-					
-					dialogBoxForEditingOuterMaskSegment.setTextFields(selectedOuterMaskSegmentIndex, outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
-							Double.toString(outerMaskSegment.stopAngle), Integer.toString(outerMaskSegment.numberOfPoints), Double.toString(outerMaskSegment.level), Double.toString(outerMaskSegment.weight));
-					
-					dialogBoxForEditingOuterMaskSegment.setLocationRelativeTo(dialogBoxForEditingOuterMaskSegment.getParent());				
-					dialogBoxForEditingOuterMaskSegment.setVisible(true);
-					refreshOuterMaskSegmentsList();
-					refreshOuterMaskSegmentDetailsTable();
-					drawOuterMask();
-				}
-			}
-		});
-		outerMaskSegmentOperations.add(btnEditOuterMaskSegment);
-		
-		btnDeleteOuterMaskSegment = new JButton("Delete");
-		btnDeleteOuterMaskSegment.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {				
-				if (selectedOuterMaskSegmentIndex != -1) {
-					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to delete THIS mask?", "Warning", JOptionPane.YES_NO_OPTION);
-					if (dialogResult == JOptionPane.YES_OPTION) {
-						mask.deleteOuterMaskSegments(selectedOuterMaskSegmentIndex);
-						refreshOuterMaskSegmentsList();
-						refreshOuterMaskSegmentDetailsTable();
-						drawOuterMask();
-					} 
-				}
-			}
-		});
-		outerMaskSegmentOperations.add(btnDeleteOuterMaskSegment);
-		btnAddOuterMaskSegment.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		btnAddOuterMaskSegment.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				dialogBoxForAddingOuterMaskSegment.setLocationRelativeTo(dialogBoxForAddingOuterMaskSegment.getParent());
 				// check the outer mask segments list
 				int numberOfOuterMaskSegments = mask.outerMaskSegments.size();
@@ -950,6 +897,42 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				drawOuterMask();
 			}
 		});
+		outerMaskSegmentOperations.add(btnAddOuterMaskSegment);
+		
+		btnEditOuterMaskSegment = new JButton("Edit");
+		btnEditOuterMaskSegment.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (selectedOuterMaskSegmentIndex != -1) {
+					Mask.MaskSegment outerMaskSegment = mask.outerMaskSegments.get(selectedOuterMaskSegmentIndex);
+					
+					dialogBoxForEditingOuterMaskSegment.setTextFields(selectedOuterMaskSegmentIndex, outerMaskSegment.name, Double.toString(outerMaskSegment.startAngle),
+							Double.toString(outerMaskSegment.stopAngle), Integer.toString(outerMaskSegment.numberOfPoints), Double.toString(outerMaskSegment.level), Double.toString(outerMaskSegment.weight));
+					
+					dialogBoxForEditingOuterMaskSegment.setLocationRelativeTo(dialogBoxForEditingOuterMaskSegment.getParent());				
+					dialogBoxForEditingOuterMaskSegment.setVisible(true);
+					refreshOuterMaskSegmentsList();
+					refreshOuterMaskSegmentDetailsTable();
+					drawOuterMask();
+				}
+			}
+		});
+		outerMaskSegmentOperations.add(btnEditOuterMaskSegment);
+		
+		btnDeleteOuterMaskSegment = new JButton("Delete");
+		btnDeleteOuterMaskSegment.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (selectedOuterMaskSegmentIndex != -1) {
+					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to delete THIS mask?", "Warning", JOptionPane.YES_NO_OPTION);
+					if (dialogResult == JOptionPane.YES_OPTION) {
+						mask.deleteOuterMaskSegments(selectedOuterMaskSegmentIndex);
+						refreshOuterMaskSegmentsList();
+						refreshOuterMaskSegmentDetailsTable();
+						drawOuterMask();
+					} 
+				}
+			}
+		});
+		outerMaskSegmentOperations.add(btnDeleteOuterMaskSegment);
 		
 		lblMaskSegmentNames = new JLabel("Mask Segment Names");
 		outerMaskPanel.add(lblMaskSegmentNames, "cell 0 1,alignx center");
@@ -975,9 +958,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		innerMaskPanel.add(innerMaskSegmentOperations, "cell 0 0 2 1,grow");
 		
 		btnAddInnerMaskSegment = new JButton("Add");
-		btnAddInnerMaskSegment.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		btnAddInnerMaskSegment.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				dialogBoxForAddingInnerMaskSegment.setLocationRelativeTo(dialogBoxForAddingInnerMaskSegment.getParent());
 				
 				
@@ -1010,9 +992,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		innerMaskSegmentOperations.add(btnAddInnerMaskSegment);
 		
 		btnEditInnerMaskSegment = new JButton("Edit");
-		btnEditInnerMaskSegment.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+		btnEditInnerMaskSegment.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				if (selectedInnerMaskSegmentIndex != -1) {
 					Mask.MaskSegment innerMaskSegment = mask.innerMaskSegments.get(selectedInnerMaskSegmentIndex);
 					
@@ -1030,9 +1011,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		innerMaskSegmentOperations.add(btnEditInnerMaskSegment);
 		
 		btnDeleteInnerMaskSegment = new JButton("Delete");
-		btnDeleteInnerMaskSegment.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+		btnDeleteInnerMaskSegment.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				if (selectedInnerMaskSegmentIndex != -1) {
 					int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to delete THIS mask?", "Warning", JOptionPane.YES_NO_OPTION);
 					if (dialogResult == JOptionPane.YES_OPTION) {
@@ -1040,7 +1020,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						refreshInnerMaskSegmentsList();
 						refreshInnerMaskSegmentDetailsTable();
 						drawInnerMask();
-					} 
+					}
 				}
 			}
 		});
@@ -1870,6 +1850,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>completed</i> successfully!</b></font>", false);
 				showCurrentResults();
 				makeComponentsEnable(true);
+				tabbedPaneForSettings.setSelectedIndex(4);
 			}			
 			
 			double currentTime = System.currentTimeMillis();
@@ -2002,12 +1983,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
 		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
 
-//		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
-//		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
-//		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
-//		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 3, -95, 1);
-//		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -40, 1);
-//		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
+		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
+		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
+		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
+		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 3, -95, 1);
+		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -40, 1);
+		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
 
 		// simple mask
 //		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 84, -35, 1);
