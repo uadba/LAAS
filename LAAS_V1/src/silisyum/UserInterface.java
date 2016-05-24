@@ -1959,26 +1959,31 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		textField_minimumValueAmplitude.setEnabled(enabled);
 		btnResetAmplitudeValues.setEnabled(enabled);
 		btnLoadAmplitudes.setEnabled(enabled);
+		tableAmplitude.setEnabled(enabled);
 
 		chckbxPhase.setEnabled(enabled);
 		textField_maximumValuePhase.setEnabled(enabled);
 		textField_minimumValuePhase.setEnabled(enabled);
 		btnResetPhaseValues.setEnabled(enabled);
 		btnLoadPhases.setEnabled(enabled);
+		tablePhase.setEnabled(enabled);
 		
 		chckbxPosition.setEnabled(enabled);
 		textField_maximumValuePosition.setEnabled(enabled);
 		textField_minimumValuePosition.setEnabled(enabled);
 		btnResetDistancesTo.setEnabled(enabled);
 		btnLoadPositions.setEnabled(enabled);
+		tablePosition.setEnabled(enabled);
 		
 		btnAddOuterMaskSegment.setEnabled(enabled);
 		btnEditOuterMaskSegment.setEnabled(enabled);
 		btnDeleteOuterMaskSegment.setEnabled(enabled);
+		outerTable.setEnabled(enabled);		
 		
 		btnAddInnerMaskSegment.setEnabled(enabled);
 		btnEditInnerMaskSegment.setEnabled(enabled);
 		btnDeleteInnerMaskSegment.setEnabled(enabled);
+		innerTable.setEnabled(enabled);
 		
 		populationNumber_textField.setEnabled(enabled);
 		maximumIterationNumber_textField.setEnabled(enabled);
@@ -1988,14 +1993,14 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void createTemporaryMasks() {
 		
-//		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
-//		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
-//		mask.addNewOuterMaskSegments("SLL_03", 30, 79, 49, -20, 1);
-//		mask.addNewOuterMaskSegments("SLL_04", 79, 80, 5, -60, 1);
-//		mask.addNewOuterMaskSegments("SLL_05", 80, 100, 20, 0, 1);
-//		mask.addNewOuterMaskSegments("SLL_06", 100, 110, 10, -20, 1);
-//		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
-//		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
+		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
+		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
+		mask.addNewOuterMaskSegments("SLL_03", 30, 79, 49, -20, 1);
+		mask.addNewOuterMaskSegments("SLL_04", 79, 80, 5, -60, 1);
+		mask.addNewOuterMaskSegments("SLL_05", 80, 100, 20, 0, 1);
+		mask.addNewOuterMaskSegments("SLL_06", 100, 110, 10, -20, 1);
+		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
+		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
 
 //		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
 //		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
