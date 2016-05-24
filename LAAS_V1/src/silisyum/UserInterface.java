@@ -1687,11 +1687,23 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if( ! validateTextBoxForDouble(F_textField.getText())) {
 			parametersAreValid = false;
 			messagesOfErrors.add("Scaling Factor (F) value at differential evoluation tab is not valid.");			
+		} else {
+			double value = Double.parseDouble(F_textField.getText());
+			if(value < 0 || value > 2) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Scaling Factor (F) value at differential evoluation tab must be in the range of [0, 2].");
+			}
 		}
 		
 		if( ! validateTextBoxForDouble(Cr_textField.getText())) {
 			parametersAreValid = false;
 			messagesOfErrors.add("Crossover Rate (Cr) value at differential evoluation tab is not valid.");			
+		} else {
+			double value = Double.parseDouble(Cr_textField.getText());
+			if(value < 0 || value > 1) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Crossover Rate (Cr) value at differential evoluation tab must be in the range of [0, 1].");
+			}
 		}
 		
 		return parametersAreValid;
