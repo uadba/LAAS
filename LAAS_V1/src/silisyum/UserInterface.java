@@ -125,7 +125,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private JPanel panelConvergenceGraph;
     private JPanel panelConvergenceGraphProperties;
     private JPanel startStopPanel;
-    private JButton startStopButton;
+    private JButton startPauseButton;
     private JLabel numberOfElements_Label;
     private JTextField numberOfElements_Field;
     private JButton terminateOptimizationButton;
@@ -430,8 +430,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		rightPannel.add(startStopPanel, BorderLayout.NORTH);
 		startStopPanel.setLayout(new MigLayout("", "[240px,grow][240px][240px,grow]", "[][23px][][][]"));
 		
-		startStopButton = new JButton("Start Optimization");
-		startStopButton.addMouseListener(new MouseAdapter() {
+		startPauseButton = new JButton("Start Optimization");
+		startPauseButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if(validateParameters()) {
@@ -454,12 +454,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 							if(isThereAnyGapInInnerMask()) {
 								sendMessageToPane("<br><font color=#666600>Warning: There is at least one gap in the <i>inner mask</i>. It does not affect the optimization process adversely but it may be the sign of a bad designed mask.</font>", false);								
 							}
-							makeComponentsPassive(false);
+							makeComponentsEnable(false);
 						} else {
 							sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>restarted</i>.</b></font>", false);
 						}
 						algorithmExecuter.keepIterating = true;
-						startStopButton.setText("Stop Optimization");
+						startPauseButton.setText("Pause Optimization");
 						terminateOptimizationButton.setVisible(false);
 						btnShowCurrentResults.setVisible(false);
 						drawOuterMask();
@@ -469,7 +469,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						startTimeForConvergenceGraph = System.currentTimeMillis();
 					} else {
 						algorithmExecuter.keepIterating = false;
-						startStopButton.setText("Continue Optimization");
+						startPauseButton.setText("Continue Optimization");
 						terminateOptimizationButton.setVisible(true);
 						btnShowCurrentResults.setVisible(true);
 						sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>stopped</i>.</b></font>", false);
@@ -495,7 +495,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnShowCurrentResults.setForeground(new Color(255, 255, 255));
 		btnShowCurrentResults.setBackground(new Color(51, 153, 255));
 		startStopPanel.add(btnShowCurrentResults, "cell 0 1,alignx center");
-		startStopPanel.add(startStopButton, "cell 1 1,alignx center,aligny top");
+		startStopPanel.add(startPauseButton, "cell 1 1,alignx center,aligny top");
 		
 		terminateOptimizationButton = new JButton("Terminate Optimization");
 		terminateOptimizationButton.addMouseListener(new MouseAdapter() {
@@ -505,10 +505,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				algorithmExecuter.newStart = true;
 				terminateOptimizationButton.setVisible(false);
 				btnShowCurrentResults.setVisible(false);
-				startStopButton.setText("Start Optimization");
+				startPauseButton.setText("Start Optimization");
 				sendMessageToPane("<br><font color=#006400><b>Optimization process has been </b></font> <font color=red><b><i>terminated</i></b></font> <font color=#006400><b>by the user</b></font>.", false);
 				progressBar.setValue(0);
-				makeComponentsPassive(true);
+				makeComponentsEnable(true);
+				showCurrentResults();
 			}
 		});
 		terminateOptimizationButton.setVisible(false);
@@ -923,6 +924,26 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				dialogBoxForAddingOuterMaskSegment.setLocationRelativeTo(dialogBoxForAddingOuterMaskSegment.getParent());
+				// check the outer mask segments list
+				int numberOfOuterMaskSegments = mask.outerMaskSegments.size();
+				
+				// if there is any segment set the latest one as reference
+				Mask.MaskSegment outerMaskSegment;
+				if(numberOfOuterMaskSegments != 0) {
+					outerMaskSegment = mask.outerMaskSegments.get(numberOfOuterMaskSegments - 1);
+					double lastSegmentStopAngle = outerMaskSegment.stopAngle;
+					String lastSegmentStopAngleString = Double.toString(lastSegmentStopAngle);
+					if(lastSegmentStopAngle == 180) {
+						dialogBoxForAddingOuterMaskSegment.setTextFields("", "", "", "", "", "");
+					} else {
+						String lastSegmentLevelString = Double.toString(outerMaskSegment.level);						
+						String lastSegmentWeightString = Double.toString(outerMaskSegment.weight);						
+						dialogBoxForAddingOuterMaskSegment.setTextFields("", lastSegmentStopAngleString, "", "", lastSegmentLevelString, lastSegmentWeightString);						
+					}
+				} else {
+					dialogBoxForAddingOuterMaskSegment.setTextFields("", "", "", "", "", "");
+				}
+				
 				dialogBoxForAddingOuterMaskSegment.setVisible(true);
 				refreshOuterMaskSegmentsList();
 				refreshOuterMaskSegmentDetailsTable();
@@ -958,6 +979,28 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				dialogBoxForAddingInnerMaskSegment.setLocationRelativeTo(dialogBoxForAddingInnerMaskSegment.getParent());
+				
+				
+				// check the inner mask segments list
+				int numberOfInnerMaskSegments = mask.innerMaskSegments.size();
+				
+				// if there is any segment set the latest one as reference
+				Mask.MaskSegment innerMaskSegment;
+				if(numberOfInnerMaskSegments != 0) {
+					innerMaskSegment = mask.innerMaskSegments.get(numberOfInnerMaskSegments - 1);
+					double lastSegmentStopAngle = innerMaskSegment.stopAngle;
+					String lastSegmentStopAngleString = Double.toString(lastSegmentStopAngle);
+					if(lastSegmentStopAngle == 180) {
+						dialogBoxForAddingInnerMaskSegment.setTextFields("", "", "", "", "", "");
+					} else {
+						String lastSegmentLevelString = Double.toString(innerMaskSegment.level);						
+						String lastSegmentWeightString = Double.toString(innerMaskSegment.weight);						
+						dialogBoxForAddingInnerMaskSegment.setTextFields("", lastSegmentStopAngleString, "", "", lastSegmentLevelString, lastSegmentWeightString);						
+					}
+				} else {
+					dialogBoxForAddingInnerMaskSegment.setTextFields("", "", "", "", "", "");
+				}				
+				
 				dialogBoxForAddingInnerMaskSegment.setVisible(true);
 				refreshInnerMaskSegmentsList();
 				refreshInnerMaskSegmentDetailsTable();
@@ -1823,9 +1866,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			{	
 				keepIterating = false;
 				newStart = true;
-				startStopButton.setText("Start Optimization");
+				startPauseButton.setText("Start Optimization");
 				sendMessageToPane("<br><font color=#006400><b>Optimization process has been <i>completed</i> successfully!</b></font>", false);
 				showCurrentResults();
+				makeComponentsEnable(true);
 			}			
 			
 			double currentTime = System.currentTimeMillis();
@@ -1907,7 +1951,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 	}
 	
-	private void makeComponentsPassive(boolean enabled) {
+	private void makeComponentsEnable(boolean enabled) {
 		btnSetElementNumber.setEnabled(enabled);
 		
 		chckbxAmplitude.setEnabled(enabled);			
@@ -1944,21 +1988,21 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void createTemporaryMasks() {
 		
-		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
-		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
-		mask.addNewOuterMaskSegments("SLL_03", 30, 79, 49, -20, 1);
-		mask.addNewOuterMaskSegments("SLL_04", 79, 80, 5, -60, 1);
-		mask.addNewOuterMaskSegments("SLL_05", 80, 100, 20, 0, 1);
-		mask.addNewOuterMaskSegments("SLL_06", 100, 110, 10, -20, 1);
-		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
-		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
+//		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
+//		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
+//		mask.addNewOuterMaskSegments("SLL_03", 30, 79, 49, -20, 1);
+//		mask.addNewOuterMaskSegments("SLL_04", 79, 80, 5, -60, 1);
+//		mask.addNewOuterMaskSegments("SLL_05", 80, 100, 20, 0, 1);
+//		mask.addNewOuterMaskSegments("SLL_06", 100, 110, 10, -20, 1);
+//		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
+//		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
 
-		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
-		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
-		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
-		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 3, -95, 1);
-		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -40, 1);
-		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
+//		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
+//		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
+//		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
+//		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 3, -95, 1);
+//		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -40, 1);
+//		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
 
 		// simple mask
 //		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 84, -35, 1);
