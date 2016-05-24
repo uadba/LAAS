@@ -1624,15 +1624,105 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private boolean validateParameters() {
 		boolean parametersAreValid = true;
 		
+		// Amplitude, phase and position values are evaluated.
 		if(amplitudeIsUsed == false && phaseIsUsed == false && positionIsUsed == false)
 		{
 			parametersAreValid = false;
 			messagesOfErrors.add("There is not any selected antenna parameters to optimize. At least one of them (amplitude, phase or position) must be selected.");
 		}
 		
+		if( ! validateTextBoxForDouble(textField_maximumValueAmplitude.getText())) {
+			parametersAreValid = false;
+			messagesOfErrors.add("Maximum amplitude value at array parameters tab is not valid.");			
+		}
+		
+		if( ! validateTextBoxForDouble(textField_minimumValueAmplitude.getText())) {
+			parametersAreValid = false;
+			messagesOfErrors.add("Minimum amplitude value at array parameters tab is not valid.");			
+		}	
+		
+		if( ! validateTextBoxForDouble(textField_maximumValuePhase.getText())) {
+			parametersAreValid = false;
+			messagesOfErrors.add("Maximum phase value at array parameters tab is not valid.");			
+		}
+		
+		if( ! validateTextBoxForDouble(textField_minimumValuePhase.getText())) {
+			parametersAreValid = false;
+			messagesOfErrors.add("Minimum phase value at array parameters tab is not valid.");			
+		}
+		
+		if( ! validateTextBoxForDouble(textField_maximumValuePosition.getText())) {
+			parametersAreValid = false;
+			messagesOfErrors.add("Maximum position value at array parameters tab is not valid.");			
+		}
+		
+		if( ! validateTextBoxForDouble(textField_minimumValuePosition.getText())) {
+			parametersAreValid = false;
+			messagesOfErrors.add("Minimum position value at array parameters tab is not valid.");			
+		}
+		
+		// DE parameters are evaluated.
+		if( ! validateTextBoxForInteger(populationNumber_textField.getText())) {
+			parametersAreValid = false;
+			messagesOfErrors.add("Population number value at differential evoluation tab is not valid.");			
+		} else {
+			double value = Double.parseDouble(populationNumber_textField.getText());
+			if(value < 4) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Population number value at differential evoluation tab cannot be less than four.");
+			}
+		}
+		
+		if( ! validateTextBoxForInteger(maximumIterationNumber_textField.getText())) {
+			parametersAreValid = false;
+			messagesOfErrors.add("Maximum iteration number value at differential evoluation tab is not valid.");			
+		} else {
+			double value = Double.parseDouble(maximumIterationNumber_textField.getText());
+			if(value < 1) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Maximum iteration number value at differential evoluation tab cannot be less than one.");
+			}
+		}
+		
+		if( ! validateTextBoxForDouble(F_textField.getText())) {
+			parametersAreValid = false;
+			messagesOfErrors.add("Scaling Factor (F) value at differential evoluation tab is not valid.");			
+		}
+		
+		if( ! validateTextBoxForDouble(Cr_textField.getText())) {
+			parametersAreValid = false;
+			messagesOfErrors.add("Crossover Rate (Cr) value at differential evoluation tab is not valid.");			
+		}
+		
 		return parametersAreValid;
 	}
+
+	private boolean validateTextBoxForDouble(String text) {
+		
+		boolean result = true;
+		
+		try {
+			Double.parseDouble(text);
+		} catch (NumberFormatException e) {
+			result = false;
+		}
+		
+		return result;
+	}
 	
+	private boolean validateTextBoxForInteger(String text) {
+		
+		boolean result = true;
+		
+		try {
+			Integer.parseInt(text);
+		} catch (NumberFormatException e) {
+			result = false;
+		}
+		
+		return result;
+	}
+
 	private void getParametersFromUserInterface() {
 		// DE parameters
 		// numberOfElements = Integer.parseInt(numberOfElements_Field.getText()); // numberOfElements was already assigned.
