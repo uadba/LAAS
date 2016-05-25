@@ -207,7 +207,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JButton btnResetAmplitudeValues;
 	private JButton btnResetPhaseValues;
 	private JButton btnResetDistancesTo;
-	private int arrayFactorAxisMinValue = -100;
+	private final double arrayFactorAxisMinValueDefault = -100;
+	private double arrayFactorAxisMinValue = arrayFactorAxisMinValueDefault;
 	private JSeparator separator;
 	private JProgressBar progressBar;
 	private JButton btnShowCurrentResults;
@@ -354,11 +355,23 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				grafik.getXYPlot().getDomainAxis().setRange(0, 180); // x axis
-				arrayFactorAxisMinValue = Integer.parseInt(arrayFactorAxisMinValue_textField.getText());
+				
+				try {
+					arrayFactorAxisMinValue = Double.parseDouble(arrayFactorAxisMinValue_textField.getText());
+				} catch (NumberFormatException e) {					
+					arrayFactorAxisMinValue = arrayFactorAxisMinValueDefault;
+					arrayFactorAxisMinValue_textField.setText(Double.toString(arrayFactorAxisMinValue));
+				}
+				
+				if(arrayFactorAxisMinValue >= 0) {
+					arrayFactorAxisMinValue = arrayFactorAxisMinValueDefault;
+					arrayFactorAxisMinValue_textField.setText(Double.toString(arrayFactorAxisMinValue));
+				}
+				
 				grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 0);				
 			}
 		});
-		arrayFactorAxisMinValue_textField.setText(Integer.toString(arrayFactorAxisMinValue));
+		arrayFactorAxisMinValue_textField.setText(Double.toString(arrayFactorAxisMinValue));
 		panelPatternGraphProperties.add(arrayFactorAxisMinValue_textField, "cell 2 0,alignx left");
 		arrayFactorAxisMinValue_textField.setColumns(10);
 		panelPatternGraphProperties.add(btnRescalePatternGraph, "cell 3 0,alignx left");
@@ -1639,7 +1652,24 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if( ! validateTextBoxForDouble(textField_minimumValueAmplitude.getText())) {
 			parametersAreValid = false;
 			messagesOfErrors.add("Minimum amplitude value at array parameters tab is not valid.");			
-		}	
+		}
+		
+		if(validateTextBoxForDouble(textField_maximumValueAmplitude.getText()) && validateTextBoxForDouble(textField_minimumValueAmplitude.getText())) {
+			if(Double.parseDouble(textField_maximumValueAmplitude.getText()) <= Double.parseDouble(textField_minimumValueAmplitude.getText())) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Maximum amplitude value must be bigger than minimum amplitude value.");				
+			}
+			
+			if(Double.parseDouble(textField_maximumValueAmplitude.getText()) < 0) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Maximum amplitude value cannot be negative.");				
+			}
+			
+			if(Double.parseDouble(textField_minimumValueAmplitude.getText()) < 0) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Minimum amplitude value cannot be negative.");				
+			}
+		}
 		
 		if( ! validateTextBoxForDouble(textField_maximumValuePhase.getText())) {
 			parametersAreValid = false;
@@ -1651,6 +1681,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			messagesOfErrors.add("Minimum phase value at array parameters tab is not valid.");			
 		}
 		
+		if(validateTextBoxForDouble(textField_maximumValuePhase.getText()) && validateTextBoxForDouble(textField_minimumValuePhase.getText())) {
+			if(Double.parseDouble(textField_maximumValuePhase.getText()) <= Double.parseDouble(textField_minimumValuePhase.getText())) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Maximum phase value must be bigger than minimum phase value.");				
+			}
+		}		
+		
 		if( ! validateTextBoxForDouble(textField_maximumValuePosition.getText())) {
 			parametersAreValid = false;
 			messagesOfErrors.add("Maximum position value at array parameters tab is not valid.");			
@@ -1659,6 +1696,23 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if( ! validateTextBoxForDouble(textField_minimumValuePosition.getText())) {
 			parametersAreValid = false;
 			messagesOfErrors.add("Minimum position value at array parameters tab is not valid.");			
+		}
+		
+		if(validateTextBoxForDouble(textField_maximumValuePosition.getText()) && validateTextBoxForDouble(textField_minimumValuePosition.getText())) {
+			if(Double.parseDouble(textField_maximumValuePosition.getText()) <= Double.parseDouble(textField_minimumValuePosition.getText())) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Maximum position value must be bigger than minimum position value.");				
+			}
+			
+			if(Double.parseDouble(textField_maximumValuePosition.getText()) < 0 || Double.parseDouble(textField_maximumValuePosition.getText()) >= 0.5) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Maximum position value must be in the range of [0, 0.5).");		
+			}
+			
+			if(Double.parseDouble(textField_minimumValuePosition.getText()) > 0 || Double.parseDouble(textField_minimumValuePosition.getText()) <= -0.5) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Minimum position value must be in the range of (-0.5, 0].");				
+			}			
 		}
 		
 		// DE parameters are evaluated.
