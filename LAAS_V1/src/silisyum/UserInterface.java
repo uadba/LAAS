@@ -284,7 +284,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
         crosshairOverlay.addRangeCrosshair(yCrosshair);
 		
 		grafik.getXYPlot().getDomainAxis().setRange(0, 180); // x axis
-		grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 0);
+		grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 5);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
 		tabbedPaneForPlots = new JTabbedPane(JTabbedPane.TOP);
@@ -328,7 +328,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnRescalePatternGraph.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				grafik.getXYPlot().getDomainAxis().setRange(0, 180); // x axis
-				grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 0);
+				grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 5);
 			}
 		});
 		
@@ -368,7 +368,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					arrayFactorAxisMinValue_textField.setText(Double.toString(arrayFactorAxisMinValue));
 				}
 				
-				grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 0);				
+				grafik.getXYPlot().getRangeAxis().setRange(arrayFactorAxisMinValue, 5);
 			}
 		});
 		arrayFactorAxisMinValue_textField.setText(Double.toString(arrayFactorAxisMinValue));
