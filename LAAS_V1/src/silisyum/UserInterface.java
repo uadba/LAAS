@@ -97,9 +97,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private boolean phaseIsUsed = true;
     private boolean positionIsUsed = false;
     private Mask mask;
-    private int patterGraphResolution = 721; //721;
+    private int patterGraphResolution = 1441; //721*2=180;
     private int populationNumber = 70;
-    private int maximumIterationNumber = 2000;
+    private int maximumIterationNumber = 1000;
     private double F = 0.7;
     private double Cr = 0.95;
     private AntennaArray antennaArray;
@@ -219,6 +219,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private String fixedOrOptimized;
 	private String willBeOptimized = "<html>will be <font color=red>optimized</font></html>";
 	private String areFixed = "<html>are <font color=green>fixed</font></html>";
+	private JLabel lblPlotTheGraph;
+	private JComboBox<String> comboBox;
     
 	/**
 	 * Launch the application.
@@ -319,7 +321,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		panelPatternGraphProperties = new JPanel();
 		panelPattern.add(panelPatternGraphProperties, BorderLayout.CENTER);
-		panelPatternGraphProperties.setLayout(new MigLayout("", "[grow][][][][grow]", "[23px][20px]"));
+		panelPatternGraphProperties.setLayout(new MigLayout("", "[grow][][][][grow]", "[23px][20px][]"));
 		
 		lblUpdateTheGraph = new JLabel("Update the pattern graph ");
 		panelPatternGraphProperties.add(lblUpdateTheGraph, "cell 1 1,alignx right");
@@ -375,6 +377,20 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		panelPatternGraphProperties.add(arrayFactorAxisMinValue_textField, "cell 2 0,alignx left");
 		arrayFactorAxisMinValue_textField.setColumns(10);
 		panelPatternGraphProperties.add(btnRescalePatternGraph, "cell 3 0,alignx left");
+		
+		lblPlotTheGraph = new JLabel("Plot the pattern graph using");
+		panelPatternGraphProperties.add(lblPlotTheGraph, "cell 1 2,alignx right");
+		
+		comboBox = new JComboBox<String>();
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				
+				
+			}
+		});
+		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"1441 points", "721 points", "361 points", "181 points"}));
+		panelPatternGraphProperties.add(comboBox, "cell 2 2 2 1,alignx left");
 		
 		panelConvergence = new JPanel();
 		tabbedPaneForPlots.addTab("Convergence Curve of Optimization Process", null, panelConvergence, null);

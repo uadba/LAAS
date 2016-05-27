@@ -42,10 +42,14 @@ public class AntennaArray {
 	public void createArrays() {
 		amplitude = new double[numberofElements];
 		position = new double[numberofElements];
-		phase = new double[numberofElements];		
+		phase = new double[numberofElements];
+		createAnlgeAndPatternArrays();
+	}
+	
+	private void createAnlgeAndPatternArrays() {
 		angle = new double[numberofSamplePoints];
 		pattern = new double[numberofSamplePoints];
-		pattern_dB = new double[numberofSamplePoints];		
+		pattern_dB = new double[numberofSamplePoints];
 	}
 	
 	public void initializeArrays() {
