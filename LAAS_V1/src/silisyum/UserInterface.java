@@ -220,7 +220,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private String willBeOptimized = "<html>will be <font color=red>optimized</font></html>";
 	private String areFixed = "<html>are <font color=green>fixed</font></html>";
 	private JLabel lblPlotTheGraph;
-	private JComboBox<String> comboBox;
+	private JComboBox<String> comboBoxNumberOfPoints;
     
 	/**
 	 * Launch the application.
@@ -381,16 +381,30 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		lblPlotTheGraph = new JLabel("Plot the pattern graph using");
 		panelPatternGraphProperties.add(lblPlotTheGraph, "cell 1 2,alignx right");
 		
-		comboBox = new JComboBox<String>();
-		comboBox.addActionListener(new ActionListener() {
+		comboBoxNumberOfPoints = new JComboBox<String>();
+		comboBoxNumberOfPoints.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-				
-				
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 0) patterGraphResolution = 1441;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 1) patterGraphResolution = 721;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 2) patterGraphResolution = 361;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 3) patterGraphResolution = 181;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 4) patterGraphResolution = -1;
+
+				if(patterGraphResolution != -1) {
+					antennaArray.numberofSamplePoints = patterGraphResolution;
+					antennaArrayForPresentation.numberofSamplePoints = patterGraphResolution;
+				}
+		    
+			    seriler.clear();
+			    if(algorithmExecuter.keepIterating)
+			    	drawPlotOfPattern();
+			    else
+			    	drawPlotWithInitialParameterValues();
+			    
 			}
 		});
-		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"1441 points", "721 points", "361 points", "181 points"}));
-		panelPatternGraphProperties.add(comboBox, "cell 2 2 2 1,alignx left");
+		comboBoxNumberOfPoints.setModel(new DefaultComboBoxModel<String>(new String[] {"1441 points", "721 points", "361 points", "181 points", "masks points"}));
+		panelPatternGraphProperties.add(comboBoxNumberOfPoints, "cell 2 2 2 1,alignx left");
 		
 		panelConvergence = new JPanel();
 		tabbedPaneForPlots.addTab("Convergence Curve of Optimization Process", null, panelConvergence, null);
@@ -1849,7 +1863,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 
 		antennaArray.createPattern();
 		
-		for(int x=0; x<antennaArray.numberofSamplePoints; x++)
+		for(int x=0; x<antennaArray.angle.length; x++)
 		{				
 			seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
 		}
@@ -1869,7 +1883,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			// this is for amplitudes	
 			for (int index = 0; index < numberofElements; index++) {
 				antennaArrayForPresentation.amplitude[index] = bestValues.valuesOfBestMember[index];
-//				antennaArray.amplitude[index] = bestValues.valuesOfBestMember[index];
 			}
 			delta = numberofElements;
 		} else {
@@ -1882,7 +1895,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			// this is for phases
 			for (int index = 0; index < numberofElements; index++) {
 				antennaArrayForPresentation.phase[index] = bestValues.valuesOfBestMember[index + delta];
-//				antennaArray.phase[index] = bestValues.valuesOfBestMember[index + delta];
 			}
 			delta += numberofElements;
 		} else {
@@ -1894,10 +1906,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
 			antennaArrayForPresentation.position[0] = 0;
-//			antennaArray.position[0] = 0;
 			for (int index = 1; index < numberofElements; index++) {
 				antennaArrayForPresentation.position[index] = antennaArrayForPresentation.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
-//				antennaArray.position[index] = antennaArray.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
 			}
 		} else {
 			for (int index = 1; index < numberofElements; index++) {
@@ -1905,15 +1915,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		}
 		
-		antennaArrayForPresentation.createPattern();
-//		antennaArray.createPattern();
+		//antennaArrayForPresentation.createPattern();
+		antennaArrayForPresentation.createPatternForOptimization();
 		
-		for(int x=0; x<antennaArrayForPresentation.numberofSamplePoints; x++)
-//		for(int x=0; x<antennaArray.numberofSamplePoints; x++)
+//		for(int x=0; x<antennaArrayForPresentation.angle.length; x++)
+		for(int x=0; x<antennaArrayForPresentation.angleForOptimization_ForOuters.length; x++)
 		{				
-			seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
-//			seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
-		}		
+			//seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
+			seriler.addOrUpdate(antennaArrayForPresentation.angleForOptimization_ForOuters[x], antennaArrayForPresentation.pattern_dB[x]);
+		}
 	}
 	
 	protected void drawPlotOfConvergence() {

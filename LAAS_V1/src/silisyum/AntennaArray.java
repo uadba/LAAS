@@ -10,9 +10,9 @@ public class AntennaArray {
 	public double[] position;
 	public double[] phase;
 	public int numberofSamplePoints;
-	public double[] angle = new double[numberofSamplePoints];	
-	private double[] pattern = new double[numberofSamplePoints];
-	public double[] pattern_dB = new double[numberofSamplePoints];
+	public double[] angle;
+	private double[] pattern;
+	public double[] pattern_dB;
 	public double[] angleForOptimization_ForOuters;
 	public double[] patternForOptimization_ForOuters;
 	public double[] patternForOptimization_dB_ForOuters;
@@ -105,21 +105,6 @@ public class AntennaArray {
 		return result;
 	}
 	
-	public void createPattern() {
-		angle[0] = 0;
-		double biggestOne = patternFunction(angle[0]);
-		pattern[0] = patternFunction(angle[0]);
-		for (int i = 1; i < numberofSamplePoints; i++) { // Attention please it starts from "1"
-			angle[i] = 180*((double)i/(numberofSamplePoints-1));
-			pattern[i] = patternFunction(angle[i]);
-			if(pattern[i]>biggestOne) biggestOne = pattern[i];
-		}
-		
-		for (int i = 0; i < numberofSamplePoints; i++) {
-			pattern_dB[i] = 20*Math.log10(pattern[i] / biggestOne);
-		}
-	}
-	
 	public void createLongArrays() {
 		numberOfSLLOuters = mask.outerMaskSegments.size(); 
 		if (numberOfSLLOuters > 0) {
@@ -149,6 +134,26 @@ public class AntennaArray {
 			patternForOptimization_dB_ForInners = new double[numberOfAnglesForInners];
 			levels_ForInners = new double[numberOfAnglesForInners];
 			weights_ForInners = new double[numberOfAnglesForInners];
+		}
+	}
+	
+	public void createPattern() {
+		
+		if(numberofSamplePoints != angle.length) {
+			createAnlgeAndPatternArrays();
+		}			
+		
+		angle[0] = 0;
+		double biggestOne = patternFunction(angle[0]);
+		pattern[0] = patternFunction(angle[0]);
+		for (int i = 1; i < numberofSamplePoints; i++) { // Attention please it starts from "1"
+			angle[i] = 180*((double)i/(numberofSamplePoints-1));
+			pattern[i] = patternFunction(angle[i]);
+			if(pattern[i]>biggestOne) biggestOne = pattern[i];
+		}
+		
+		for (int i = 0; i < numberofSamplePoints; i++) {
+			pattern_dB[i] = 20*Math.log10(pattern[i] / biggestOne);
 		}
 	}
 
