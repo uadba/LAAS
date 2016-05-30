@@ -193,7 +193,7 @@ public class AntennaArray {
 		
 		if (numberOfSLLInners > 0) {
 			// ------------ for Inners ------------
-			int numberOfSLLInners = mask.innerMaskSegments.size();
+			numberOfSLLInners = mask.innerMaskSegments.size();
 			Mask.MaskSegment SLL_inner = null;
 			i = 0;
 			while (i < angleForOptimization_ForInners.length) {
@@ -214,6 +214,18 @@ public class AntennaArray {
 				patternForOptimization_ForInners[z] = patternFunction(angleForOptimization_ForInners[z]);
 				if(patternForOptimization_ForInners[z]>biggestOne) biggestOne = patternForOptimization_ForInners[z];
 
+			}
+			
+			if (numberOfSLLOuters > 0) {
+				for (int z = 0; z < angleForOptimization_ForOuters.length; z++) {
+					patternForOptimization_dB_ForOuters[z] = 20 * Math.log10(patternForOptimization_ForOuters[z] / biggestOne);
+				}
+			}
+			
+			if (numberOfSLLInners > 0) {
+				for (int z = 0; z < angleForOptimization_ForInners.length; z++) {
+					patternForOptimization_dB_ForInners[z] = 20 * Math.log10(patternForOptimization_ForInners[z] / biggestOne);
+				}
 			}
 		}
 		

@@ -97,7 +97,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private boolean phaseIsUsed = true;
     private boolean positionIsUsed = false;
     private Mask mask;
-    private int patterGraphResolution = 1441; //721*2=180;
+    private int patternGraphResolution = 1441; //721*2=180;
     private int populationNumber = 70;
     private int maximumIterationNumber = 1000;
     private double F = 0.7;
@@ -384,15 +384,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		comboBoxNumberOfPoints = new JComboBox<String>();
 		comboBoxNumberOfPoints.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(comboBoxNumberOfPoints.getSelectedIndex() == 0) patterGraphResolution = 1441;
-				if(comboBoxNumberOfPoints.getSelectedIndex() == 1) patterGraphResolution = 721;
-				if(comboBoxNumberOfPoints.getSelectedIndex() == 2) patterGraphResolution = 361;
-				if(comboBoxNumberOfPoints.getSelectedIndex() == 3) patterGraphResolution = 181;
-				if(comboBoxNumberOfPoints.getSelectedIndex() == 4) patterGraphResolution = -1;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 0) patternGraphResolution = 1441;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 1) patternGraphResolution = 721;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 2) patternGraphResolution = 361;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 3) patternGraphResolution = 181;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 4) patternGraphResolution = -1;
 
-				if(patterGraphResolution != -1) {
-					antennaArray.numberofSamplePoints = patterGraphResolution;
-					antennaArrayForPresentation.numberofSamplePoints = patterGraphResolution;
+				if(patternGraphResolution != -1) {
+					antennaArray.numberofSamplePoints = patternGraphResolution;
+					antennaArrayForPresentation.numberofSamplePoints = patternGraphResolution;
 				}
 		    
 			    seriler.clear();
@@ -1163,8 +1163,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 	protected void createAntennaArray() {
 		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
-		antennaArray = new AntennaArray(numberofElements, patterGraphResolution, mask);
-		antennaArrayForPresentation = new AntennaArray(numberofElements, patterGraphResolution, mask);
+		antennaArray = new AntennaArray(numberofElements, patternGraphResolution, mask);
+		antennaArrayForPresentation = new AntennaArray(numberofElements, patternGraphResolution, mask);
 	}
 
 	//	For outer mask segment
@@ -1844,7 +1844,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	}
 	
 	private void createMainObjects() {		
-		differentialEvolution = new DifferentialEvolution(numberofElements, populationNumber, maximumIterationNumber, F, Cr, L, H, antennaArray, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
+		differentialEvolution = new DifferentialEvolution(numberofElements, populationNumber, maximumIterationNumber, F, Cr, L, H, antennaArray, antennaArrayForPresentation, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
 	}
 	
 	private void preserveAspectRatio(JPanel innerPanel, JPanel container) {
@@ -1915,15 +1915,36 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		}
 		
-		//antennaArrayForPresentation.createPattern();
-		antennaArrayForPresentation.createPatternForOptimization();
 		
-//		for(int x=0; x<antennaArrayForPresentation.angle.length; x++)
-		for(int x=0; x<antennaArrayForPresentation.angleForOptimization_ForOuters.length; x++)
-		{				
-			//seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
-			seriler.addOrUpdate(antennaArrayForPresentation.angleForOptimization_ForOuters[x], antennaArrayForPresentation.pattern_dB[x]);
-		}
+		if(patternGraphResolution != -1) {
+			antennaArrayForPresentation.createPattern();
+			
+			for(int x=0; x<antennaArrayForPresentation.angle.length; x++)
+			{				
+				seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
+			}			
+		} else {
+			antennaArrayForPresentation.angleForOptimization_ForOuters = new double[antennaArray.angleForOptimization_ForOuters.length];
+			antennaArrayForPresentation.patternForOptimization_dB_ForOuters = new double[antennaArray.angleForOptimization_ForOuters.length];
+//			for (int copy = 0; copy < antennaArray.angleForOptimization_ForOuters.length; copy++) {
+//				antennaArrayForPresentation.angleForOptimization_ForOuters[copy] = antennaArray.angleForOptimization_ForOuters[copy];
+//				antennaArrayForPresentation.patternForOptimization_dB_ForOuters[copy] = antennaArray.patternForOptimization_dB_ForOuters[copy];
+//			}
+			
+			antennaArrayForPresentation.angleForOptimization_ForInners = new double[antennaArray.angleForOptimization_ForInners.length];
+			antennaArrayForPresentation.patternForOptimization_dB_ForInners = new double[antennaArray.angleForOptimization_ForInners.length];
+//			for (int copy = 0; copy < antennaArray.angleForOptimization_ForInners.length; copy++) {
+//				antennaArrayForPresentation.angleForOptimization_ForInners[copy] = antennaArray.angleForOptimization_ForInners[copy];
+//				antennaArrayForPresentation.patternForOptimization_dB_ForInners[copy] = antennaArray.patternForOptimization_dB_ForInners[copy];
+//			}
+			
+			antennaArrayForPresentation.createPatternForOptimization();
+			
+			for(int x=0; x<antennaArrayForPresentation.angleForOptimization_ForOuters.length; x++)
+			{				
+				seriler.addOrUpdate(antennaArrayForPresentation.angleForOptimization_ForOuters[x], antennaArrayForPresentation.patternForOptimization_dB_ForOuters[x]);
+			}			
+		}		
 	}
 	
 	protected void drawPlotOfConvergence() {

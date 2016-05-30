@@ -4,19 +4,22 @@ public class Cost {
 	
 	private int numberofElements;
 	private AntennaArray aA;
+	private AntennaArray aAForP;
 	
     private boolean amplitudeIsUsed;
     private boolean phaseIsUsed;
     private boolean positionIsUsed;
 	
-	public Cost(int _numberofElements, AntennaArray _aA, boolean _amplitudeIsUsed, boolean _phaseIsUsed, boolean _positionIsUsed) {
+	public Cost(int _numberofElements, AntennaArray _aA, AntennaArray _aAForP, boolean _amplitudeIsUsed, boolean _phaseIsUsed, boolean _positionIsUsed) {
 		numberofElements = _numberofElements;
 		aA = _aA;
+		aAForP = _aAForP;
 	    amplitudeIsUsed = _amplitudeIsUsed;
 	    phaseIsUsed = _phaseIsUsed;
 	    positionIsUsed = _positionIsUsed;
 	
 		aA.createLongArrays();
+		aAForP.createLongArrays();
 		
 	}
 	
@@ -54,7 +57,7 @@ public class Cost {
 		if (aA.numberOfSLLOuters > 0) {
 			// ------------ for Outers ------------
 			for (int z = 0; z < aA.angleForOptimization_ForOuters.length; z++) {
-				aA.patternForOptimization_dB_ForOuters[z] = 20 * Math.log10(aA.patternForOptimization_ForOuters[z] / aA.biggestOne);
+//				aA.patternForOptimization_dB_ForOuters[z] = 20 * Math.log10(aA.patternForOptimization_ForOuters[z] / aA.biggestOne);
 				if (aA.patternForOptimization_dB_ForOuters[z] > aA.levels_ForOuters[z])
 				{
 					result += aA.weights_ForOuters[z] * (aA.patternForOptimization_dB_ForOuters[z] - aA.levels_ForOuters[z]);
@@ -65,7 +68,7 @@ public class Cost {
 		if (aA.numberOfSLLInners > 0) {
 			// ------------ for Inners ------------
 			for (int z = 0; z < aA.angleForOptimization_ForInners.length; z++) {
-				aA.patternForOptimization_dB_ForInners[z] = 20 * Math.log10(aA.patternForOptimization_ForInners[z] / aA.biggestOne);
+//				aA.patternForOptimization_dB_ForInners[z] = 20 * Math.log10(aA.patternForOptimization_ForInners[z] / aA.biggestOne);
 				if (aA.levels_ForInners[z] > aA.patternForOptimization_dB_ForInners[z]) {
 					result += aA.weights_ForInners[z] * (aA.levels_ForInners[z] - aA.patternForOptimization_dB_ForInners[z]);
 				}

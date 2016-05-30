@@ -26,11 +26,11 @@ public class DifferentialEvolution {
     private boolean amplitudeIsUsed;
     private boolean phaseIsUsed;
     private boolean positionIsUsed;
-	private Cost c;
+	private Cost cost;
 	private boolean iterationState = true;
 	public double[] costValues;
 	
-	public DifferentialEvolution(int _numberofElements, int _populationNumber, int _maximumIterationNumber, double _F, double _Cr, double[] _L, double[] _H, AntennaArray _aA, Mask _mask, boolean _amplitudeIsUsed, boolean _phaseIsUsed, boolean _positionIsUsed) {
+	public DifferentialEvolution(int _numberofElements, int _populationNumber, int _maximumIterationNumber, double _F, double _Cr, double[] _L, double[] _H, AntennaArray _aA, AntennaArray _aAForP, Mask _mask, boolean _amplitudeIsUsed, boolean _phaseIsUsed, boolean _positionIsUsed) {
 		
 		numberofElements = _numberofElements;
 		populationNumber = _populationNumber;
@@ -47,7 +47,7 @@ public class DifferentialEvolution {
 		if (phaseIsUsed) problemDimension += numberofElements;		
 		if (positionIsUsed) problemDimension += numberofElements;
 		
-		c = new Cost(numberofElements, _aA, _amplitudeIsUsed, _phaseIsUsed, positionIsUsed);
+		cost = new Cost(numberofElements, _aA, _aAForP, _amplitudeIsUsed, _phaseIsUsed, positionIsUsed);
 		r = new Random();		
 		createArrays();
 		initialize();
@@ -95,7 +95,7 @@ public class DifferentialEvolution {
 				members[d][m] = Ls[d] + (Hs[d]-Ls[d])*r.nextDouble();
 				temp[d] = members[d][m];
 			}			
-			memberFitness[m] = c.function(temp);
+			memberFitness[m] = cost.function(temp);
 			if(bestMember == -1) {
 				bestMember = m;
 				fitnessOfBestMember = memberFitness[m];
@@ -140,7 +140,7 @@ public class DifferentialEvolution {
 			
 			// Pick the best individual
 			// between trial and current members
-			double fitnessOfTrial = c.function(Xtrial);
+			double fitnessOfTrial = cost.function(Xtrial);
 			if(fitnessOfTrial < memberFitness[individual]) {
 				// Replace the current with Xtrial
 				// Because it is better than the current
