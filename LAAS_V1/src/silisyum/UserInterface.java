@@ -31,7 +31,9 @@ import org.jfree.ui.RectangleEdge;
 import javax.swing.SwingWorker;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -221,6 +223,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private String areFixed = "<html>are <font color=green>fixed</font></html>";
 	private JLabel lblPlotTheGraph;
 	private JComboBox<String> comboBoxNumberOfPoints;
+	private JPanel fileOperationsPanel;
+	private JButton btnResetConfigurationToDefault;
+	private JButton btnLoadConfigurationFromAFile;
+	private JButton btnSaveConfigurationToAFile;
     
 	/**
 	 * Launch the application.
@@ -396,11 +402,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}
 		    
 			    seriler.clear();
-			    if(algorithmExecuter.keepIterating)
+			    if(algorithmExecuter.keepIterating == true)
+			    	drawPlotOfPattern();
+			    else if (algorithmExecuter.iterationHasNotCompletedYet == false)
 			    	drawPlotOfPattern();
 			    else
-			    	drawPlotWithInitialParameterValues();
-			    
+			    	drawPlotWithInitialParameterValues();			    
 			}
 		});
 		comboBoxNumberOfPoints.setModel(new DefaultComboBoxModel<String>(new String[] {"1441 points", "721 points", "361 points", "181 points", "masks points"}));
@@ -1146,6 +1153,50 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		JScrollPane scrollPaneForList = new JScrollPane(messagePane);
 		mainMessagesPanel.add(scrollPaneForList, "cell 0 1,grow");
 		
+		fileOperationsPanel = new JPanel();
+		tabbedPaneForSettings.addTab("File Operations", null, fileOperationsPanel, null);
+		fileOperationsPanel.setLayout(new MigLayout("", "[]", "[][][]"));
+		
+		btnResetConfigurationToDefault = new JButton("Reset Configuration to Default");
+		btnResetConfigurationToDefault.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		fileOperationsPanel.add(btnResetConfigurationToDefault, "cell 0 0");
+		
+		btnLoadConfigurationFromAFile = new JButton("Load Configuration from a File");
+		btnLoadConfigurationFromAFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		fileOperationsPanel.add(btnLoadConfigurationFromAFile, "cell 0 1");
+		
+		btnSaveConfigurationToAFile = new JButton("Save Configuration to a File");
+		btnSaveConfigurationToAFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			      Employee employee = new Employee();
+			      employee.name = "Reyan Ali";
+			      employee.address = "Phokka Kuan, Ambehta Peer";
+			      employee.SSN = 11122333;
+			      employee.number = 101;
+			      
+			      try
+			      {
+			         FileOutputStream fileOut = new FileOutputStream("C:/Users/Suad/Desktop/abc_serialization/file.txt");
+			         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			         out.writeObject(employee);
+			         out.close();
+			         fileOut.close();
+			         System.out.printf("Serialized data is saved in C:/Users/Suad/Desktop/abc_serialization/file.txt");
+			      }catch(IOException i)
+			      {
+			          i.printStackTrace();
+			      }
+			}
+		});
+		fileOperationsPanel.add(btnSaveConfigurationToAFile, "cell 0 2");
+		
 		refreshOuterMaskSegmentsList();
 		refreshInnerMaskSegmentsList();
 		
@@ -1160,7 +1211,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		algorithmExecuter = new AlgorithmExecuter();
 		algorithmExecuter.execute();
 	}
-		
+
 	protected void createAntennaArray() {
 		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
 		antennaArray = new AntennaArray(numberofElements, patternGraphResolution, mask);
@@ -1926,25 +1977,17 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		} else {
 			antennaArrayForPresentation.angleForOptimization_ForOuters = new double[antennaArray.angleForOptimization_ForOuters.length];
 			antennaArrayForPresentation.patternForOptimization_dB_ForOuters = new double[antennaArray.angleForOptimization_ForOuters.length];
-//			for (int copy = 0; copy < antennaArray.angleForOptimization_ForOuters.length; copy++) {
-//				antennaArrayForPresentation.angleForOptimization_ForOuters[copy] = antennaArray.angleForOptimization_ForOuters[copy];
-//				antennaArrayForPresentation.patternForOptimization_dB_ForOuters[copy] = antennaArray.patternForOptimization_dB_ForOuters[copy];
-//			}
 			
 			antennaArrayForPresentation.angleForOptimization_ForInners = new double[antennaArray.angleForOptimization_ForInners.length];
 			antennaArrayForPresentation.patternForOptimization_dB_ForInners = new double[antennaArray.angleForOptimization_ForInners.length];
-//			for (int copy = 0; copy < antennaArray.angleForOptimization_ForInners.length; copy++) {
-//				antennaArrayForPresentation.angleForOptimization_ForInners[copy] = antennaArray.angleForOptimization_ForInners[copy];
-//				antennaArrayForPresentation.patternForOptimization_dB_ForInners[copy] = antennaArray.patternForOptimization_dB_ForInners[copy];
-//			}
 			
 			antennaArrayForPresentation.createPatternForOptimization();
 			
 			for(int x=0; x<antennaArrayForPresentation.angleForOptimization_ForOuters.length; x++)
 			{				
 				seriler.addOrUpdate(antennaArrayForPresentation.angleForOptimization_ForOuters[x], antennaArrayForPresentation.patternForOptimization_dB_ForOuters[x]);
-			}			
-		}		
+			}
+		}
 	}
 	
 	protected void drawPlotOfConvergence() {
