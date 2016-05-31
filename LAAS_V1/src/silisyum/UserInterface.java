@@ -403,12 +403,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}
 		    
 			    seriler.clear();
-			    if(algorithmExecuter.keepIterating == true)
+			    if(algorithmExecuter.keepIterating == true && algorithmExecuter.newStart == false) // it is running
 			    	drawPlotOfPattern();
-			    else if (algorithmExecuter.iterationHasNotCompletedYet == false)
+			    else if(algorithmExecuter.keepIterating == false && algorithmExecuter.newStart == false) // it is paused
 			    	drawPlotOfPattern();
 			    else
-			    	drawPlotWithInitialParameterValues();			    
+			    	drawPlotWithInitialParameterValues();
 			}
 		});
 		comboBoxNumberOfPoints.setModel(new DefaultComboBoxModel<String>(new String[] {"1441 points", "721 points", "361 points", "181 points", "outer masks points", "inner masks points"}));
@@ -557,6 +557,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				progressBar.setValue(0);
 				makeComponentsEnable(true);
 				showCurrentResults();
+				
+				// Set the best results as the current value to the current antenna array
+				setBestResultsToCurrentAntennaArray();
 			}
 		});
 		terminateOptimizationButton.setVisible(false);
@@ -1211,6 +1214,33 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		algorithmExecuter = new AlgorithmExecuter();
 		algorithmExecuter.execute();
+	}
+
+	protected void setBestResultsToCurrentAntennaArray() {
+		int delta = 0;
+		if (amplitudeIsUsed) {
+			// this is for amplitudes	
+			for (int index = 0; index < numberofElements; index++) {
+				antennaArray.amplitude[index] = bestValues.valuesOfBestMember[index];
+			}
+			delta = numberofElements;
+		}
+		
+		if (phaseIsUsed) {
+			// this is for phases
+			for (int index = 0; index < numberofElements; index++) {
+				antennaArray.phase[index] = bestValues.valuesOfBestMember[index + delta];
+			}
+			delta += numberofElements;
+		}
+		
+		if (positionIsUsed) {
+			// this is for positions. It starts with 1 instead of 0
+			antennaArrayForPresentation.position[0] = 0;
+			for (int index = 1; index < numberofElements; index++) {
+				antennaArray.position[index] = antennaArrayForPresentation.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
+			}
+		}		
 	}
 
 	protected void createAntennaArray() {
@@ -1912,12 +1942,37 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		// This new instance can be another member function of this class
 		// Its name may be aAforPresentation;
 		// CONSIDER THIS!
-
-		antennaArray.createPattern();
 		
-		for(int x=0; x<antennaArray.angle.length; x++)
-		{				
-			seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
+		if(patternGraphResolution != -1 && patternGraphResolution != -2) {
+			antennaArray.createPattern();
+			
+			for(int x=0; x<antennaArray.angle.length; x++)
+			{				
+				seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
+			}
+			
+		} else {
+			
+			antennaArray.createLongArrays();
+			antennaArray.createPatternForOptimization();
+			
+			if (patternGraphResolution == -1) {
+				if (antennaArray.numberOfSLLOuters > 0) {
+					for(int x=0; x<antennaArray.angleForOptimization_ForOuters.length; x++)
+					{				
+						seriler.addOrUpdate(antennaArray.angleForOptimization_ForOuters[x], antennaArray.patternForOptimization_dB_ForOuters[x]);
+					}
+				}
+			}
+			
+			if (patternGraphResolution == -2) {
+				if (antennaArray.numberOfSLLInners > 0) {
+					for(int x=0; x<antennaArray.angleForOptimization_ForInners.length; x++)
+					{				
+						seriler.addOrUpdate(antennaArray.angleForOptimization_ForInners[x], antennaArray.patternForOptimization_dB_ForInners[x]);
+					}
+				}
+			}			
 		}
 		
 	}
@@ -1975,8 +2030,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			{				
 				seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
 			}			
-		} 
-		else {
+		} else {
 			if (patternGraphResolution == -1) {
 				if (antennaArray.numberOfSLLOuters > 0) {
 					antennaArrayForPresentation.angleForOptimization_ForOuters = new double[antennaArray.angleForOptimization_ForOuters.length];
@@ -2009,8 +2063,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						seriler.addOrUpdate(antennaArrayForPresentation.angleForOptimization_ForInners[x], antennaArrayForPresentation.patternForOptimization_dB_ForInners[x]);
 					}
 				}
-			}
-			
+			}			
 		}
 	}
 	
@@ -2121,6 +2174,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				showCurrentResults();
 				makeComponentsEnable(true);
 				tabbedPaneForSettings.setSelectedIndex(4);
+				
+				// Set the best results as the current value to the current antenna array
+				setBestResultsToCurrentAntennaArray();
 			}			
 			
 			double currentTime = System.currentTimeMillis();
@@ -2168,7 +2224,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (phaseIsUsed) {
 			// this is for phases
 			for (int index = 0; index < numberofElements; index++) {
-				currentResults += Double.toString(bestValues.valuesOfBestMember[index]);
+				currentResults += Double.toString(bestValues.valuesOfBestMember[index + delta]);
 				currentResults += "<br>";
 			}
 			delta += numberofElements;
