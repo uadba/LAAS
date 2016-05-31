@@ -163,7 +163,7 @@ public class AntennaArray {
 		// Then, we set angles into the elements of this array.
 		
 		int i;
-		biggestOne = 1;
+		biggestOne = 0;
 		
 		if (numberOfSLLOuters > 0) {
 			// ------------ for Outers ------------
@@ -181,7 +181,7 @@ public class AntennaArray {
 					}
 				}
 			}
-			//angleForOptimization_ForOuters[0] = 0; // No need to use !
+
 			biggestOne = patternFunction(angleForOptimization_ForOuters[0]);
 			patternForOptimization_ForOuters[0] = patternFunction(angleForOptimization_ForOuters[0]);
 			for (int z = 1; z < angleForOptimization_ForOuters.length; z++) { // Attention please it starts from "1"
@@ -207,27 +207,25 @@ public class AntennaArray {
 					}
 				}
 			}
-			//angleForOptimization_ForInners[0] = 0; // No need to use !
+
 			if (numberOfSLLOuters < 1) biggestOne = patternFunction(angleForOptimization_ForInners[0]);
 			patternForOptimization_ForInners[0] = patternFunction(angleForOptimization_ForInners[0]);
 			for (int z = 1; z < angleForOptimization_ForInners.length; z++) { // Attention please it starts from "1"
 				patternForOptimization_ForInners[z] = patternFunction(angleForOptimization_ForInners[z]);
 				if(patternForOptimization_ForInners[z]>biggestOne) biggestOne = patternForOptimization_ForInners[z];
-
-			}
-			
-			if (numberOfSLLOuters > 0) {
-				for (int z = 0; z < angleForOptimization_ForOuters.length; z++) {
-					patternForOptimization_dB_ForOuters[z] = 20 * Math.log10(patternForOptimization_ForOuters[z] / biggestOne);
-				}
-			}
-			
-			if (numberOfSLLInners > 0) {
-				for (int z = 0; z < angleForOptimization_ForInners.length; z++) {
-					patternForOptimization_dB_ForInners[z] = 20 * Math.log10(patternForOptimization_ForInners[z] / biggestOne);
-				}
 			}
 		}
 		
+		if (numberOfSLLOuters > 0) {
+			for (int z = 0; z < angleForOptimization_ForOuters.length; z++) {
+				patternForOptimization_dB_ForOuters[z] = 20 * Math.log10(patternForOptimization_ForOuters[z] / biggestOne);
+			}
+		}			
+		
+		if (numberOfSLLInners > 0) {
+			for (int z = 0; z < angleForOptimization_ForInners.length; z++) {
+				patternForOptimization_dB_ForInners[z] = 20 * Math.log10(patternForOptimization_ForInners[z] / biggestOne);
+			}
+		}
 	}
 }

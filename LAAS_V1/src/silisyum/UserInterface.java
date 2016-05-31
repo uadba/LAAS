@@ -395,8 +395,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 2) patternGraphResolution = 361;
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 3) patternGraphResolution = 181;
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 4) patternGraphResolution = -1;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 5) patternGraphResolution = -2;
 
-				if(patternGraphResolution != -1) {
+				if(patternGraphResolution != -1 && patternGraphResolution != -2) {
 					antennaArray.numberofSamplePoints = patternGraphResolution;
 					antennaArrayForPresentation.numberofSamplePoints = patternGraphResolution;
 				}
@@ -410,7 +411,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			    	drawPlotWithInitialParameterValues();			    
 			}
 		});
-		comboBoxNumberOfPoints.setModel(new DefaultComboBoxModel<String>(new String[] {"1441 points", "721 points", "361 points", "181 points", "masks points"}));
+		comboBoxNumberOfPoints.setModel(new DefaultComboBoxModel<String>(new String[] {"1441 points", "721 points", "361 points", "181 points", "outer masks points", "inner masks points"}));
 		panelPatternGraphProperties.add(comboBoxNumberOfPoints, "cell 2 2 2 1,alignx left");
 		
 		panelConvergence = new JPanel();
@@ -1967,26 +1968,49 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		}
 		
 		
-		if(patternGraphResolution != -1) {
+		if(patternGraphResolution != -1 && patternGraphResolution != -2) {
 			antennaArrayForPresentation.createPattern();
 			
 			for(int x=0; x<antennaArrayForPresentation.angle.length; x++)
 			{				
 				seriler.addOrUpdate(antennaArrayForPresentation.angle[x], antennaArrayForPresentation.pattern_dB[x]);
 			}			
-		} else {
-			antennaArrayForPresentation.angleForOptimization_ForOuters = new double[antennaArray.angleForOptimization_ForOuters.length];
-			antennaArrayForPresentation.patternForOptimization_dB_ForOuters = new double[antennaArray.angleForOptimization_ForOuters.length];
-			
-			antennaArrayForPresentation.angleForOptimization_ForInners = new double[antennaArray.angleForOptimization_ForInners.length];
-			antennaArrayForPresentation.patternForOptimization_dB_ForInners = new double[antennaArray.angleForOptimization_ForInners.length];
+		} 
+		else {
+			if (patternGraphResolution == -1) {
+				if (antennaArray.numberOfSLLOuters > 0) {
+					antennaArrayForPresentation.angleForOptimization_ForOuters = new double[antennaArray.angleForOptimization_ForOuters.length];
+					antennaArrayForPresentation.patternForOptimization_dB_ForOuters = new double[antennaArray.angleForOptimization_ForOuters.length];
+				} 
+			}
+
+			if (patternGraphResolution == -2) {
+				if (antennaArray.numberOfSLLInners > 0) {
+					antennaArrayForPresentation.angleForOptimization_ForInners = new double[antennaArray.angleForOptimization_ForInners.length];
+					antennaArrayForPresentation.patternForOptimization_dB_ForInners = new double[antennaArray.angleForOptimization_ForInners.length];
+				}
+			}
 			
 			antennaArrayForPresentation.createPatternForOptimization();
 			
-			for(int x=0; x<antennaArrayForPresentation.angleForOptimization_ForOuters.length; x++)
-			{				
-				seriler.addOrUpdate(antennaArrayForPresentation.angleForOptimization_ForOuters[x], antennaArrayForPresentation.patternForOptimization_dB_ForOuters[x]);
+			if (patternGraphResolution == -1) {
+				if (antennaArray.numberOfSLLOuters > 0) {
+					for(int x=0; x<antennaArrayForPresentation.angleForOptimization_ForOuters.length; x++)
+					{				
+						seriler.addOrUpdate(antennaArrayForPresentation.angleForOptimization_ForOuters[x], antennaArrayForPresentation.patternForOptimization_dB_ForOuters[x]);
+					}
+				}
 			}
+			
+			if (patternGraphResolution == -2) {
+				if (antennaArray.numberOfSLLInners > 0) {
+					for(int x=0; x<antennaArrayForPresentation.angleForOptimization_ForInners.length; x++)
+					{				
+						seriler.addOrUpdate(antennaArrayForPresentation.angleForOptimization_ForInners[x], antennaArrayForPresentation.patternForOptimization_dB_ForInners[x]);
+					}
+				}
+			}
+			
 		}
 	}
 	
@@ -2232,8 +2256,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
 		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
 		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
-		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 3, -95, 1);
-		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -40, 1);
+		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 81, -95, 1);
+		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -4, 1);
 		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
 
 		// simple mask
