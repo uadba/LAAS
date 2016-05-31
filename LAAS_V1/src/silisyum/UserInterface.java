@@ -99,7 +99,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private boolean phaseIsUsed = true;
     private boolean positionIsUsed = false;
     private Mask mask;
-    private int patternGraphResolution = 1441; //721*2=180;
+    private int patternGraphResolution = 721; // 4*180 + 1 = 721;
     private int populationNumber = 70;
     private int maximumIterationNumber = 1000;
     private double F = 0.7;
