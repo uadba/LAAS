@@ -6,6 +6,8 @@ public class CurrentConfiguration implements java.io.Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = -2913166957553830377L;
+	
+	// Antenna Parameters
 	public int numberofElements;
 	public double[] L;
 	public double[] H;
@@ -32,4 +34,9 @@ public class CurrentConfiguration implements java.io.Serializable
 	public double[] levelForInner;
 	public double[] weightForInner;
 	
+	// Algorithm Parameters
+	public int populationNumber;
+	public int maximumIterationNumber;
+	public double F;
+	public double Cr;
 }
