@@ -1181,21 +1181,18 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
 					
-					CurrentConfiguration currentConfiguration = null;
+					CurrentConfiguration cc = null;
 					
 					try {
 						FileInputStream fileIn = new FileInputStream(file.getAbsolutePath());
 						ObjectInputStream in = new ObjectInputStream(fileIn);
-						currentConfiguration = (CurrentConfiguration) in.readObject();
+						cc = (CurrentConfiguration) in.readObject();
 						in.close();
 						fileIn.close();
-						System.out.println(currentConfiguration.H[0]);
-						System.out.println(currentConfiguration.H[1]);
-						System.out.println(currentConfiguration.H[2]);
 						
-						System.out.println(currentConfiguration.L[0]);
-						System.out.println(currentConfiguration.L[1]);
-						System.out.println(currentConfiguration.L[2]);
+						for(int s=0; s<cc.amplitudeValues.length; s++) {
+							System.out.println(cc.amplitudeValues[s]);
+						}
 						
 					} catch (IOException i) {
 						i.printStackTrace();
@@ -1206,7 +1203,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					}
 
 				} else {
-					// log.append("Open command cancelled by user." + newline);
+					// System.out.println("Save command cancelled by user.");
 				}
 				
 			}
@@ -1219,10 +1216,47 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				
 				// You should put this value assignment task in the if block which is for that JFileChooser.APPROVE_OPTION is true.
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				CurrentConfiguration currentConfiguration = new CurrentConfiguration();
-				currentConfiguration.numberofElements = numberofElements;
-				currentConfiguration.L = L;
-				currentConfiguration.H = H;
+				CurrentConfiguration cc = new CurrentConfiguration();
+				cc.numberofElements = numberofElements;
+				cc.L = L;
+				cc.H = H;
+				cc.amplitudeValues = antennaArray.amplitude;
+				cc.phaseValues = antennaArray.phase;
+				cc.positionValues = antennaArray.position;
+				
+				int numberOfOuterMask = mask.outerMaskSegments.size();
+				cc.nameForOuter = new String[numberOfOuterMask];
+				cc.startAngleForOuter = new double[numberOfOuterMask];
+				cc.stopAngleForOuter = new double[numberOfOuterMask];
+				cc.numberOfPointsForOuter = new int[numberOfOuterMask];
+				cc.levelForOuter = new double[numberOfOuterMask];
+				cc.weightForOuter = new double[numberOfOuterMask];
+				for(int s=0; s<numberOfOuterMask; s++) {
+					cc.nameForOuter[s] = mask.outerMaskSegments.get(s).name;
+					cc.startAngleForOuter[s] = mask.outerMaskSegments.get(s).startAngle;
+					cc.stopAngleForOuter[s] = mask.outerMaskSegments.get(s).stopAngle;
+					cc.numberOfPointsForOuter[s] = mask.outerMaskSegments.get(s).numberOfPoints;
+					cc.levelForOuter[s] = mask.outerMaskSegments.get(s).level;
+					cc.weightForOuter[s] = mask.outerMaskSegments.get(s).weight;
+				}
+				
+				int numberOfInnerMask = mask.innerMaskSegments.size();
+				cc.nameForInner = new String[numberOfInnerMask];
+				cc.startAngleForInner = new double[numberOfInnerMask];
+				cc.stopAngleForInner = new double[numberOfInnerMask];
+				cc.numberOfPointsForInner = new int[numberOfInnerMask];
+				cc.levelForInner = new double[numberOfInnerMask];
+				cc.weightForInner = new double[numberOfInnerMask];
+				for(int s=0; s<numberOfInnerMask; s++) {
+					cc.nameForInner[s] = mask.innerMaskSegments.get(s).name;
+					cc.startAngleForInner[s] = mask.innerMaskSegments.get(s).startAngle;
+					cc.stopAngleForInner[s] = mask.innerMaskSegments.get(s).stopAngle;
+					cc.numberOfPointsForInner[s] = mask.innerMaskSegments.get(s).numberOfPoints;
+					cc.levelForInner[s] = mask.innerMaskSegments.get(s).level;
+					cc.weightForInner[s] = mask.innerMaskSegments.get(s).weight;
+				}
+				
+				
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				
 				JFileChooser fc = new JFileChooser();
@@ -1230,25 +1264,20 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				int returnVal = fc.showSaveDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
-					//Path path = Paths.get(file.getAbsolutePath());
-					//This is where a real application would save the file.
-					//System.out.println("Saving: " + file.getName() + "." + newline);
-					//System.out.println("Saving: " + file.getName());
-					//System.out.println("Saving path: " + file.getAbsolutePath());
+
 					try
 					{
 						FileOutputStream fileOut = new FileOutputStream(file.getAbsolutePath());
 						ObjectOutputStream out = new ObjectOutputStream(fileOut);
-						out.writeObject(currentConfiguration);
+						out.writeObject(cc);
 						out.close();
 						fileOut.close();
-						//System.out.printf(file.getAbsolutePath());
 					}catch(IOException i)
 					{
 						i.printStackTrace();
 					}
 				} else {
-					//System.out.println("Save command cancelled by user.");
+					// System.out.println("Save command cancelled by user.");
 				}
 				
 			}
