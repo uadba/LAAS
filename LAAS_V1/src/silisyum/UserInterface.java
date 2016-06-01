@@ -31,8 +31,10 @@ import org.jfree.ui.RectangleEdge;
 import javax.swing.SwingWorker;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -1172,31 +1174,83 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnLoadConfigurationFromAFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				JFileChooser fc = new JFileChooser();
+				
+				int returnVal = fc.showOpenDialog(null);
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					
+					CurrentConfiguration currentConfiguration = null;
+					
+					try {
+						FileInputStream fileIn = new FileInputStream(file.getAbsolutePath());
+						ObjectInputStream in = new ObjectInputStream(fileIn);
+						currentConfiguration = (CurrentConfiguration) in.readObject();
+						in.close();
+						fileIn.close();
+						System.out.println(currentConfiguration.H[0]);
+						System.out.println(currentConfiguration.H[1]);
+						System.out.println(currentConfiguration.H[2]);
+						
+						System.out.println(currentConfiguration.L[0]);
+						System.out.println(currentConfiguration.L[1]);
+						System.out.println(currentConfiguration.L[2]);
+						
+					} catch (IOException i) {
+						i.printStackTrace();
+						return;
+					} catch (ClassNotFoundException c) {
+						c.printStackTrace();
+						return;
+					}
+
+				} else {
+					// log.append("Open command cancelled by user." + newline);
+				}
+				
 			}
 		});
 		fileOperationsPanel.add(btnLoadConfigurationFromAFile, "cell 0 1");
 		
 		btnSaveConfigurationToAFile = new JButton("Save Configuration to a File");
 		btnSaveConfigurationToAFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			      Employee employee = new Employee();
-			      employee.name = "Reyan Ali";
-			      employee.address = "Phokka Kuan, Ambehta Peer";
-			      employee.SSN = 11122333;
-			      employee.number = 101;
-			      
-			      try
-			      {
-			         FileOutputStream fileOut = new FileOutputStream("C:/Users/Suad/Desktop/abc_serialization/file.txt");
-			         ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			         out.writeObject(employee);
-			         out.close();
-			         fileOut.close();
-			         System.out.printf("Serialized data is saved in C:/Users/Suad/Desktop/abc_serialization/file.txt");
-			      }catch(IOException i)
-			      {
-			          i.printStackTrace();
-			      }
+			public void actionPerformed(ActionEvent e) {				
+				
+				// You should put this value assignment task in the if block which is for that JFileChooser.APPROVE_OPTION is true.
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				CurrentConfiguration currentConfiguration = new CurrentConfiguration();
+				currentConfiguration.numberofElements = numberofElements;
+				currentConfiguration.L = L;
+				currentConfiguration.H = H;
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				
+				JFileChooser fc = new JFileChooser();
+				
+				int returnVal = fc.showSaveDialog(null);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					//Path path = Paths.get(file.getAbsolutePath());
+					//This is where a real application would save the file.
+					//System.out.println("Saving: " + file.getName() + "." + newline);
+					//System.out.println("Saving: " + file.getName());
+					//System.out.println("Saving path: " + file.getAbsolutePath());
+					try
+					{
+						FileOutputStream fileOut = new FileOutputStream(file.getAbsolutePath());
+						ObjectOutputStream out = new ObjectOutputStream(fileOut);
+						out.writeObject(currentConfiguration);
+						out.close();
+						fileOut.close();
+						//System.out.printf(file.getAbsolutePath());
+					}catch(IOException i)
+					{
+						i.printStackTrace();
+					}
+				} else {
+					//System.out.println("Save command cancelled by user.");
+				}
+				
 			}
 		});
 		fileOperationsPanel.add(btnSaveConfigurationToAFile, "cell 0 2");
