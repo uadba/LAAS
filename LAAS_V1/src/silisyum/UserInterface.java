@@ -414,7 +414,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		});
 		comboBoxNumberOfPoints.setModel(new DefaultComboBoxModel<String>(new String[] {"1441 points", "721 points", "361 points", "181 points", "outer masks points", "inner masks points"}));
-		panelPatternGraphProperties.add(comboBoxNumberOfPoints, "cell 2 2 2 1,alignx left");
+		panelPatternGraphProperties.add(comboBoxNumberOfPoints, "cell 2 2 2 1,alignx left");		
 		
 		panelConvergence = new JPanel();
 		tabbedPaneForPlots.addTab("Convergence Curve of Optimization Process", null, panelConvergence, null);
@@ -1352,29 +1352,42 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		refreshAmplitudeTable();
 		refreshPhaseTable();
 		refreshPositionTable();
+		
+		refreshForChckbxAmplitude();
+		refreshForChckbxPhase();
+		refreshForChckbxPosition();
+		
 		drawOuterMask();
 		drawInnerMask();
 		drawPlotWithInitialParameterValues();		
 		
 		algorithmExecuter = new AlgorithmExecuter();
 		algorithmExecuter.execute();
+		
+		comboBoxNumberOfPoints.setSelectedIndex(1);
 	}
 
 	private void refreshForChckbxAmplitude() {
 		amplitudeIsUsed = chckbxAmplitude.isSelected();
 		lblAmplitudeValuesComment.setText((amplitudeIsUsed) ? willBeOptimized : areFixed);
+		textField_maximumValueAmplitude.setEditable(amplitudeIsUsed);
+		textField_minimumValueAmplitude.setEditable(amplitudeIsUsed);
 		refreshAmplitudeTable();
 	}
 	
 	private void refreshForChckbxPhase() {
 		phaseIsUsed = chckbxPhase.isSelected();
 		lblPhaseValuesComment.setText((phaseIsUsed) ? willBeOptimized : areFixed);
+		textField_maximumValuePhase.setEditable(phaseIsUsed);
+		textField_minimumValuePhase.setEditable(phaseIsUsed);
 		refreshPhaseTable();
 	}
 	
 	private void refreshForChckbxPosition() {
 		positionIsUsed = chckbxPosition.isSelected();
 		lblPositionValuesComment.setText((positionIsUsed) ? willBeOptimized : areFixed);
+		textField_maximumValuePosition.setEditable(positionIsUsed);
+		textField_minimumValuePosition.setEditable(positionIsUsed);
 		refreshPositionTable();
 	}
 	
@@ -1918,75 +1931,84 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			messagesOfErrors.add("There is not any selected antenna parameters to optimize. At least one of them (amplitude, phase or position) must be selected.");
 		}
 		
-		if( ! validateTextBoxForDouble(textField_maximumValueAmplitude.getText())) {
-			parametersAreValid = false;
-			messagesOfErrors.add("Maximum amplitude value at array parameters tab is not valid.");			
-		}
-		
-		if( ! validateTextBoxForDouble(textField_minimumValueAmplitude.getText())) {
-			parametersAreValid = false;
-			messagesOfErrors.add("Minimum amplitude value at array parameters tab is not valid.");			
-		}
-		
-		if(validateTextBoxForDouble(textField_maximumValueAmplitude.getText()) && validateTextBoxForDouble(textField_minimumValueAmplitude.getText())) {
-			if(Double.parseDouble(textField_maximumValueAmplitude.getText()) <= Double.parseDouble(textField_minimumValueAmplitude.getText())) {
+		// Amplitude value validation
+		if(amplitudeIsUsed) {
+			if( ! validateTextBoxForDouble(textField_maximumValueAmplitude.getText())) {
 				parametersAreValid = false;
-				messagesOfErrors.add("Maximum amplitude value must be bigger than minimum amplitude value.");				
+				messagesOfErrors.add("Maximum amplitude value at array parameters tab is not valid.");			
 			}
 			
-			if(Double.parseDouble(textField_maximumValueAmplitude.getText()) < 0) {
+			if( ! validateTextBoxForDouble(textField_minimumValueAmplitude.getText())) {
 				parametersAreValid = false;
-				messagesOfErrors.add("Maximum amplitude value cannot be negative.");				
+				messagesOfErrors.add("Minimum amplitude value at array parameters tab is not valid.");			
+			}		
+		
+			if(validateTextBoxForDouble(textField_maximumValueAmplitude.getText()) && validateTextBoxForDouble(textField_minimumValueAmplitude.getText())) {
+				if(Double.parseDouble(textField_maximumValueAmplitude.getText()) <= Double.parseDouble(textField_minimumValueAmplitude.getText())) {
+					parametersAreValid = false;
+					messagesOfErrors.add("Maximum amplitude value must be bigger than minimum amplitude value.");				
+				}
+				
+				if(Double.parseDouble(textField_maximumValueAmplitude.getText()) < 0) {
+					parametersAreValid = false;
+					messagesOfErrors.add("Maximum amplitude value cannot be negative.");				
+				}
+				
+				if(Double.parseDouble(textField_minimumValueAmplitude.getText()) < 0) {
+					parametersAreValid = false;
+					messagesOfErrors.add("Minimum amplitude value cannot be negative.");				
+				}
+			}
+		}
+		
+		// Phase value validation
+		if(phaseIsUsed) {
+			if( ! validateTextBoxForDouble(textField_maximumValuePhase.getText())) {
+				parametersAreValid = false;
+				messagesOfErrors.add("Maximum phase value at array parameters tab is not valid.");			
 			}
 			
-			if(Double.parseDouble(textField_minimumValueAmplitude.getText()) < 0) {
+			if( ! validateTextBoxForDouble(textField_minimumValuePhase.getText())) {
 				parametersAreValid = false;
-				messagesOfErrors.add("Minimum amplitude value cannot be negative.");				
-			}
-		}
-		
-		if( ! validateTextBoxForDouble(textField_maximumValuePhase.getText())) {
-			parametersAreValid = false;
-			messagesOfErrors.add("Maximum phase value at array parameters tab is not valid.");			
-		}
-		
-		if( ! validateTextBoxForDouble(textField_minimumValuePhase.getText())) {
-			parametersAreValid = false;
-			messagesOfErrors.add("Minimum phase value at array parameters tab is not valid.");			
-		}
-		
-		if(validateTextBoxForDouble(textField_maximumValuePhase.getText()) && validateTextBoxForDouble(textField_minimumValuePhase.getText())) {
-			if(Double.parseDouble(textField_maximumValuePhase.getText()) <= Double.parseDouble(textField_minimumValuePhase.getText())) {
-				parametersAreValid = false;
-				messagesOfErrors.add("Maximum phase value must be bigger than minimum phase value.");				
-			}
-		}		
-		
-		if( ! validateTextBoxForDouble(textField_maximumValuePosition.getText())) {
-			parametersAreValid = false;
-			messagesOfErrors.add("Maximum position value at array parameters tab is not valid.");			
-		}
-		
-		if( ! validateTextBoxForDouble(textField_minimumValuePosition.getText())) {
-			parametersAreValid = false;
-			messagesOfErrors.add("Minimum position value at array parameters tab is not valid.");			
-		}
-		
-		if(validateTextBoxForDouble(textField_maximumValuePosition.getText()) && validateTextBoxForDouble(textField_minimumValuePosition.getText())) {
-			if(Double.parseDouble(textField_maximumValuePosition.getText()) <= Double.parseDouble(textField_minimumValuePosition.getText())) {
-				parametersAreValid = false;
-				messagesOfErrors.add("Maximum position value must be bigger than minimum position value.");				
+				messagesOfErrors.add("Minimum phase value at array parameters tab is not valid.");			
 			}
 			
-			if(Double.parseDouble(textField_maximumValuePosition.getText()) < 0 || Double.parseDouble(textField_maximumValuePosition.getText()) >= 0.5) {
+			if(validateTextBoxForDouble(textField_maximumValuePhase.getText()) && validateTextBoxForDouble(textField_minimumValuePhase.getText())) {
+				if(Double.parseDouble(textField_maximumValuePhase.getText()) <= Double.parseDouble(textField_minimumValuePhase.getText())) {
+					parametersAreValid = false;
+					messagesOfErrors.add("Maximum phase value must be bigger than minimum phase value.");				
+				}
+			}
+		}
+
+		//  position validation
+		if(positionIsUsed) {
+			if( ! validateTextBoxForDouble(textField_maximumValuePosition.getText())) {
 				parametersAreValid = false;
-				messagesOfErrors.add("Maximum position value must be in the range of [0, 0.5).");		
+				messagesOfErrors.add("Maximum position value at array parameters tab is not valid.");			
 			}
 			
-			if(Double.parseDouble(textField_minimumValuePosition.getText()) > 0 || Double.parseDouble(textField_minimumValuePosition.getText()) <= -0.5) {
+			if( ! validateTextBoxForDouble(textField_minimumValuePosition.getText())) {
 				parametersAreValid = false;
-				messagesOfErrors.add("Minimum position value must be in the range of (-0.5, 0].");				
-			}			
+				messagesOfErrors.add("Minimum position value at array parameters tab is not valid.");			
+			}
+			
+			if(validateTextBoxForDouble(textField_maximumValuePosition.getText()) && validateTextBoxForDouble(textField_minimumValuePosition.getText())) {
+				if(Double.parseDouble(textField_maximumValuePosition.getText()) <= Double.parseDouble(textField_minimumValuePosition.getText())) {
+					parametersAreValid = false;
+					messagesOfErrors.add("Maximum position value must be bigger than minimum position value.");				
+				}
+				
+				if(Double.parseDouble(textField_maximumValuePosition.getText()) < 0 || Double.parseDouble(textField_maximumValuePosition.getText()) >= 0.5) {
+					parametersAreValid = false;
+					messagesOfErrors.add("Maximum position value must be in the range of [0, 0.5).");		
+				}
+				
+				if(Double.parseDouble(textField_minimumValuePosition.getText()) > 0 || Double.parseDouble(textField_minimumValuePosition.getText()) <= -0.5) {
+					parametersAreValid = false;
+					messagesOfErrors.add("Minimum position value must be in the range of (-0.5, 0].");				
+				}			
+			}
 		}
 		
 		// DE parameters are evaluated.
