@@ -93,7 +93,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
-    private int numberofElements = 20;
+    private int numberOfElements = 20;
     private int problemDimension;
     private double[] L = {0, 0, -0.1}; // initial values of amplitude, phase, and position minimum limits
     private double[] H = {1, 10, 0.1}; // initial values of amplitude, phase, and position maximum limits    
@@ -591,7 +591,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		numberOfElements_Field = new JTextField();
 		numberOfElements_Field.setEditable(false);
-		numberOfElements_Field.setText(Integer.toString(numberofElements));
+		numberOfElements_Field.setText(Integer.toString(numberOfElements));
 		arrayParametersPanel.add(numberOfElements_Field, "cell 2 0,growx,aligny center");
 		numberOfElements_Field.setColumns(10);
 		
@@ -605,7 +605,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	                    JOptionPane.PLAIN_MESSAGE,
 	                    null,
 	                    null,
-	                    Integer.toString(numberofElements));
+	                    Integer.toString(numberOfElements));
 				
 				if ((s != null) && (s.length() > 0)) {					
 					numberOfElements_Field.setText(s);					
@@ -714,7 +714,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnResetAmplitudeValues = new JButton("Reset Amplitude Values to Ones");
 		btnResetAmplitudeValues.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (int d = 0; d < numberofElements ; d++) {
+				for (int d = 0; d < numberOfElements ; d++) {
 					antennaArray.amplitude[d] = 1;
 					refreshAmplitudeTable();
 					drawPlotWithInitialParameterValues();
@@ -730,7 +730,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnResetPhaseValues = new JButton("Reset Phase Values to Zeros");
 		btnResetPhaseValues.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (int d = 0; d < numberofElements ; d++) {
+				for (int d = 0; d < numberOfElements ; d++) {
 					antennaArray.phase[d] = 0;
 					refreshPhaseTable();
 					drawPlotWithInitialParameterValues();
@@ -742,7 +742,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnResetDistancesTo = new JButton("Reset Distances to Half-wavelength");
 		btnResetDistancesTo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (int d = 0; d < numberofElements ; d++) {
+				for (int d = 0; d < numberOfElements ; d++) {
 					antennaArray.position[d] = d*0.5;
 					refreshPositionTable();
 					drawPlotWithInitialParameterValues();
@@ -1184,6 +1184,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						in.close();
 						fileIn.close();		
 					
+						// Assign the values which come from the file to the antenna array parameters
 						numberOfElements_Field.setText(Integer.toString(cc.numberofElements));
 						chckbxAmplitude.setSelected(cc.amplitudeIsUsed);
 						chckbxPhase.setSelected(cc.phaseIsUsed);
@@ -1197,7 +1198,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						textField_minimumValuePhase.setText(Double.toString(cc.L[1]));
 						textField_minimumValuePosition.setText(Double.toString(cc.L[2]));
 						
-						createAntennaArray();						
+						createAntennaArray(); // It is also set the "numberOfElements" field					
 						
 						for(int s=0; s<cc.amplitudeValues.length; s++) {
 							antennaArray.amplitude[s] = cc.amplitudeValues[s];
@@ -1208,14 +1209,38 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						refreshForChckbxAmplitude();
 						refreshForChckbxPhase();
 						refreshForChckbxPosition();
-						drawPlotWithInitialParameterValues();				
+						drawPlotWithInitialParameterValues();						
 						
-						numberofElements = Integer.parseInt(numberOfElements_Field.getText());
+						// Assign the values which come from the file to the outer mask parameters
+						mask.outerMaskSegments.clear();
+						int numberOfOuterMask = cc.nameForOuter.length;
+						for(int s=0; s<numberOfOuterMask; s++)
+						{
+							mask.addNewOuterMaskSegments(cc.nameForOuter[s], cc.startAngleForOuter[s], cc.stopAngleForOuter[s], cc.numberOfPointsForOuter[s], cc.levelForOuter[s], cc.weightForOuter[s]);
+						}
+						refreshOuterMaskSegmentsList();
+						refreshOuterMaskSegmentDetailsTable();
+						drawOuterMask();						
+						
+						// Assign the values which come from the file to the inner mask parameters
+						mask.innerMaskSegments.clear();
+						int numberOfInnerMask = cc.nameForInner.length;
+						for(int s=0; s<numberOfInnerMask; s++)
+						{
+							mask.addNewInnerMaskSegments(cc.nameForInner[s], cc.startAngleForInner[s], cc.stopAngleForInner[s], cc.numberOfPointsForInner[s], cc.levelForInner[s], cc.weightForInner[s]);
+						}
+						refreshInnerMaskSegmentsList();
+						refreshInnerMaskSegmentDetailsTable();
+						drawInnerMask();
+						
+						// Assign the values which come from the file to the algorithm parameters
+						populationNumber_textField.setText(Integer.toString(cc.populationNumber));
+						maximumIterationNumber_textField.setText(Integer.toString(cc.maximumIterationNumber));
+						F_textField.setText(Double.toString(cc.F));
+						Cr_textField.setText(Double.toString(cc.Cr));
+						
 						getParametersFromUserInterface();
-												
-//						for(int s=0; s<cc.amplitudeValues.length; s++) {
-//							System.out.println(cc.amplitudeValues[s]);
-//						}
+						
 						
 					} catch (IOException i) {
 						i.printStackTrace();
@@ -1247,7 +1272,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					getParametersFromUserInterface();
 					// Antenna Parameters
 					CurrentConfiguration cc = new CurrentConfiguration();
-					cc.numberofElements = numberofElements;
+					cc.numberofElements = numberOfElements;
 					cc.L = L;
 					cc.H = H;
 					cc.amplitudeIsUsed = amplitudeIsUsed;
@@ -1357,33 +1382,33 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		int delta = 0;
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
-			for (int index = 0; index < numberofElements; index++) {
+			for (int index = 0; index < numberOfElements; index++) {
 				antennaArray.amplitude[index] = bestValues.valuesOfBestMember[index];
 			}
-			delta = numberofElements;
+			delta = numberOfElements;
 		}
 		
 		if (phaseIsUsed) {
 			// this is for phases
-			for (int index = 0; index < numberofElements; index++) {
+			for (int index = 0; index < numberOfElements; index++) {
 				antennaArray.phase[index] = bestValues.valuesOfBestMember[index + delta];
 			}
-			delta += numberofElements;
+			delta += numberOfElements;
 		}
 		
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
 			antennaArrayForPresentation.position[0] = 0;
-			for (int index = 1; index < numberofElements; index++) {
+			for (int index = 1; index < numberOfElements; index++) {
 				antennaArray.position[index] = antennaArrayForPresentation.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
 			}
 		}		
 	}
 
 	protected void createAntennaArray() {
-		numberofElements = Integer.parseInt(numberOfElements_Field.getText());
-		antennaArray = new AntennaArray(numberofElements, patternGraphResolution, mask);
-		antennaArrayForPresentation = new AntennaArray(numberofElements, patternGraphResolution, mask);
+		numberOfElements = Integer.parseInt(numberOfElements_Field.getText());
+		antennaArray = new AntennaArray(numberOfElements, patternGraphResolution, mask);
+		antennaArrayForPresentation = new AntennaArray(numberOfElements, patternGraphResolution, mask);
 	}
 
 	//	For outer mask segment
@@ -2056,13 +2081,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void calculateProblemDimension() {
 		problemDimension = 0;
-		if (amplitudeIsUsed) problemDimension = numberofElements;		
-		if (phaseIsUsed) problemDimension += numberofElements;		
-		if (positionIsUsed) problemDimension += numberofElements;
+		if (amplitudeIsUsed) problemDimension = numberOfElements;		
+		if (phaseIsUsed) problemDimension += numberOfElements;		
+		if (positionIsUsed) problemDimension += numberOfElements;
 	}
 	
 	private void createMainObjects() {		
-		differentialEvolution = new DifferentialEvolution(numberofElements, populationNumber, maximumIterationNumber, F, Cr, L, H, antennaArray, antennaArrayForPresentation, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
+		differentialEvolution = new DifferentialEvolution(numberOfElements, populationNumber, maximumIterationNumber, F, Cr, L, H, antennaArray, antennaArrayForPresentation, mask, amplitudeIsUsed, phaseIsUsed, positionIsUsed);
 	}
 	
 	private void preserveAspectRatio(JPanel innerPanel, JPanel container) {
@@ -2124,24 +2149,24 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		int delta = 0;
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
-			for (int index = 0; index < numberofElements; index++) {
+			for (int index = 0; index < numberOfElements; index++) {
 				antennaArrayForPresentation.amplitude[index] = bestValues.valuesOfBestMember[index];
 			}
-			delta = numberofElements;
+			delta = numberOfElements;
 		} else {
-			for (int index = 0; index < numberofElements; index++) {
+			for (int index = 0; index < numberOfElements; index++) {
 				antennaArrayForPresentation.amplitude[index] = antennaArray.amplitude[index];
 			}
 		}
 		
 		if (phaseIsUsed) {
 			// this is for phases
-			for (int index = 0; index < numberofElements; index++) {
+			for (int index = 0; index < numberOfElements; index++) {
 				antennaArrayForPresentation.phase[index] = bestValues.valuesOfBestMember[index + delta];
 			}
-			delta += numberofElements;
+			delta += numberOfElements;
 		} else {
-			for (int index = 0; index < numberofElements; index++) {
+			for (int index = 0; index < numberOfElements; index++) {
 				antennaArrayForPresentation.phase[index] = antennaArray.phase[index];
 			}
 		}
@@ -2149,11 +2174,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0
 			antennaArrayForPresentation.position[0] = 0;
-			for (int index = 1; index < numberofElements; index++) {
+			for (int index = 1; index < numberOfElements; index++) {
 				antennaArrayForPresentation.position[index] = antennaArrayForPresentation.position[index - 1] + 0.5 + bestValues.valuesOfBestMember[index + delta];
 			}
 		} else {
-			for (int index = 1; index < numberofElements; index++) {
+			for (int index = 1; index < numberOfElements; index++) {
 				antennaArrayForPresentation.position[index] = antennaArray.position[index];
 			}
 		}
@@ -2343,13 +2368,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
-			for (int index = 0; index < numberofElements; index++) {
+			for (int index = 0; index < numberOfElements; index++) {
 				currentResults += Double.toString(bestValues.valuesOfBestMember[index]);
 				currentResults += "<br>";
 			}
-			delta = numberofElements;
+			delta = numberOfElements;
 		} else {
-			for (int index = 0; index < numberofElements; index++) {
+			for (int index = 0; index < numberOfElements; index++) {
 				currentResults += Double.toString(antennaArray.amplitude[index]);
 				currentResults += "<br>";				
 			}
@@ -2359,13 +2384,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		currentResults += "<br><br>phases = [<br>";
 		if (phaseIsUsed) {
 			// this is for phases
-			for (int index = 0; index < numberofElements; index++) {
+			for (int index = 0; index < numberOfElements; index++) {
 				currentResults += Double.toString(bestValues.valuesOfBestMember[index + delta]);
 				currentResults += "<br>";
 			}
-			delta += numberofElements;
+			delta += numberOfElements;
 		} else {
-			for (int index = 0; index < numberofElements; index++) {
+			for (int index = 0; index < numberOfElements; index++) {
 				currentResults += Double.toString(antennaArray.phase[index]);
 				currentResults += "<br>";				
 			}
@@ -2377,13 +2402,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		double previousElementPosition = 0;		
 		if (positionIsUsed) {
 			// this is for positions. It starts with 1 instead of 0			
-			for (int index = 1; index < numberofElements; index++) {
+			for (int index = 1; index < numberOfElements; index++) {
 				currentResults += Double.toString(previousElementPosition + 0.5 + bestValues.valuesOfBestMember[index + delta]);
 				previousElementPosition += 0.5 + bestValues.valuesOfBestMember[index + delta];
 				currentResults += "<br>";
 			}
 		} else {
-			for (int index = 1; index < numberofElements; index++) {
+			for (int index = 1; index < numberOfElements; index++) {
 				currentResults += Double.toString(antennaArray.position[index]);
 				currentResults += "<br>";
 			}
