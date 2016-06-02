@@ -716,9 +716,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			public void actionPerformed(ActionEvent e) {
 				for (int d = 0; d < numberOfElements ; d++) {
 					antennaArray.amplitude[d] = 1;
-					refreshAmplitudeTable();
-					drawPlotWithInitialParameterValues();
 				}
+				refreshAmplitudeTable();
+				drawPlotWithInitialParameterValues();
 			}
 		});
 		
@@ -732,9 +732,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			public void actionPerformed(ActionEvent e) {
 				for (int d = 0; d < numberOfElements ; d++) {
 					antennaArray.phase[d] = 0;
-					refreshPhaseTable();
-					drawPlotWithInitialParameterValues();
 				}
+				refreshPhaseTable();
+				drawPlotWithInitialParameterValues();
 			}
 		});
 		arrayParametersPanel.add(btnResetPhaseValues, "cell 2 5 2 1,alignx center");
@@ -744,9 +744,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			public void actionPerformed(ActionEvent e) {
 				for (int d = 0; d < numberOfElements ; d++) {
 					antennaArray.position[d] = d*0.5;
-					refreshPositionTable();
-					drawPlotWithInitialParameterValues();
 				}
+				refreshPositionTable();
+				drawPlotWithInitialParameterValues();
 			}
 		});
 		arrayParametersPanel.add(btnResetDistancesTo, "cell 4 5 2 1,alignx center");
@@ -1364,7 +1364,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		algorithmExecuter = new AlgorithmExecuter();
 		algorithmExecuter.execute();
 		
-		comboBoxNumberOfPoints.setSelectedIndex(1);
+		comboBoxNumberOfPoints.setSelectedIndex(1); // This is here because it triggers addActionListener which runs algorithmExecuter
 	}
 
 	private void refreshForChckbxAmplitude() {
