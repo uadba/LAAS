@@ -639,9 +639,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		chckbxAmplitude = new JCheckBox("Amplitude");
 		chckbxAmplitude.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				amplitudeIsUsed = chckbxAmplitude.isSelected();
-				lblAmplitudeValuesComment.setText((amplitudeIsUsed) ? willBeOptimized : areFixed);
-				refreshAmplitudeTable();
+				refreshForChckbxAmplitude();
 			}
 		});
 		chckbxAmplitude.setSelected(amplitudeIsUsed);
@@ -650,9 +648,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		chckbxPhase = new JCheckBox("Phase");
 		chckbxPhase.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				phaseIsUsed = chckbxPhase.isSelected();
-				lblPhaseValuesComment.setText((phaseIsUsed) ? willBeOptimized : areFixed);
-				refreshPhaseTable();
+				refreshForChckbxPhase();
 			}
 		});
 		chckbxPhase.setSelected(phaseIsUsed);
@@ -661,9 +657,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		chckbxPosition = new JCheckBox("Position");
 		chckbxPosition.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				positionIsUsed = chckbxPosition.isSelected();
-				lblPositionValuesComment.setText((positionIsUsed) ? willBeOptimized : areFixed);
-				refreshPositionTable();
+				refreshForChckbxPosition();
 			}
 		});
 		chckbxPosition.setSelected(positionIsUsed);
@@ -1195,11 +1189,28 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						chckbxPhase.setSelected(cc.phaseIsUsed);
 						chckbxPosition.setSelected(cc.positionIsUsed);
 						
-//						for(int s=0; s<cc.amplitudeValues.length; s++) {
-//							System.out.println(cc.amplitudeValues[s]);
-//						}					
+						textField_maximumValueAmplitude.setText(Double.toString(cc.H[0]));
+						textField_maximumValuePhase.setText(Double.toString(cc.H[1]));
+						textField_maximumValuePosition.setText(Double.toString(cc.H[2]));
 						
-						numberofElements = Integer.parseInt(numberOfElements_Field.getText());						
+						textField_minimumValueAmplitude.setText(Double.toString(cc.L[0]));
+						textField_minimumValuePhase.setText(Double.toString(cc.L[1]));
+						textField_minimumValuePosition.setText(Double.toString(cc.L[2]));
+						
+						createAntennaArray();						
+						
+						for(int s=0; s<cc.amplitudeValues.length; s++) {
+							antennaArray.amplitude[s] = cc.amplitudeValues[s];
+							antennaArray.phase[s] = cc.phaseValues[s];
+							antennaArray.position[s] = cc.positionValues[s];
+						}
+						
+						refreshForChckbxAmplitude();
+						refreshForChckbxPhase();
+						refreshForChckbxPosition();
+						drawPlotWithInitialParameterValues();				
+						
+						numberofElements = Integer.parseInt(numberOfElements_Field.getText());
 						getParametersFromUserInterface();
 												
 //						for(int s=0; s<cc.amplitudeValues.length; s++) {
@@ -1324,6 +1335,24 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		algorithmExecuter.execute();
 	}
 
+	private void refreshForChckbxAmplitude() {
+		amplitudeIsUsed = chckbxAmplitude.isSelected();
+		lblAmplitudeValuesComment.setText((amplitudeIsUsed) ? willBeOptimized : areFixed);
+		refreshAmplitudeTable();
+	}
+	
+	private void refreshForChckbxPhase() {
+		phaseIsUsed = chckbxPhase.isSelected();
+		lblPhaseValuesComment.setText((phaseIsUsed) ? willBeOptimized : areFixed);
+		refreshPhaseTable();
+	}
+	
+	private void refreshForChckbxPosition() {
+		positionIsUsed = chckbxPosition.isSelected();
+		lblPositionValuesComment.setText((positionIsUsed) ? willBeOptimized : areFixed);
+		refreshPositionTable();
+	}
+	
 	protected void setBestResultsToCurrentAntennaArray() {
 		int delta = 0;
 		if (amplitudeIsUsed) {
