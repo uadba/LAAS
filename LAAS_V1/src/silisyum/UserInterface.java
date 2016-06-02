@@ -1188,11 +1188,23 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						ObjectInputStream in = new ObjectInputStream(fileIn);
 						cc = (CurrentConfiguration) in.readObject();
 						in.close();
-						fileIn.close();
+						fileIn.close();		
+					
+						numberOfElements_Field.setText(Integer.toString(cc.numberofElements));
+						chckbxAmplitude.setSelected(cc.amplitudeIsUsed);
+						chckbxPhase.setSelected(cc.phaseIsUsed);
+						chckbxPosition.setSelected(cc.positionIsUsed);
 						
-						for(int s=0; s<cc.amplitudeValues.length; s++) {
-							System.out.println(cc.amplitudeValues[s]);
-						}
+//						for(int s=0; s<cc.amplitudeValues.length; s++) {
+//							System.out.println(cc.amplitudeValues[s]);
+//						}					
+						
+						numberofElements = Integer.parseInt(numberOfElements_Field.getText());						
+						getParametersFromUserInterface();
+												
+//						for(int s=0; s<cc.amplitudeValues.length; s++) {
+//							System.out.println(cc.amplitudeValues[s]);
+//						}
 						
 					} catch (IOException i) {
 						i.printStackTrace();
@@ -1213,60 +1225,73 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnSaveConfigurationToAFile = new JButton("Save Configuration to a File");
 		btnSaveConfigurationToAFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {				
-				
-				// You should put this value assignment task in the if block which is for that JFileChooser.APPROVE_OPTION is true.
-				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				CurrentConfiguration cc = new CurrentConfiguration();
-				cc.numberofElements = numberofElements;
-				cc.L = L;
-				cc.H = H;
-				cc.amplitudeValues = antennaArray.amplitude;
-				cc.phaseValues = antennaArray.phase;
-				cc.positionValues = antennaArray.position;
-				
-				int numberOfOuterMask = mask.outerMaskSegments.size();
-				cc.nameForOuter = new String[numberOfOuterMask];
-				cc.startAngleForOuter = new double[numberOfOuterMask];
-				cc.stopAngleForOuter = new double[numberOfOuterMask];
-				cc.numberOfPointsForOuter = new int[numberOfOuterMask];
-				cc.levelForOuter = new double[numberOfOuterMask];
-				cc.weightForOuter = new double[numberOfOuterMask];
-				for(int s=0; s<numberOfOuterMask; s++) {
-					cc.nameForOuter[s] = mask.outerMaskSegments.get(s).name;
-					cc.startAngleForOuter[s] = mask.outerMaskSegments.get(s).startAngle;
-					cc.stopAngleForOuter[s] = mask.outerMaskSegments.get(s).stopAngle;
-					cc.numberOfPointsForOuter[s] = mask.outerMaskSegments.get(s).numberOfPoints;
-					cc.levelForOuter[s] = mask.outerMaskSegments.get(s).level;
-					cc.weightForOuter[s] = mask.outerMaskSegments.get(s).weight;
-				}
-				
-				int numberOfInnerMask = mask.innerMaskSegments.size();
-				cc.nameForInner = new String[numberOfInnerMask];
-				cc.startAngleForInner = new double[numberOfInnerMask];
-				cc.stopAngleForInner = new double[numberOfInnerMask];
-				cc.numberOfPointsForInner = new int[numberOfInnerMask];
-				cc.levelForInner = new double[numberOfInnerMask];
-				cc.weightForInner = new double[numberOfInnerMask];
-				for(int s=0; s<numberOfInnerMask; s++) {
-					cc.nameForInner[s] = mask.innerMaskSegments.get(s).name;
-					cc.startAngleForInner[s] = mask.innerMaskSegments.get(s).startAngle;
-					cc.stopAngleForInner[s] = mask.innerMaskSegments.get(s).stopAngle;
-					cc.numberOfPointsForInner[s] = mask.innerMaskSegments.get(s).numberOfPoints;
-					cc.levelForInner[s] = mask.innerMaskSegments.get(s).level;
-					cc.weightForInner[s] = mask.innerMaskSegments.get(s).weight;
-				}
-				
-				
-				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				
+								
 				JFileChooser fc = new JFileChooser();
 				
 				int returnVal = fc.showSaveDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////				
+					// Fetch the all corresponding values from the user interface.
+					getParametersFromUserInterface();
+					// Antenna Parameters
+					CurrentConfiguration cc = new CurrentConfiguration();
+					cc.numberofElements = numberofElements;
+					cc.L = L;
+					cc.H = H;
+					cc.amplitudeIsUsed = amplitudeIsUsed;
+					cc.phaseIsUsed = phaseIsUsed;
+					cc.positionIsUsed = positionIsUsed;
+					cc.amplitudeValues = antennaArray.amplitude;
+					cc.phaseValues = antennaArray.phase;
+					cc.positionValues = antennaArray.position;
+					
+					// For Outer Mask
+					int numberOfOuterMask = mask.outerMaskSegments.size();
+					cc.nameForOuter = new String[numberOfOuterMask];
+					cc.startAngleForOuter = new double[numberOfOuterMask];
+					cc.stopAngleForOuter = new double[numberOfOuterMask];
+					cc.numberOfPointsForOuter = new int[numberOfOuterMask];
+					cc.levelForOuter = new double[numberOfOuterMask];
+					cc.weightForOuter = new double[numberOfOuterMask];
+					for(int s=0; s<numberOfOuterMask; s++) {
+						cc.nameForOuter[s] = mask.outerMaskSegments.get(s).name;
+						cc.startAngleForOuter[s] = mask.outerMaskSegments.get(s).startAngle;
+						cc.stopAngleForOuter[s] = mask.outerMaskSegments.get(s).stopAngle;
+						cc.numberOfPointsForOuter[s] = mask.outerMaskSegments.get(s).numberOfPoints;
+						cc.levelForOuter[s] = mask.outerMaskSegments.get(s).level;
+						cc.weightForOuter[s] = mask.outerMaskSegments.get(s).weight;
+					}
+					
+					// For Inner Mask
+					int numberOfInnerMask = mask.innerMaskSegments.size();
+					cc.nameForInner = new String[numberOfInnerMask];
+					cc.startAngleForInner = new double[numberOfInnerMask];
+					cc.stopAngleForInner = new double[numberOfInnerMask];
+					cc.numberOfPointsForInner = new int[numberOfInnerMask];
+					cc.levelForInner = new double[numberOfInnerMask];
+					cc.weightForInner = new double[numberOfInnerMask];
+					for(int s=0; s<numberOfInnerMask; s++) {
+						cc.nameForInner[s] = mask.innerMaskSegments.get(s).name;
+						cc.startAngleForInner[s] = mask.innerMaskSegments.get(s).startAngle;
+						cc.stopAngleForInner[s] = mask.innerMaskSegments.get(s).stopAngle;
+						cc.numberOfPointsForInner[s] = mask.innerMaskSegments.get(s).numberOfPoints;
+						cc.levelForInner[s] = mask.innerMaskSegments.get(s).level;
+						cc.weightForInner[s] = mask.innerMaskSegments.get(s).weight;
+					}
+					
+					// DONT FORGET TO FETCH THE VALUES FROM THE USER INTERFACE
+					// Algorithm Parameters
+					cc.populationNumber = populationNumber;
+					cc.maximumIterationNumber = maximumIterationNumber;
+					cc.F = F;
+					cc.Cr = Cr;
+					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					
 					File file = fc.getSelectedFile();
-
+					
 					try
-					{
+					{						
 						FileOutputStream fileOut = new FileOutputStream(file.getAbsolutePath());
 						ObjectOutputStream out = new ObjectOutputStream(fileOut);
 						out.writeObject(cc);
@@ -1986,7 +2011,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 
 	private void getParametersFromUserInterface() {
 		// DE parameters
-		// numberOfElements = Integer.parseInt(numberOfElements_Field.getText()); // numberOfElements was already assigned.
 	    populationNumber = Integer.parseInt(populationNumber_textField.getText());
 	    maximumIterationNumber = Integer.parseInt(maximumIterationNumber_textField.getText());
 	    F = Double.parseDouble(F_textField.getText());

@@ -20,7 +20,7 @@ public class CurrentConfiguration implements java.io.Serializable
 	
 	// For Outer Mask
 	public String[] nameForOuter;
-	public double[] startAngleForOuter; // This is originally "Double" with a "D"
+	public double[] startAngleForOuter; // This is originally "Double" with a "D" in the Mask class
 	public double[] stopAngleForOuter;
 	public int[] numberOfPointsForOuter;
 	public double[] levelForOuter;
@@ -28,7 +28,7 @@ public class CurrentConfiguration implements java.io.Serializable
 	
 	// For Inner Mask
 	public String[] nameForInner;
-	public double[] startAngleForInner; // This is originally "Double" with a "D"
+	public double[] startAngleForInner; // This is originally "Double" with a "D" in the Mask class
 	public double[] stopAngleForInner;
 	public int[] numberOfPointsForInner;
 	public double[] levelForInner;
