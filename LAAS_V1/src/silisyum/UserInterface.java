@@ -96,19 +96,19 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     private Crosshair xCrosshair;
     private Crosshair yCrosshair;    
     
-    private int numberOfElements = 20;
+    private int numberOfElements = DefaultConfiguration.numberofElements;
     private int problemDimension;
-    private double[] L = {0, 0, -0.1}; // initial values of amplitude, phase, and position minimum limits
-    private double[] H = {1, 10, 0.1}; // initial values of amplitude, phase, and position maximum limits    
-    private boolean amplitudeIsUsed = true;
-    private boolean phaseIsUsed = true;
-    private boolean positionIsUsed = false;
+    private double[] L = new double[3]; // amplitude, phase, and position minimum limits
+    private double[] H = new double[3]; // amplitude, phase, and position maximum limits
+    private boolean amplitudeIsUsed = DefaultConfiguration.amplitudeIsUsed;
+    private boolean phaseIsUsed = DefaultConfiguration.phaseIsUsed;
+    private boolean positionIsUsed = DefaultConfiguration.positionIsUsed;
     private Mask mask;
     private int patternGraphResolution = 721; // 4*180 + 1 = 721;
-    private int populationNumber = 70;
-    private int maximumIterationNumber = 1000;
-    private double F = 0.7;
-    private double Cr = 0.95;
+    private int populationNumber = DefaultConfiguration.populationNumber;
+    private int maximumIterationNumber = DefaultConfiguration.maximumIterationNumber;
+    private double F = DefaultConfiguration.F;
+    private double Cr = DefaultConfiguration.Cr;
     private AntennaArray antennaArray;
     private AntennaArray antennaArrayForPresentation;
     private DifferentialEvolution differentialEvolution;
@@ -254,6 +254,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	 * Create the frame.
 	 */
 	public UserInterface() {
+		for(int limit=0; limit<3; limit++) {
+			L[limit] = DefaultConfiguration.L[limit];
+			H[limit] = DefaultConfiguration.H[limit];			
+		}
+		
 		setTitle("Antenna Array Synthesizer");		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1429, 991);
@@ -1163,6 +1168,53 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnResetConfigurationToDefault = new JButton("Reset Configuration to Default");
 		btnResetConfigurationToDefault.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				for(int limit=0; limit<3; limit++) {
+					L[limit] = DefaultConfiguration.L[limit];
+					H[limit] = DefaultConfiguration.H[limit];			
+				}
+				
+				numberOfElements = DefaultConfiguration.numberofElements;
+				numberOfElements_Field.setText(Integer.toString(numberOfElements));
+				chckbxAmplitude.setSelected(DefaultConfiguration.amplitudeIsUsed);
+				chckbxPhase.setSelected(DefaultConfiguration.phaseIsUsed);
+				chckbxPosition.setSelected(DefaultConfiguration.positionIsUsed);
+				
+				textField_maximumValueAmplitude.setText(Double.toString(H[0]));
+				textField_maximumValuePhase.setText(Double.toString(H[1]));
+				textField_maximumValuePosition.setText(Double.toString(H[2]));
+				
+				textField_minimumValueAmplitude.setText(Double.toString(L[0]));
+				textField_minimumValuePhase.setText(Double.toString(L[1]));
+				textField_minimumValuePosition.setText(Double.toString(L[2]));
+			    
+			    // Masks
+				mask.outerMaskSegments.clear();
+				refreshOuterMaskSegmentsList();
+				refreshOuterMaskSegmentDetailsTable();
+				drawOuterMask();
+				
+				mask.innerMaskSegments.clear();
+				refreshInnerMaskSegmentsList();
+				refreshInnerMaskSegmentDetailsTable();
+				drawInnerMask();
+			    
+			    // Algorithm
+				populationNumber_textField.setText(Integer.toString(DefaultConfiguration.populationNumber));
+				maximumIterationNumber_textField.setText(Integer.toString(DefaultConfiguration.maximumIterationNumber));
+				F_textField.setText(Double.toString(DefaultConfiguration.F));
+				Cr_textField.setText(Double.toString(DefaultConfiguration.Cr));
+								
+				getParametersFromUserInterface();
+				
+				antennaArray = new AntennaArray(numberOfElements, patternGraphResolution, mask);
+			    antennaArray.createArrays();
+			    antennaArray.initializeArrays();
+			    
+				refreshForChckbxAmplitude();
+				refreshForChckbxPhase();
+				refreshForChckbxPosition();
+				drawPlotWithInitialParameterValues();
 			}
 		});
 		fileOperationsPanel.add(btnResetConfigurationToDefault, "cell 0 0");
@@ -1225,7 +1277,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						}
 						refreshOuterMaskSegmentsList();
 						refreshOuterMaskSegmentDetailsTable();
-						drawOuterMask();						
+						drawOuterMask();
 						
 						// Assign the values which come from the file to the inner mask parameters
 						mask.innerMaskSegments.clear();

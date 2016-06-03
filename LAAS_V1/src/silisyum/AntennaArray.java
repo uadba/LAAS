@@ -53,41 +53,11 @@ public class AntennaArray {
 	}
 	
 	public void initializeArrays() {
-		// seeker example nulling at -10 degree
-		// seeker
-//		double[] temp_a = {0.32561, 0.28558, 0.39104, 0.50461, 0.62034, 0.73147, 0.83102, 0.91243, 0.97010, 1.00000, 1.00000, 0.97010, 0.91243, 0.83102, 0.73147, 0.62034, 0.50461, 0.39104, 0.28558, 0.32561};
-		//double[] temp_alpha = {-3.70782, -7.51205, -4.20985, -1.57898, 0.64605, 2.50538, 2.89041, 2.24520, 1.81287, 0.78319, -0.78319, -1.81287, -2.24520, -2.89041, -2.50538, -0.64605, +1.57898, +4.20985, +7.51205, +3.70782};
-		//double[] temp_d_10 = {0, 1.2, 2.22, 3.17, 3.98, 4.86, 5.67, 6.62, 7.64, 8.84}; // Khodier 10 elements
-		//double[] temp_d_28 = {0, 1.47, 2.25, 3.02, 4.16, 5.25, 6.15, 7.15, 8.18, 9.13, 10.18, 11.23, 12.13, 13.11, 14.23, 15.21, 16.11, 17.16, 18.21, 19.16, 20.19, 21.19, 22.09, 23.18, 24.32, 25.09, 25.87, 27.34}; // Khodier 10 elements
-		//double[] temp_d_28b = {0, 1.36, 2.26, 3.05, 4.18, 5.29, 6.14, 7.15, 8.2, 9.14, 10.18, 11.24, 12.12, 13.12, 14.24, 15.24, 16.12, 17.18, 18.22, 19.16, 20.21, 21.22, 22.07, 23.18, 24.31, 25.1, 26, 27.36};
-//		double[] temp_d_32 = {0, 1.41, 3.03, 4.41, 5.61, 6.75, 7.71, 8.65, 9.4, 10.18, 10.85, 11.54, 12.4, 13.16, 14.14, 14.98, 16.04, 16.88, 17.86, 18.62, 19.48, 20.17, 20.84, 21.62, 22.37, 23.31, 24.27, 25.41, 26.61, 27.99, 29.61, 31.02};
-//		double[] thesis_seven_position = {0, 0.250, 0.734, 1.369, 1.850, 2.108, 3.935};
-//		double[] thesis_seven_weight = {0.146, 0.258, 0.195, 0.195, 0.275, 0.169, 0.057};
-//		double[] thesis_seven_alpha = {44, 257, 143, 48, 292, 145, 25};
-//		double[] seeker_position = {0, 0.53593, 1.09863, 1.59965, 2.10054, 2.57424, 3.05002, 3.53444, 4.04507, 4.56049, 5.07719, 5.59261, 6.10324, 6.58766, 7.06344, 7.53714, 8.03803, 8.53905, 9.10175, 9.63768};
-		
-		// ismail th
-		//double[] alpha_example = {14.3983, -26.1588, -9.93420, 10.2254, 1.93170, 5.18520, 1.53020, -1.48370, -2.37140, -2.97950, -0.997700, 3.23560, -1.12110, 0.775300, 4.14480, -7.55650, 1.79030, 6.73780, 24.7469, -15.6342};
-		
-		for (int i = 0; i < numberofElements; i++)
-		{
-			amplitude[i] = 1;
-			//a[i] = thesis_seven_weight[i];
-			//a[i] = temp_a[i]; // seeker
-			
-			phase[i] = 0;
-			// alpha[i] = thesis_seven_alpha[i];
-			//alpha[i] = temp_alpha[i]; // seeker
-			//alpha[i] = alpha_example[i]; // ismail th
-			
-			position[i] = i*0.5*lambda;
-			//d[i] = seeker_position[i]*lambda;
-			//d[i] = temp_d_10[i]*0.5*lambda;
-			//d[i] = temp_d_32[i]*0.5*lambda;
-			//d[i] = 2*thesis_seven_position[i]*0.5*lambda; // for thesis. Attention please it has a two multiplication because it considers lambda not lambda/2
-			//d[i] += i*0.5*lambda;
-			
-		}		
+		for (int i = 0; i < numberofElements; i++) {
+			amplitude[i] = DefaultConfiguration.amplitudeValue;
+			phase[i] = DefaultConfiguration.phaseValue;
+			position[i] = i*DefaultConfiguration.positionValue*lambda;
+		}
 	}
 
 	public double patternFunction(double theta)
