@@ -1167,54 +1167,50 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		btnResetConfigurationToDefault = new JButton("Reset Configuration to Default");
 		btnResetConfigurationToDefault.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				for(int limit=0; limit<3; limit++) {
-					L[limit] = DefaultConfiguration.L[limit];
-					H[limit] = DefaultConfiguration.H[limit];			
+			public void actionPerformed(ActionEvent e) {				
+	            
+				int result = JOptionPane.showConfirmDialog(null,"Do you want to reset the configuration to the default?","Confirmation",JOptionPane.YES_NO_OPTION);
+	            
+				if (result == JOptionPane.YES_OPTION) {
+					for(int limit=0; limit<3; limit++) {
+						L[limit] = DefaultConfiguration.L[limit];
+						H[limit] = DefaultConfiguration.H[limit];			
+					}
+					numberOfElements = DefaultConfiguration.numberofElements;
+					numberOfElements_Field.setText(Integer.toString(numberOfElements));
+					chckbxAmplitude.setSelected(DefaultConfiguration.amplitudeIsUsed);
+					chckbxPhase.setSelected(DefaultConfiguration.phaseIsUsed);
+					chckbxPosition.setSelected(DefaultConfiguration.positionIsUsed);
+					textField_maximumValueAmplitude.setText(Double.toString(H[0]));
+					textField_maximumValuePhase.setText(Double.toString(H[1]));
+					textField_maximumValuePosition.setText(Double.toString(H[2]));
+					textField_minimumValueAmplitude.setText(Double.toString(L[0]));
+					textField_minimumValuePhase.setText(Double.toString(L[1]));
+					textField_minimumValuePosition.setText(Double.toString(L[2]));
+					// Masks
+					mask.outerMaskSegments.clear();
+					refreshOuterMaskSegmentsList();
+					refreshOuterMaskSegmentDetailsTable();
+					drawOuterMask();
+					mask.innerMaskSegments.clear();
+					refreshInnerMaskSegmentsList();
+					refreshInnerMaskSegmentDetailsTable();
+					drawInnerMask();
+					// Algorithm
+					populationNumber_textField.setText(Integer.toString(DefaultConfiguration.populationNumber));
+					maximumIterationNumber_textField.setText(Integer.toString(DefaultConfiguration.maximumIterationNumber));
+					F_textField.setText(Double.toString(DefaultConfiguration.F));
+					Cr_textField.setText(Double.toString(DefaultConfiguration.Cr));
+					getParametersFromUserInterface();
+					antennaArray = new AntennaArray(numberOfElements, patternGraphResolution, mask);
+					antennaArray.createArrays();
+					antennaArray.initializeArrays();
+					refreshForChckbxAmplitude();
+					refreshForChckbxPhase();
+					refreshForChckbxPosition();
+					drawPlotWithInitialParameterValues();
 				}
 				
-				numberOfElements = DefaultConfiguration.numberofElements;
-				numberOfElements_Field.setText(Integer.toString(numberOfElements));
-				chckbxAmplitude.setSelected(DefaultConfiguration.amplitudeIsUsed);
-				chckbxPhase.setSelected(DefaultConfiguration.phaseIsUsed);
-				chckbxPosition.setSelected(DefaultConfiguration.positionIsUsed);
-				
-				textField_maximumValueAmplitude.setText(Double.toString(H[0]));
-				textField_maximumValuePhase.setText(Double.toString(H[1]));
-				textField_maximumValuePosition.setText(Double.toString(H[2]));
-				
-				textField_minimumValueAmplitude.setText(Double.toString(L[0]));
-				textField_minimumValuePhase.setText(Double.toString(L[1]));
-				textField_minimumValuePosition.setText(Double.toString(L[2]));
-			    
-			    // Masks
-				mask.outerMaskSegments.clear();
-				refreshOuterMaskSegmentsList();
-				refreshOuterMaskSegmentDetailsTable();
-				drawOuterMask();
-				
-				mask.innerMaskSegments.clear();
-				refreshInnerMaskSegmentsList();
-				refreshInnerMaskSegmentDetailsTable();
-				drawInnerMask();
-			    
-			    // Algorithm
-				populationNumber_textField.setText(Integer.toString(DefaultConfiguration.populationNumber));
-				maximumIterationNumber_textField.setText(Integer.toString(DefaultConfiguration.maximumIterationNumber));
-				F_textField.setText(Double.toString(DefaultConfiguration.F));
-				Cr_textField.setText(Double.toString(DefaultConfiguration.Cr));
-								
-				getParametersFromUserInterface();
-				
-				antennaArray = new AntennaArray(numberOfElements, patternGraphResolution, mask);
-			    antennaArray.createArrays();
-			    antennaArray.initializeArrays();
-			    
-				refreshForChckbxAmplitude();
-				refreshForChckbxPhase();
-				refreshForChckbxPosition();
-				drawPlotWithInitialParameterValues();
 			}
 		});
 		fileOperationsPanel.add(btnResetConfigurationToDefault, "cell 0 0");
@@ -2569,21 +2565,21 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void createTemporaryMasks() {
 		
-		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
-		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
-		mask.addNewOuterMaskSegments("SLL_03", 30, 79, 49, -20, 1);
-		mask.addNewOuterMaskSegments("SLL_04", 79, 80, 5, -60, 1);
-		mask.addNewOuterMaskSegments("SLL_05", 80, 100, 20, 0, 1);
-		mask.addNewOuterMaskSegments("SLL_06", 100, 110, 10, -20, 1);
-		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
-		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
-
-		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
-		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
-		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
-		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 81, -95, 1);
-		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -4, 1);
-		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
+//		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
+//		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
+//		mask.addNewOuterMaskSegments("SLL_03", 30, 79, 49, -20, 1);
+//		mask.addNewOuterMaskSegments("SLL_04", 79, 80, 5, -60, 1);
+//		mask.addNewOuterMaskSegments("SLL_05", 80, 100, 20, 0, 1);
+//		mask.addNewOuterMaskSegments("SLL_06", 100, 110, 10, -20, 1);
+//		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
+//		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
+//
+//		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
+//		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
+//		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
+//		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 81, -95, 1);
+//		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -4, 1);
+//		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
 
 		// simple mask
 //		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 84, -35, 1);
