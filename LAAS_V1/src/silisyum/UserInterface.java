@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
@@ -65,6 +66,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import java.awt.FlowLayout;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.UIManager;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -74,6 +76,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JSeparator;
 import javax.swing.JProgressBar;
+
 
 public class UserInterface extends JFrame implements ChartMouseListener{
 
@@ -1170,6 +1173,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				
 				JFileChooser fc = new JFileChooser();
 				
+				fc.setFileFilter(new FileNameExtensionFilter("Antenna Array Synthesizer File (*.aas)","aas"));
+				
 				int returnVal = fc.showOpenDialog(null);
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -1263,6 +1268,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			public void actionPerformed(ActionEvent e) {				
 								
 				JFileChooser fc = new JFileChooser();
+				fc.setFileFilter(new FileNameExtensionFilter("Antenna Array Synthesizer File (*.aas)","aas"));
 				
 				int returnVal = fc.showSaveDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -1325,6 +1331,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					
 					File file = fc.getSelectedFile();
+					
+					if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("aas")) {
+					    // filename extension is suitable
+					} else {
+					    file = new File(file.toString() + ".aas");
+					    //file = new File(file.getParentFile(), FilenameUtils.getBaseName(file.getName())+".aas"); // Use if any given extension should be deleted.
+					}
 					
 					try
 					{						
