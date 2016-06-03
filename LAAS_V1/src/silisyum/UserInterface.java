@@ -2480,7 +2480,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		} else {
 			for (int index = 0; index < numberOfElements; index++) {
 				currentResults += Double.toString(antennaArray.amplitude[index]);
-				currentResults += "<br>";				
+				currentResults += "<br>";
 			}
 		}
 		currentResults += "]";
