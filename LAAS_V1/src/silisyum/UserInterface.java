@@ -1163,7 +1163,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		fileOperationsPanel = new JPanel();
 		tabbedPaneForSettings.addTab("File Operations", null, fileOperationsPanel, null);
-		fileOperationsPanel.setLayout(new MigLayout("", "[]", "[][][]"));
+		fileOperationsPanel.setLayout(new MigLayout("", "[grow][][grow]", "[][][]"));
 		
 		btnResetConfigurationToDefault = new JButton("Reset Configuration to Default");
 		btnResetConfigurationToDefault.addActionListener(new ActionListener() {
@@ -1187,6 +1187,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					textField_minimumValueAmplitude.setText(Double.toString(L[0]));
 					textField_minimumValuePhase.setText(Double.toString(L[1]));
 					textField_minimumValuePosition.setText(Double.toString(L[2]));
+					
 					// Masks
 					mask.outerMaskSegments.clear();
 					refreshOuterMaskSegmentsList();
@@ -1196,6 +1197,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					refreshInnerMaskSegmentsList();
 					refreshInnerMaskSegmentDetailsTable();
 					drawInnerMask();
+					
 					// Algorithm
 					populationNumber_textField.setText(Integer.toString(DefaultConfiguration.populationNumber));
 					maximumIterationNumber_textField.setText(Integer.toString(DefaultConfiguration.maximumIterationNumber));
@@ -1213,7 +1215,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				
 			}
 		});
-		fileOperationsPanel.add(btnResetConfigurationToDefault, "cell 0 0");
+		fileOperationsPanel.add(btnResetConfigurationToDefault, "cell 1 0,growx");
 		
 		btnLoadConfigurationFromAFile = new JButton("Load Configuration from a File");
 		btnLoadConfigurationFromAFile.addActionListener(new ActionListener() {
@@ -1309,7 +1311,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				
 			}
 		});
-		fileOperationsPanel.add(btnLoadConfigurationFromAFile, "cell 0 1");
+		fileOperationsPanel.add(btnLoadConfigurationFromAFile, "cell 1 1,growx");
 		
 		btnSaveConfigurationToAFile = new JButton("Save Configuration to a File");
 		btnSaveConfigurationToAFile.addActionListener(new ActionListener() {
@@ -1425,7 +1427,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				
 			}
 		});
-		fileOperationsPanel.add(btnSaveConfigurationToAFile, "cell 0 2");
+		fileOperationsPanel.add(btnSaveConfigurationToAFile, "cell 1 2,growx");
 		
 		refreshOuterMaskSegmentsList();
 		refreshInnerMaskSegmentsList();
