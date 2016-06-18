@@ -12,6 +12,8 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.commons.io.FilenameUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartMouseEvent;
@@ -27,7 +29,8 @@ import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleEdge;
-
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 
 import javax.swing.SwingWorker;
 import java.awt.geom.Rectangle2D;
@@ -37,6 +40,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -54,6 +60,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 import java.awt.GridBagConstraints;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.SwingConstants;
@@ -232,6 +239,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JButton btnResetConfigurationToDefault;
 	private JButton btnLoadConfigurationFromAFile;
 	private JButton btnSaveConfigurationToAFile;
+	private JButton exportPatternAsSVG;
     
 	/**
 	 * Launch the application.
@@ -337,7 +345,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		panelPatternGraphProperties = new JPanel();
 		panelPattern.add(panelPatternGraphProperties, BorderLayout.CENTER);
-		panelPatternGraphProperties.setLayout(new MigLayout("", "[grow][][][][grow]", "[23px][20px][]"));
+		panelPatternGraphProperties.setLayout(new MigLayout("", "[grow][][][][grow]", "[23px][20px][][]"));
 		
 		lblUpdateTheGraph = new JLabel("Update the pattern graph ");
 		panelPatternGraphProperties.add(lblUpdateTheGraph, "cell 1 1,alignx right");
@@ -422,7 +430,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		});
 		comboBoxNumberOfPoints.setModel(new DefaultComboBoxModel<String>(new String[] {"1441 points", "721 points", "361 points", "181 points", "outer masks points", "inner masks points"}));
-		panelPatternGraphProperties.add(comboBoxNumberOfPoints, "cell 2 2 2 1,alignx left");		
+		panelPatternGraphProperties.add(comboBoxNumberOfPoints, "flowx,cell 2 2 2 1,alignx left");		
 		
 		panelConvergence = new JPanel();
 		tabbedPaneForPlots.addTab("Convergence Curve of Optimization Process", null, panelConvergence, null);
@@ -1449,8 +1457,83 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		algorithmExecuter.execute();
 		
 		comboBoxNumberOfPoints.setSelectedIndex(1); // This is here because it triggers addActionListener which runs algorithmExecuter
-	}
+		
+		exportPatternAsSVG = new JButton("Export Pattern as SVG");
+		exportPatternAsSVG.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fc = new JFileChooser(){
+				    /**
+					 * 
+					 */
+					private static final long serialVersionUID = 8343735387640302868L;
 
+					@Override
+				    public void approveSelection(){
+				        File f = getSelectedFile();
+				        if(f.exists() && getDialogType() == SAVE_DIALOG){
+				            int result = JOptionPane.showConfirmDialog(this,"The file exists, overwrite?","Existing file",JOptionPane.YES_NO_OPTION);
+				            switch(result){
+				                case JOptionPane.YES_OPTION:
+				                    super.approveSelection();
+				                    return;
+				                case JOptionPane.NO_OPTION:
+				                    return;
+				                case JOptionPane.CLOSED_OPTION:
+				                    return;
+				            }
+				        }
+				        super.approveSelection();
+				    }     
+				};
+				
+				fc.setFileFilter(new FileNameExtensionFilter("Scalable Vector Graphics File (*.svg)","svg"));
+				
+				int returnVal = fc.showSaveDialog(null);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					
+					File file = fc.getSelectedFile();
+					
+					if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("svg")) {
+					    // filename extension is suitable
+					} else {
+					    file = new File(file.toString() + ".svg");
+					}
+					
+					try {
+						exportChartAsSVG(grafik, getBounds(), file);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		});
+		panelPatternGraphProperties.add(exportPatternAsSVG, "cell 2 3,alignx center");
+	}
+	
+	void exportChartAsSVG(JFreeChart chart, Rectangle bounds, File svgFile) throws IOException {
+
+        // Get a DOMImplementation and create an XML document
+        DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
+        Document document = domImpl.createDocument(null, "svg", null);
+        
+        // Create an instance of the SVG Generator
+        SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
+
+        // draw the chart in the SVG generator
+        Rectangle r = new Rectangle(0, 0, 2800, 600);
+        //chart.draw(svgGenerator, bounds);
+        chart.draw(svgGenerator, r);
+        
+
+        // Write svg file
+        OutputStream outputStream = new FileOutputStream(svgFile);
+        Writer out = new OutputStreamWriter(outputStream, "UTF-8");
+        svgGenerator.stream(out, true /* use css */);						
+        outputStream.flush();
+        outputStream.close();
+	}
+	
 	private void refreshForChckbxAmplitude() {
 		amplitudeIsUsed = chckbxAmplitude.isSelected();
 		lblAmplitudeValuesComment.setText((amplitudeIsUsed) ? willBeOptimized : areFixed);
