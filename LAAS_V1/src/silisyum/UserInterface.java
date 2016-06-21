@@ -91,6 +91,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	 * 
 	 */
 	private static final long serialVersionUID = 208535889565395799L;
+	private static final int height = 480;
+	private static final int width = 720;
 	private JPanel contentPane;
 	
 	private XYSeries seriler;
@@ -1500,7 +1502,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					}
 					
 					try {
-						exportChartAsSVG(grafik, getBounds(), file);
+						exportChartAsSVG(grafik, file);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -1511,25 +1513,19 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		panelPatternGraphProperties.add(exportPatternAsSVG, "cell 2 3,alignx center");
 	}
 	
-	void exportChartAsSVG(JFreeChart chart, Rectangle bounds, File svgFile) throws IOException {
+	void exportChartAsSVG(JFreeChart chart, File svgFile) throws IOException {
 
-        // Get a DOMImplementation and create an XML document
         DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
         Document document = domImpl.createDocument(null, "svg", null);
         
-        // Create an instance of the SVG Generator
         SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
 
-        // draw the chart in the SVG generator
-        Rectangle r = new Rectangle(0, 0, 2800, 600);
-        //chart.draw(svgGenerator, bounds);
+        Rectangle r = new Rectangle(0, 0, width, height);
         chart.draw(svgGenerator, r);
         
-
-        // Write svg file
         OutputStream outputStream = new FileOutputStream(svgFile);
         Writer out = new OutputStreamWriter(outputStream, "UTF-8");
-        svgGenerator.stream(out, true /* use css */);						
+        svgGenerator.stream(out, true /* use css */);
         outputStream.flush();
         outputStream.close();
 	}
@@ -2281,7 +2277,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	private void preserveAspectRatio(JPanel innerPanel, JPanel container) {
         int w = container.getWidth();
-        innerPanel.setPreferredSize(new Dimension(w, w*440/680));
+        innerPanel.setPreferredSize(new Dimension(w, w*height/width));
         container.revalidate();
     }
 
