@@ -242,6 +242,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JButton btnLoadConfigurationFromAFile;
 	private JButton btnSaveConfigurationToAFile;
 	private JButton exportPatternAsSVG;
+	protected File currentDirectory = null;
     
 	/**
 	 * Launch the application.
@@ -1235,8 +1236,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				
 				fc.setFileFilter(new FileNameExtensionFilter("Antenna Array Synthesizer File (*.aas)","aas"));
 				
+				if(currentDirectory != null) fc.setCurrentDirectory(currentDirectory);
+				
 				int returnVal = fc.showOpenDialog(null);
-
+				currentDirectory = fc.getCurrentDirectory();
+				
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
 					
@@ -1349,9 +1353,13 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				    }     
 				};
 				
+				if(currentDirectory != null) fc.setCurrentDirectory(currentDirectory);
+				
 				fc.setFileFilter(new FileNameExtensionFilter("Antenna Array Synthesizer File (*.aas)","aas"));
 				
 				int returnVal = fc.showSaveDialog(null);
+				currentDirectory = fc.getCurrentDirectory();
+				
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////				
@@ -1411,7 +1419,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					cc.Cr = Cr;
 					///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					
-					File file = fc.getSelectedFile();
+					File file = fc.getSelectedFile();					
 					
 					if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("aas")) {
 					    // filename extension is suitable
@@ -1490,7 +1498,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				
 				fc.setFileFilter(new FileNameExtensionFilter("Scalable Vector Graphics File (*.svg)","svg"));
 				
+				if(currentDirectory != null) fc.setCurrentDirectory(currentDirectory);
+				
 				int returnVal = fc.showSaveDialog(null);
+				currentDirectory = fc.getCurrentDirectory();
+				
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					
 					File file = fc.getSelectedFile();
