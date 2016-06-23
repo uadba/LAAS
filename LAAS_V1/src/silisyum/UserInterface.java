@@ -788,8 +788,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				//Create a file chooser
 				final JFileChooser fc = new JFileChooser();
 				
+				if(currentDirectory != null) fc.setCurrentDirectory(currentDirectory);
+				
 				//In response to a button click:
 				int returnVal = fc.showOpenDialog(null);
+				currentDirectory = fc.getCurrentDirectory();
+				
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {		        	
 		        	List<String> lines = null;
 		            File file = fc.getSelectedFile();
@@ -833,8 +837,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				//Create a file chooser
 				final JFileChooser fc = new JFileChooser();
 				
+				if(currentDirectory != null) fc.setCurrentDirectory(currentDirectory);
+				
 				//In response to a button click:
 				int returnVal = fc.showOpenDialog(null);
+				currentDirectory = fc.getCurrentDirectory();
+				
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {		        	
 		        	List<String> lines = null;
 		            File file = fc.getSelectedFile();
@@ -878,8 +886,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				//Create a file chooser
 				final JFileChooser fc = new JFileChooser();
 				
+				if(currentDirectory != null) fc.setCurrentDirectory(currentDirectory);
+				
 				//In response to a button click:
 				int returnVal = fc.showOpenDialog(null);
+				currentDirectory = fc.getCurrentDirectory();
+				
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {		        	
 		        	List<String> lines = null;
 		            File file = fc.getSelectedFile();
