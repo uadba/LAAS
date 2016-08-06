@@ -2201,45 +2201,45 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		// DE parameters are evaluated.
 		if( ! validateTextBoxForInteger(populationNumber_textField.getText())) {
 			parametersAreValid = false;
-			messagesOfErrors.add("Population number value at differential evoluation tab is not valid.");			
+			messagesOfErrors.add("Population number value at differential evolution tab is not valid.");			
 		} else {
 			double value = Double.parseDouble(populationNumber_textField.getText());
 			if(value < 4) {
 				parametersAreValid = false;
-				messagesOfErrors.add("Population number value at differential evoluation tab cannot be less than four.");
+				messagesOfErrors.add("Population number value at differential evolution tab cannot be less than four.");
 			}
 		}
 		
 		if( ! validateTextBoxForInteger(maximumIterationNumber_textField.getText())) {
 			parametersAreValid = false;
-			messagesOfErrors.add("Maximum iteration number value at differential evoluation tab is not valid.");			
+			messagesOfErrors.add("Maximum iteration number value at differential evolution tab is not valid.");			
 		} else {
 			double value = Double.parseDouble(maximumIterationNumber_textField.getText());
 			if(value < 1) {
 				parametersAreValid = false;
-				messagesOfErrors.add("Maximum iteration number value at differential evoluation tab cannot be less than one.");
+				messagesOfErrors.add("Maximum iteration number value at differential evolution tab cannot be less than one.");
 			}
 		}
 		
 		if( ! validateTextBoxForDouble(F_textField.getText())) {
 			parametersAreValid = false;
-			messagesOfErrors.add("Scaling Factor (F) value at differential evoluation tab is not valid.");			
+			messagesOfErrors.add("Scaling Factor (F) value at differential evolution tab is not valid.");			
 		} else {
 			double value = Double.parseDouble(F_textField.getText());
 			if(value < 0 || value > 2) {
 				parametersAreValid = false;
-				messagesOfErrors.add("Scaling Factor (F) value at differential evoluation tab must be in the range of [0, 2].");
+				messagesOfErrors.add("Scaling Factor (F) value at differential evolution tab must be in the range of [0, 2].");
 			}
 		}
 		
 		if( ! validateTextBoxForDouble(Cr_textField.getText())) {
 			parametersAreValid = false;
-			messagesOfErrors.add("Crossover Rate (Cr) value at differential evoluation tab is not valid.");			
+			messagesOfErrors.add("Crossover Rate (Cr) value at differential evolution tab is not valid.");			
 		} else {
 			double value = Double.parseDouble(Cr_textField.getText());
 			if(value < 0 || value > 1) {
 				parametersAreValid = false;
-				messagesOfErrors.add("Crossover Rate (Cr) value at differential evoluation tab must be in the range of [0, 1].");
+				messagesOfErrors.add("Crossover Rate (Cr) value at differential evolution tab must be in the range of [0, 1].");
 			}
 		}
 		
