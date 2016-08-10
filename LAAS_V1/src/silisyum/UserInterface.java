@@ -83,6 +83,9 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JSeparator;
 import javax.swing.JProgressBar;
+import java.awt.Component;
+import javax.swing.Box;
+import java.awt.Font;
 
 
 public class UserInterface extends JFrame implements ChartMouseListener{
@@ -243,6 +246,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JButton btnSaveConfigurationToAFile;
 	private JButton exportPatternAsSVG;
 	protected File currentDirectory = null;
+	private JButton exportConvergeCurve;
+	private Component verticalStrut;
+	private JLabel lblConfigurationFile;
+	private JLabel lblSvgImageExporting;
+	private Component verticalStrut_1;
     
 	/**
 	 * Launch the application.
@@ -294,8 +302,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		XYSeriesCollection veri_seti2 = new XYSeriesCollection(convergenceSeries);
 		veri_seti.addSeries(maskOuter);
 		veri_seti.addSeries(maskInner);
-		JFreeChart grafik = ChartFactory.createXYLineChart("A P", "Angle", "Array Factor (in dB)", veri_seti);
-		JFreeChart grafik2 = ChartFactory.createXYLineChart("Convergence", "Iteration", "Cost", veri_seti2);
+		JFreeChart grafik = ChartFactory.createXYLineChart("Antenna Array Pattern", "Angle", "Array Factor (in dB)", veri_seti);
+		JFreeChart grafik2 = ChartFactory.createXYLineChart("Convergence Curve", "Iteration", "Cost", veri_seti2);
 				
 		XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) grafik.getXYPlot().getRenderer();
 		renderer.setSeriesPaint(0, Color.red);
@@ -1186,158 +1194,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		
 		fileOperationsPanel = new JPanel();
 		tabbedPaneForSettings.addTab("File Operations", null, fileOperationsPanel, null);
-		fileOperationsPanel.setLayout(new MigLayout("", "[grow][][grow]", "[][][]"));
-		
-		btnResetConfigurationToDefault = new JButton("Reset Configuration to Default");
-		btnResetConfigurationToDefault.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
-	            
-				int result = JOptionPane.showConfirmDialog(null,"Do you want to reset the configuration to the default?","Confirmation",JOptionPane.YES_NO_OPTION);
-	            
-				if (result == JOptionPane.YES_OPTION) {
-					for(int limit=0; limit<3; limit++) {
-						L[limit] = DefaultConfiguration.L[limit];
-						H[limit] = DefaultConfiguration.H[limit];			
-					}
-					numberOfElements = DefaultConfiguration.numberofElements;
-					numberOfElements_Field.setText(Integer.toString(numberOfElements));
-					chckbxAmplitude.setSelected(DefaultConfiguration.amplitudeIsUsed);
-					chckbxPhase.setSelected(DefaultConfiguration.phaseIsUsed);
-					chckbxPosition.setSelected(DefaultConfiguration.positionIsUsed);
-					textField_maximumValueAmplitude.setText(Double.toString(H[0]));
-					textField_maximumValuePhase.setText(Double.toString(H[1]));
-					textField_maximumValuePosition.setText(Double.toString(H[2]));
-					textField_minimumValueAmplitude.setText(Double.toString(L[0]));
-					textField_minimumValuePhase.setText(Double.toString(L[1]));
-					textField_minimumValuePosition.setText(Double.toString(L[2]));
-					
-					// Masks
-					mask.outerMaskSegments.clear();
-					refreshOuterMaskSegmentsList();
-					refreshOuterMaskSegmentDetailsTable();
-					drawOuterMask();
-					mask.innerMaskSegments.clear();
-					refreshInnerMaskSegmentsList();
-					refreshInnerMaskSegmentDetailsTable();
-					drawInnerMask();
-					
-					// Algorithm
-					populationNumber_textField.setText(Integer.toString(DefaultConfiguration.populationNumber));
-					maximumIterationNumber_textField.setText(Integer.toString(DefaultConfiguration.maximumIterationNumber));
-					F_textField.setText(Double.toString(DefaultConfiguration.F));
-					Cr_textField.setText(Double.toString(DefaultConfiguration.Cr));
-					getParametersFromUserInterface();
-					antennaArray = new AntennaArray(numberOfElements, patternGraphResolution, mask);
-					antennaArray.createArrays();
-					antennaArray.initializeArrays();
-					refreshForChckbxAmplitude();
-					refreshForChckbxPhase();
-					refreshForChckbxPosition();
-					drawPlotWithInitialParameterValues();
-				}
-				
-			}
-		});
-		fileOperationsPanel.add(btnResetConfigurationToDefault, "cell 1 0,growx");
-		
-		btnLoadConfigurationFromAFile = new JButton("Load Configuration from a File");
-		btnLoadConfigurationFromAFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				JFileChooser fc = new JFileChooser();
-				
-				fc.setFileFilter(new FileNameExtensionFilter("Antenna Array Synthesizer File (*.aas)","aas"));
-				
-				if(currentDirectory != null) fc.setCurrentDirectory(currentDirectory);
-				
-				int returnVal = fc.showOpenDialog(null);
-				currentDirectory = fc.getCurrentDirectory();
-				
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File file = fc.getSelectedFile();
-					
-					CurrentConfiguration cc = null;
-					
-					try {
-						FileInputStream fileIn = new FileInputStream(file.getAbsolutePath());
-						ObjectInputStream in = new ObjectInputStream(fileIn);
-						cc = (CurrentConfiguration) in.readObject();
-						in.close();
-						fileIn.close();		
-					
-						// Assign the values which come from the file to the antenna array parameters
-						numberOfElements_Field.setText(Integer.toString(cc.numberofElements));
-						chckbxAmplitude.setSelected(cc.amplitudeIsUsed);
-						chckbxPhase.setSelected(cc.phaseIsUsed);
-						chckbxPosition.setSelected(cc.positionIsUsed);
-						
-						textField_maximumValueAmplitude.setText(Double.toString(cc.H[0]));
-						textField_maximumValuePhase.setText(Double.toString(cc.H[1]));
-						textField_maximumValuePosition.setText(Double.toString(cc.H[2]));
-						
-						textField_minimumValueAmplitude.setText(Double.toString(cc.L[0]));
-						textField_minimumValuePhase.setText(Double.toString(cc.L[1]));
-						textField_minimumValuePosition.setText(Double.toString(cc.L[2]));
-						
-						createAntennaArray(); // It is also set the "numberOfElements" field					
-						
-						for(int s=0; s<cc.amplitudeValues.length; s++) {
-							antennaArray.amplitude[s] = cc.amplitudeValues[s];
-							antennaArray.phase[s] = cc.phaseValues[s];
-							antennaArray.position[s] = cc.positionValues[s];
-						}
-						
-						refreshForChckbxAmplitude();
-						refreshForChckbxPhase();
-						refreshForChckbxPosition();
-						drawPlotWithInitialParameterValues();						
-						
-						// Assign the values which come from the file to the outer mask parameters
-						mask.outerMaskSegments.clear();
-						int numberOfOuterMask = cc.nameForOuter.length;
-						for(int s=0; s<numberOfOuterMask; s++)
-						{
-							mask.addNewOuterMaskSegments(cc.nameForOuter[s], cc.startAngleForOuter[s], cc.stopAngleForOuter[s], cc.numberOfPointsForOuter[s], cc.levelForOuter[s], cc.weightForOuter[s]);
-						}
-						refreshOuterMaskSegmentsList();
-						refreshOuterMaskSegmentDetailsTable();
-						drawOuterMask();
-						
-						// Assign the values which come from the file to the inner mask parameters
-						mask.innerMaskSegments.clear();
-						int numberOfInnerMask = cc.nameForInner.length;
-						for(int s=0; s<numberOfInnerMask; s++)
-						{
-							mask.addNewInnerMaskSegments(cc.nameForInner[s], cc.startAngleForInner[s], cc.stopAngleForInner[s], cc.numberOfPointsForInner[s], cc.levelForInner[s], cc.weightForInner[s]);
-						}
-						refreshInnerMaskSegmentsList();
-						refreshInnerMaskSegmentDetailsTable();
-						drawInnerMask();
-						
-						// Assign the values which come from the file to the algorithm parameters
-						populationNumber_textField.setText(Integer.toString(cc.populationNumber));
-						maximumIterationNumber_textField.setText(Integer.toString(cc.maximumIterationNumber));
-						F_textField.setText(Double.toString(cc.F));
-						Cr_textField.setText(Double.toString(cc.Cr));
-						
-						getParametersFromUserInterface();
-						
-						
-					} catch (IOException i) {
-						i.printStackTrace();
-						return;
-					} catch (ClassNotFoundException c) {
-						c.printStackTrace();
-						return;
-					}
-
-				} else {
-					// System.out.println("Save command cancelled by user.");
-				}
-				
-			}
-		});
-		fileOperationsPanel.add(btnLoadConfigurationFromAFile, "cell 1 1,growx");
+		fileOperationsPanel.setLayout(new MigLayout("", "[grow][][grow]", "[][][][][][][][][]"));
 		
 		btnSaveConfigurationToAFile = new JButton("Save Configuration to a File");
 		btnSaveConfigurationToAFile.addActionListener(new ActionListener() {
@@ -1457,30 +1314,175 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				
 			}
 		});
-		fileOperationsPanel.add(btnSaveConfigurationToAFile, "cell 1 2,growx");
 		
-		refreshOuterMaskSegmentsList();
-		refreshInnerMaskSegmentsList();
+		btnLoadConfigurationFromAFile = new JButton("Load Configuration from a File");
+		btnLoadConfigurationFromAFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				JFileChooser fc = new JFileChooser();
+				
+				fc.setFileFilter(new FileNameExtensionFilter("Antenna Array Synthesizer File (*.aas)","aas"));
+				
+				if(currentDirectory != null) fc.setCurrentDirectory(currentDirectory);
+				
+				int returnVal = fc.showOpenDialog(null);
+				currentDirectory = fc.getCurrentDirectory();
+				
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					
+					CurrentConfiguration cc = null;
+					
+					try {
+						FileInputStream fileIn = new FileInputStream(file.getAbsolutePath());
+						ObjectInputStream in = new ObjectInputStream(fileIn);
+						cc = (CurrentConfiguration) in.readObject();
+						in.close();
+						fileIn.close();		
+					
+						// Assign the values which come from the file to the antenna array parameters
+						numberOfElements_Field.setText(Integer.toString(cc.numberofElements));
+						chckbxAmplitude.setSelected(cc.amplitudeIsUsed);
+						chckbxPhase.setSelected(cc.phaseIsUsed);
+						chckbxPosition.setSelected(cc.positionIsUsed);
+						
+						textField_maximumValueAmplitude.setText(Double.toString(cc.H[0]));
+						textField_maximumValuePhase.setText(Double.toString(cc.H[1]));
+						textField_maximumValuePosition.setText(Double.toString(cc.H[2]));
+						
+						textField_minimumValueAmplitude.setText(Double.toString(cc.L[0]));
+						textField_minimumValuePhase.setText(Double.toString(cc.L[1]));
+						textField_minimumValuePosition.setText(Double.toString(cc.L[2]));
+						
+						createAntennaArray(); // It is also set the "numberOfElements" field					
+						
+						for(int s=0; s<cc.amplitudeValues.length; s++) {
+							antennaArray.amplitude[s] = cc.amplitudeValues[s];
+							antennaArray.phase[s] = cc.phaseValues[s];
+							antennaArray.position[s] = cc.positionValues[s];
+						}
+						
+						refreshForChckbxAmplitude();
+						refreshForChckbxPhase();
+						refreshForChckbxPosition();
+						drawPlotWithInitialParameterValues();						
+						
+						// Assign the values which come from the file to the outer mask parameters
+						mask.outerMaskSegments.clear();
+						int numberOfOuterMask = cc.nameForOuter.length;
+						for(int s=0; s<numberOfOuterMask; s++)
+						{
+							mask.addNewOuterMaskSegments(cc.nameForOuter[s], cc.startAngleForOuter[s], cc.stopAngleForOuter[s], cc.numberOfPointsForOuter[s], cc.levelForOuter[s], cc.weightForOuter[s]);
+						}
+						refreshOuterMaskSegmentsList();
+						refreshOuterMaskSegmentDetailsTable();
+						drawOuterMask();
+						
+						// Assign the values which come from the file to the inner mask parameters
+						mask.innerMaskSegments.clear();
+						int numberOfInnerMask = cc.nameForInner.length;
+						for(int s=0; s<numberOfInnerMask; s++)
+						{
+							mask.addNewInnerMaskSegments(cc.nameForInner[s], cc.startAngleForInner[s], cc.stopAngleForInner[s], cc.numberOfPointsForInner[s], cc.levelForInner[s], cc.weightForInner[s]);
+						}
+						refreshInnerMaskSegmentsList();
+						refreshInnerMaskSegmentDetailsTable();
+						drawInnerMask();
+						
+						// Assign the values which come from the file to the algorithm parameters
+						populationNumber_textField.setText(Integer.toString(cc.populationNumber));
+						maximumIterationNumber_textField.setText(Integer.toString(cc.maximumIterationNumber));
+						F_textField.setText(Double.toString(cc.F));
+						Cr_textField.setText(Double.toString(cc.Cr));
+						
+						getParametersFromUserInterface();
+						
+						
+					} catch (IOException i) {
+						i.printStackTrace();
+						return;
+					} catch (ClassNotFoundException c) {
+						c.printStackTrace();
+						return;
+					}
+
+				} else {
+					// System.out.println("Save command cancelled by user.");
+				}
+				
+			}
+		});
 		
-		createAntennaArray();
-		refreshAmplitudeTable();
-		refreshPhaseTable();
-		refreshPositionTable();
+		btnResetConfigurationToDefault = new JButton("Reset Configuration to Default");
+		btnResetConfigurationToDefault.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {				
+	            
+				int result = JOptionPane.showConfirmDialog(null,"Do you want to reset the configuration to the default?","Confirmation",JOptionPane.YES_NO_OPTION);
+	            
+				if (result == JOptionPane.YES_OPTION) {
+					for(int limit=0; limit<3; limit++) {
+						L[limit] = DefaultConfiguration.L[limit];
+						H[limit] = DefaultConfiguration.H[limit];			
+					}
+					numberOfElements = DefaultConfiguration.numberofElements;
+					numberOfElements_Field.setText(Integer.toString(numberOfElements));
+					chckbxAmplitude.setSelected(DefaultConfiguration.amplitudeIsUsed);
+					chckbxPhase.setSelected(DefaultConfiguration.phaseIsUsed);
+					chckbxPosition.setSelected(DefaultConfiguration.positionIsUsed);
+					textField_maximumValueAmplitude.setText(Double.toString(H[0]));
+					textField_maximumValuePhase.setText(Double.toString(H[1]));
+					textField_maximumValuePosition.setText(Double.toString(H[2]));
+					textField_minimumValueAmplitude.setText(Double.toString(L[0]));
+					textField_minimumValuePhase.setText(Double.toString(L[1]));
+					textField_minimumValuePosition.setText(Double.toString(L[2]));
+					
+					// Masks
+					mask.outerMaskSegments.clear();
+					refreshOuterMaskSegmentsList();
+					refreshOuterMaskSegmentDetailsTable();
+					drawOuterMask();
+					mask.innerMaskSegments.clear();
+					refreshInnerMaskSegmentsList();
+					refreshInnerMaskSegmentDetailsTable();
+					drawInnerMask();
+					
+					// Algorithm
+					populationNumber_textField.setText(Integer.toString(DefaultConfiguration.populationNumber));
+					maximumIterationNumber_textField.setText(Integer.toString(DefaultConfiguration.maximumIterationNumber));
+					F_textField.setText(Double.toString(DefaultConfiguration.F));
+					Cr_textField.setText(Double.toString(DefaultConfiguration.Cr));
+					getParametersFromUserInterface();
+					antennaArray = new AntennaArray(numberOfElements, patternGraphResolution, mask);
+					antennaArray.createArrays();
+					antennaArray.initializeArrays();
+					refreshForChckbxAmplitude();
+					refreshForChckbxPhase();
+					refreshForChckbxPosition();
+					drawPlotWithInitialParameterValues();
+				}
+				
+			}
+		});
 		
-		refreshForChckbxAmplitude();
-		refreshForChckbxPhase();
-		refreshForChckbxPosition();
+		verticalStrut = Box.createVerticalStrut(20);
+		fileOperationsPanel.add(verticalStrut, "cell 1 0,growx");
 		
-		drawOuterMask();
-		drawInnerMask();
-		drawPlotWithInitialParameterValues();		
+		lblConfigurationFile = new JLabel("Configuration File");
+		lblConfigurationFile.setFont(new Font("Tahoma", Font.BOLD, 12));
+		fileOperationsPanel.add(lblConfigurationFile, "cell 1 1,alignx center");
+		fileOperationsPanel.add(btnResetConfigurationToDefault, "cell 1 2,growx");
+		fileOperationsPanel.add(btnLoadConfigurationFromAFile, "cell 1 3,growx");
+		fileOperationsPanel.add(btnSaveConfigurationToAFile, "cell 1 4,growx");
 		
-		algorithmExecuter = new AlgorithmExecuter();
-		algorithmExecuter.execute();
+		verticalStrut_1 = Box.createVerticalStrut(20);
+		fileOperationsPanel.add(verticalStrut_1, "cell 1 5,alignx center");
 		
-		comboBoxNumberOfPoints.setSelectedIndex(1); // This is here because it triggers addActionListener which runs algorithmExecuter
+		lblSvgImageExporting = new JLabel("SVG Image Exporting");
+		lblSvgImageExporting.setFont(new Font("Tahoma", Font.BOLD, 12));
+		fileOperationsPanel.add(lblSvgImageExporting, "cell 1 6,alignx center");
 		
-		exportPatternAsSVG = new JButton("Export Pattern as SVG");
+		exportPatternAsSVG = new JButton("Export Array Pattern as SVG");
+		fileOperationsPanel.add(exportPatternAsSVG, "cell 1 7,growx");
 		exportPatternAsSVG.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser fc = new JFileChooser(){
@@ -1534,7 +1536,82 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				
 			}
 		});
-		panelPatternGraphProperties.add(exportPatternAsSVG, "cell 2 3,alignx center");
+		
+		exportConvergeCurve = new JButton("Export Converge Curve as SVG");
+		exportConvergeCurve.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fc = new JFileChooser(){
+				    /**
+					 * 
+					 */
+					private static final long serialVersionUID = 8343735387640302868L;
+
+					@Override
+				    public void approveSelection(){
+				        File f = getSelectedFile();
+				        if(f.exists() && getDialogType() == SAVE_DIALOG){
+				            int result = JOptionPane.showConfirmDialog(this,"The file exists, overwrite?","Existing file",JOptionPane.YES_NO_OPTION);
+				            switch(result){
+				                case JOptionPane.YES_OPTION:
+				                    super.approveSelection();
+				                    return;
+				                case JOptionPane.NO_OPTION:
+				                    return;
+				                case JOptionPane.CLOSED_OPTION:
+				                    return;
+				            }
+				        }
+				        super.approveSelection();
+				    }     
+				};
+				
+				fc.setFileFilter(new FileNameExtensionFilter("Scalable Vector Graphics File (*.svg)","svg"));
+				
+				if(currentDirectory != null) fc.setCurrentDirectory(currentDirectory);
+				
+				int returnVal = fc.showSaveDialog(null);
+				currentDirectory = fc.getCurrentDirectory();
+				
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					
+					File file = fc.getSelectedFile();
+					
+					if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("svg")) {
+					    // filename extension is suitable
+					} else {
+					    file = new File(file.toString() + ".svg");
+					}
+					
+					try {
+						exportChartAsSVG(grafik2, file);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		fileOperationsPanel.add(exportConvergeCurve, "cell 1 8");
+		
+		refreshOuterMaskSegmentsList();
+		refreshInnerMaskSegmentsList();
+		
+		createAntennaArray();
+		refreshAmplitudeTable();
+		refreshPhaseTable();
+		refreshPositionTable();
+		
+		refreshForChckbxAmplitude();
+		refreshForChckbxPhase();
+		refreshForChckbxPosition();
+		
+		drawOuterMask();
+		drawInnerMask();
+		drawPlotWithInitialParameterValues();		
+		
+		algorithmExecuter = new AlgorithmExecuter();
+		algorithmExecuter.execute();
+		
+		comboBoxNumberOfPoints.setSelectedIndex(1); // This is here because it triggers addActionListener which runs algorithmExecuter
 	}
 	
 	void exportChartAsSVG(JFreeChart chart, File svgFile) throws IOException {
