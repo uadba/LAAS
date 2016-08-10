@@ -1365,7 +1365,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						refreshForChckbxAmplitude();
 						refreshForChckbxPhase();
 						refreshForChckbxPosition();
-						drawPlotWithInitialParameterValues();						
+						drawPlotWithInitialParameterValues();
+						convergenceSeries.clear();
 						
 						// Assign the values which come from the file to the outer mask parameters
 						mask.outerMaskSegments.clear();
@@ -1459,6 +1460,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					refreshForChckbxPhase();
 					refreshForChckbxPosition();
 					drawPlotWithInitialParameterValues();
+					convergenceSeries.clear();
 				}
 				
 			}
