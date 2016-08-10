@@ -196,7 +196,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JButton btnEditInnerMaskSegment;
 	private JButton btnDeleteInnerMaskSegment;
 	private JPanel innerMaskSegmentOperations;
-	private JLabel label;
+	private JLabel lblInnerMaskSegment;
 	private JLabel label_1;
 	private JList<String> innerList;
 	private JTable innerTable;
@@ -278,7 +278,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			H[limit] = DefaultConfiguration.H[limit];			
 		}
 		
-		setTitle("Antenna Array Synthesizer");		
+		setTitle("Linear Antenna Array Synthesizer");		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1429, 991);
 		contentPane = new JPanel();
@@ -951,7 +951,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		});
 		
 		outerMaskSegmentOperations = new JPanel();
-		outerMaskSegmentOperations.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Mask Segment Operations", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		outerMaskSegmentOperations.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Outer Mask Segment Operations", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		FlowLayout fl_outerMaskSegmentOperations = (FlowLayout) outerMaskSegmentOperations.getLayout();
 		fl_outerMaskSegmentOperations.setAlignment(FlowLayout.LEFT);
 		outerMaskPanel.add(outerMaskSegmentOperations, "cell 0 0 2 1,grow");
@@ -1023,7 +1023,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		});
 		outerMaskSegmentOperations.add(btnDeleteOuterMaskSegment);
 		
-		lblMaskSegmentNames = new JLabel("Mask Segment Names");
+		lblMaskSegmentNames = new JLabel("Outer Mask Segment Names");
 		outerMaskPanel.add(lblMaskSegmentNames, "cell 0 1,alignx center");
 		
 		lblSelectedMaskValues = new JLabel("Selected Mask Segment Values");
@@ -1043,7 +1043,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		innerMaskSegmentOperations = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) innerMaskSegmentOperations.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
-		innerMaskSegmentOperations.setBorder(new TitledBorder(null, "Mask Segment Operations", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		innerMaskSegmentOperations.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Inner Mask Segment Operations", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		innerMaskPanel.add(innerMaskSegmentOperations, "cell 0 0 2 1,grow");
 		
 		btnAddInnerMaskSegment = new JButton("Add");
@@ -1115,8 +1115,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		});
 		innerMaskSegmentOperations.add(btnDeleteInnerMaskSegment);
 		
-		label = new JLabel("Mask Segment Names");
-		innerMaskPanel.add(label, "cell 0 1,alignx center");
+		lblInnerMaskSegment = new JLabel("Inner Mask Segment Names");
+		innerMaskPanel.add(lblInnerMaskSegment, "cell 0 1,alignx center");
 		
 		label_1 = new JLabel("Selected Mask Segment Values");
 		innerMaskPanel.add(label_1, "cell 1 1,alignx center");
@@ -2743,6 +2743,12 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		maximumIterationNumber_textField.setEnabled(enabled);
 		F_textField.setEnabled(enabled);
 		Cr_textField.setEnabled(enabled);
+		
+		btnResetConfigurationToDefault.setEnabled(enabled);
+		btnLoadConfigurationFromAFile.setEnabled(enabled);
+		btnSaveConfigurationToAFile.setEnabled(enabled);
+		exportPatternAsSVG.setEnabled(enabled);
+		exportConvergeCurve.setEnabled(enabled);
 	}
 	
 	private void createTemporaryMasks() {
