@@ -121,6 +121,14 @@ public class DialogBoxForAddingOuterMaskSegment extends JDialog {
 						double level = Double.parseDouble(level_textField.getText());
 						double weight = Double.parseDouble(weight_textField.getText());
 						
+						boolean noProblem = true;
+						//if()
+						
+						if (noProblem) {
+							mask.addNewOuterMaskSegments(maskName, startAngle, stopAngle, numberOfPoints, level, weight);
+							setVisible(false);
+						}
+						
 						int numberOfSLLOuters = mask.outerMaskSegments.size();
 						Mask.MaskSegment SLL_outer;
 						
