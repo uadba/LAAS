@@ -115,18 +115,56 @@ public class DialogBoxForAddingOuterMaskSegment extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						String maskName = maskSegmentName_textField.getText();
-						double startAngle = Double.parseDouble(starAngle_textField.getText());
-						double stopAngle = Double.parseDouble(stopAngle_textField.getText());
-						int numberOfPoints = Integer.parseInt(numberOfPoints_textField.getText());
-						double level = Double.parseDouble(level_textField.getText());
-						double weight = Double.parseDouble(weight_textField.getText());
+						double startAngle = 0;
+						double stopAngle = 0;
+						int numberOfPoints = 0;
+						double level = 0;
+						double weight = 0;
+						try {
+							startAngle = Double.parseDouble(starAngle_textField.getText());
+							stopAngle = Double.parseDouble(stopAngle_textField.getText());
+							numberOfPoints = Integer.parseInt(numberOfPoints_textField.getText());
+							level = Double.parseDouble(level_textField.getText());
+							weight = Double.parseDouble(weight_textField.getText());
+						} catch (NumberFormatException e1) {
+							JOptionPane.showMessageDialog(null, "Start angle, stop angle, level, and weight values must be decimal and the number of points value must be integer");
+							return;
+						}
 						
 						boolean noProblem = true;
-						//if()
+						if(maskName == null || maskName.isEmpty()) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "Mask segment must have a name.");
+						}
 						
-						if (noProblem) {
-							mask.addNewOuterMaskSegments(maskName, startAngle, stopAngle, numberOfPoints, level, weight);
-							setVisible(false);
+						if(startAngle > stopAngle) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "Stop angle must be bigger than start angle.");
+						}
+						
+						if(startAngle < 0 || startAngle >= 180) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "Start angle must be in the range of [0, 180).");							
+						}
+						
+						if(stopAngle <= 0 || stopAngle > 180) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "Start angle must be in the range of [0, 180).");							
+						}
+						
+						if(numberOfPoints < 2) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "The number of points must not be smaller than two.");							
+						}				
+						
+						if(level > 0) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "The level cannot be bigger than zero.");							
+						}
+						
+						if(weight <= 0) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "The weight must be bigger than zero.");							
 						}
 						
 						int numberOfSLLOuters = mask.outerMaskSegments.size();
@@ -134,7 +172,7 @@ public class DialogBoxForAddingOuterMaskSegment extends JDialog {
 						
 						boolean itIsANewName = true;
 						boolean theyAreNotOverlapped = true;
-						for (int n = 0; n < numberOfSLLOuters; n++) {	
+						for (int n = 0; (n < numberOfSLLOuters) && noProblem; n++) {	
 							//
 							SLL_outer = mask.outerMaskSegments.get(n);
 							if(maskName.equals(SLL_outer.name)) {
@@ -146,11 +184,11 @@ public class DialogBoxForAddingOuterMaskSegment extends JDialog {
 							if(SLL_outer.stopAngle > startAngle && SLL_outer.startAngle < stopAngle) {
 								JOptionPane.showMessageDialog(null, "There is an overlap between one of the masks in the current list and the mask which you want to add. Please check your start and stop angle values to avoid the overlapping.");
 								theyAreNotOverlapped = false;
-								break;								
+								break;
 							}
 						}
 						
-						if (itIsANewName && theyAreNotOverlapped) {
+						if (itIsANewName && theyAreNotOverlapped && noProblem) {
 							mask.addNewOuterMaskSegments(maskName, startAngle, stopAngle, numberOfPoints, level, weight);
 							setVisible(false);
 						}
