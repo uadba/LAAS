@@ -149,7 +149,7 @@ public class DialogBoxForAddingOuterMaskSegment extends JDialog {
 						
 						if(stopAngle <= 0 || stopAngle > 180) {
 							noProblem = false;
-							JOptionPane.showMessageDialog(null, "Start angle must be in the range of [0, 180).");							
+							JOptionPane.showMessageDialog(null, "Stop angle must be in the range of (0, 180].");							
 						}
 						
 						if(numberOfPoints < 2) {
