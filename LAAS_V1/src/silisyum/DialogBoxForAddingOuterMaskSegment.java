@@ -115,11 +115,11 @@ public class DialogBoxForAddingOuterMaskSegment extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						String maskName = maskSegmentName_textField.getText();
-						double startAngle = 0;
-						double stopAngle = 0;
-						int numberOfPoints = 0;
-						double level = 0;
-						double weight = 0;
+						double startAngle;
+						double stopAngle;
+						int numberOfPoints;
+						double level;
+						double weight;
 						try {
 							startAngle = Double.parseDouble(starAngle_textField.getText());
 							stopAngle = Double.parseDouble(stopAngle_textField.getText());
@@ -137,7 +137,7 @@ public class DialogBoxForAddingOuterMaskSegment extends JDialog {
 							JOptionPane.showMessageDialog(null, "Mask segment must have a name.");
 						}
 						
-						if(startAngle > stopAngle) {
+						if(startAngle >= stopAngle) {
 							noProblem = false;
 							JOptionPane.showMessageDialog(null, "Stop angle must be bigger than start angle.");
 						}
@@ -167,22 +167,22 @@ public class DialogBoxForAddingOuterMaskSegment extends JDialog {
 							JOptionPane.showMessageDialog(null, "The weight must be bigger than zero.");							
 						}
 						
-						int numberOfSLLOuters = mask.outerMaskSegments.size();
-						Mask.MaskSegment SLL_outer;
+						int numberOfOuterMaskSegments = mask.outerMaskSegments.size();
+						Mask.MaskSegment outerMaskSegment;
 						
 						boolean itIsANewName = true;
 						boolean theyAreNotOverlapped = true;
-						for (int n = 0; (n < numberOfSLLOuters) && noProblem; n++) {	
+						for (int n = 0; (n < numberOfOuterMaskSegments) && noProblem; n++) {	
 							//
-							SLL_outer = mask.outerMaskSegments.get(n);
-							if(maskName.equals(SLL_outer.name)) {
-								JOptionPane.showMessageDialog(null, "There is a mask in the list with a same name with which you want to add. You should change the name of the new mask.");
+							outerMaskSegment = mask.outerMaskSegments.get(n);
+							if(maskName.equals(outerMaskSegment.name)) {
+								JOptionPane.showMessageDialog(null, "This segment name is already used. You should type another name for the new mask segment.");
 								itIsANewName = false;
 								break;
 							}
 							
-							if(SLL_outer.stopAngle > startAngle && SLL_outer.startAngle < stopAngle) {
-								JOptionPane.showMessageDialog(null, "There is an overlap between one of the masks in the current list and the mask which you want to add. Please check your start and stop angle values to avoid the overlapping.");
+							if(outerMaskSegment.stopAngle > startAngle && outerMaskSegment.startAngle < stopAngle) {
+								JOptionPane.showMessageDialog(null, "There is an overlap between one of the mask segments in the current list and the mask segment which you want to add. Please check your start and stop angle values to avoid the overlapping.");
 								theyAreNotOverlapped = false;
 								break;
 							}

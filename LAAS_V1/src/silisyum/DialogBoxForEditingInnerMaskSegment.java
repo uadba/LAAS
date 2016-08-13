@@ -116,31 +116,83 @@ public class DialogBoxForEditingInnerMaskSegment extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						String maskName = maskSegmentName_textField.getText();
-						double startAngle = Double.parseDouble(starAngle_textField.getText());
-						double stopAngle = Double.parseDouble(stopAngle_textField.getText());
-						int numberOfPoints = Integer.parseInt(numberOfPoints_textField.getText());
-						double level = Double.parseDouble(level_textField.getText());
-						double weight = Double.parseDouble(weight_textField.getText());
+						double startAngle;
+						double stopAngle;
+						int numberOfPoints;
+						double level;
+						double weight;
+						try {
+							startAngle = Double.parseDouble(starAngle_textField.getText());
+							stopAngle = Double.parseDouble(stopAngle_textField.getText());
+							numberOfPoints = Integer.parseInt(numberOfPoints_textField.getText());
+							level = Double.parseDouble(level_textField.getText());
+							weight = Double.parseDouble(weight_textField.getText());
+						} catch (NumberFormatException e1) {
+							JOptionPane.showMessageDialog(null, "Start angle, stop angle, level, and weight values must be decimal and the number of points value must be integer");
+							return;
+						}
+						
+						boolean noProblem = true;
+						if(maskName == null || maskName.isEmpty()) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "Mask segment must have a name.");
+						}
+						
+						if(startAngle >= stopAngle) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "Stop angle must be bigger than start angle.");
+						}
+						
+						if(startAngle < 0 || startAngle >= 180) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "Start angle must be in the range of [0, 180).");							
+						}
+						
+						if(stopAngle <= 0 || stopAngle > 180) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "Stop angle must be in the range of (0, 180].");							
+						}
+						
+						if(numberOfPoints < 2) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "The number of points must not be smaller than two.");							
+						}				
+						
+						if(level > 0) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "The level cannot be bigger than zero.");							
+						}
+						
+						if(weight <= 0) {
+							noProblem = false;
+							JOptionPane.showMessageDialog(null, "The weight must be bigger than zero.");							
+						}
 						
 						int numberOfInnerMaskSegments = mask.innerMaskSegments.size();
-						Mask.MaskSegment innerMaskSegments;
+						Mask.MaskSegment innerMaskSegment;
 						
 						boolean itIsANewName = true;
 						boolean theyAreNotOverlapped = true;
-						for (int n = 0; n < numberOfInnerMaskSegments; n++) {	
+						for (int n = 0; n < (numberOfInnerMaskSegments) && noProblem; n++) {	
 							//
-							innerMaskSegments = mask.innerMaskSegments.get(n);
+							innerMaskSegment = mask.innerMaskSegments.get(n);
 							
 							if(n != selectedMaskIndex) {
-								if(innerMaskSegments.stopAngle > startAngle && innerMaskSegments.startAngle < stopAngle) {
-									JOptionPane.showMessageDialog(null, "There is an overlap between one of the masks in the current list and the mask which you want to add. Please check your start and stop angle values to avoid the overlapping.");
+								if(maskName.equals(innerMaskSegment.name)) {
+									JOptionPane.showMessageDialog(null, "This segment name is already used. You should type another name for the new mask segment.");
+									itIsANewName = false;
+									break;
+								}
+								
+								if(innerMaskSegment.stopAngle > startAngle && innerMaskSegment.startAngle < stopAngle) {
+									JOptionPane.showMessageDialog(null, "There is an overlap between one of the mask segments in the current list and the mask segment which you want to add. Please check your start and stop angle values to avoid the overlapping.");
 									theyAreNotOverlapped = false;
 									break;								
 								}							
 							}
 						}
 						
-						if (itIsANewName && theyAreNotOverlapped) {
+						if (itIsANewName && theyAreNotOverlapped && noProblem) {
 							mask.deleteInnerMaskSegments(selectedMaskIndex);
 							mask.addNewInnerMaskSegments(maskName, startAngle, stopAngle, numberOfPoints, level, weight);
 							setVisible(false);
