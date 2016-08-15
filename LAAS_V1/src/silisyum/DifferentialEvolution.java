@@ -111,17 +111,12 @@ public class DifferentialEvolution {
 	public boolean iterate() {
 		
 		for (int individual = 0; individual < populationNumber; individual++) {
-			// You need to modify the following codes so that different
-			// random numbers can be selected.
 			R1 = r.nextInt(populationNumber);
 			R2 = r.nextInt(populationNumber);
 			R3 = r.nextInt(populationNumber);
 			
-			// Set a new random index
-			// in order to guarantee that at least one parameter will be changed
 			int ri = r.nextInt(problemDimension);
 			
-			// Construct trial vector
 			for (int d = 0; d < problemDimension; d++) {
 				if(r.nextDouble() < Cr || ri == d) {
 					Xtrial[d] = members[d][R3] + F * (members[d][R2] - members[d][R1]);
@@ -130,7 +125,6 @@ public class DifferentialEvolution {
 				}
 			}
 			
-			// Check the boundary constraints for the the trial vector
 			for (int d = 0; d < problemDimension; d++) {
 				if(Xtrial[d]<Ls[d] || Xtrial[d]>Hs[d])
 				{
@@ -138,12 +132,8 @@ public class DifferentialEvolution {
 				}
 			}
 			
-			// Pick the best individual
-			// between trial and current members
 			double fitnessOfTrial = cost.function(Xtrial);
 			if(fitnessOfTrial < memberFitness[individual]) {
-				// Replace the current with Xtrial
-				// Because it is better than the current
 				for (int d = 0; d < problemDimension; d++) {
 					members[d][individual] = Xtrial[d];					
 				}
@@ -155,7 +145,7 @@ public class DifferentialEvolution {
 			}
 		}
 		
-		costValues[iterationIndex] = fitnessOfBestMember; // They are stored for the convergence curve graph
+		costValues[iterationIndex] = fitnessOfBestMember;
 		iterationIndex++;
 		
 		if(iterationIndex == maximumIterationNumber)

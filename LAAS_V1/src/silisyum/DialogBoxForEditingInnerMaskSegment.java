@@ -40,7 +40,6 @@ public class DialogBoxForEditingInnerMaskSegment extends JDialog {
 	public DialogBoxForEditingInnerMaskSegment(UserInterface _frame, String _title, boolean _modal, Mask _mask) {
 		super(_frame, _title, _modal);
 		mask = _mask;
-		//setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 236);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

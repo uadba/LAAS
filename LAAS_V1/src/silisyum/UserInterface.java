@@ -556,8 +556,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					presentErrorMessages();
 					tabbedPaneForSettings.setSelectedIndex(4);
 				}
-				//Goto to tab 0. Is it necessary?
-				//tabbedPaneForSettings.setSelectedIndex(0);
 			}
 		});
 		
@@ -587,7 +585,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				makeComponentsEnable(true);
 				showCurrentResults();
 				
-				// Set the best results as the current value to the current antenna array
 				setBestResultsToCurrentAntennaArray();
 			}
 		});
@@ -1280,7 +1277,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						cc.weightForInner[s] = mask.innerMaskSegments.get(s).weight;
 					}
 					
-					// DONT FORGET TO FETCH THE VALUES FROM THE USER INTERFACE
 					// Algorithm Parameters
 					cc.populationNumber = populationNumber;
 					cc.maximumIterationNumber = maximumIterationNumber;
@@ -1291,10 +1287,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					File file = fc.getSelectedFile();					
 					
 					if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("aas")) {
-					    // filename extension is suitable
 					} else {
 					    file = new File(file.toString() + ".aas");
-					    //file = new File(file.getParentFile(), FilenameUtils.getBaseName(file.getName())+".aas"); // Use if any given extension should be deleted.
 					}
 					
 					try
@@ -1309,7 +1303,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						i.printStackTrace();
 					}
 				} else {
-					// System.out.println("Save command cancelled by user.");
+					
 				}
 				
 			}
@@ -1408,7 +1402,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					}
 
 				} else {
-					// System.out.println("Save command cancelled by user.");
+					
 				}
 				
 			}
@@ -1524,7 +1518,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					File file = fc.getSelectedFile();
 					
 					if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("svg")) {
-					    // filename extension is suitable
+						
 					} else {
 					    file = new File(file.toString() + ".svg");
 					}
@@ -1729,28 +1723,17 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	        return getValueAt(0, c).getClass();
 	    }
 	
-	    /*
-	     * Don't need to implement this method unless your table's
-	     * editable.
-	     */
 	    public boolean isCellEditable(int row, int col) {
-	        //Note that the data/cell address is constant,
-	        //no matter where the cell appears onscreen.
 	        if (col < 1) {
 	            return false;
 	        } else {
 	            return true;
 	        }
 	    }
-	    /*
-	     * Don't need to implement this method unless your table's
-	     * data can change.
-	     */
 	    public void setValueAt(Object value, int row, int col) {
 			Mask.MaskSegment SLL_outer;
 			SLL_outer = mask.outerMaskSegments.get(selectedOuterMaskSegmentIndex);
 
-			//if(col == 0) SLL_outer.angles[row] = (double) value;
 			if(col == 1) SLL_outer.levels[row] = (double) value;
 			if(col == 2) SLL_outer.weights[row] = (double) value;
 	    	
@@ -1800,28 +1783,17 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	        return getValueAt(0, c).getClass();
 	    }
 	
-	    /*
-	     * Don't need to implement this method unless your table's
-	     * editable.
-	     */
 	    public boolean isCellEditable(int row, int col) {
-	        //Note that the data/cell address is constant,
-	        //no matter where the cell appears onscreen.
 	        if (col < 1) {
 	            return false;
 	        } else {
 	            return true;
 	        }
 	    }
-	    /*
-	     * Don't need to implement this method unless your table's
-	     * data can change.
-	     */
 	    public void setValueAt(Object value, int row, int col) {
 			Mask.MaskSegment innerMaskSegment;
 			innerMaskSegment = mask.innerMaskSegments.get(selectedInnerMaskSegmentIndex);
 
-			//if(col == 0) SLL_outer.angles[row] = (double) value;
 			if(col == 1) innerMaskSegment.levels[row] = (double) value;
 			if(col == 2) innerMaskSegment.weights[row] = (double) value;
 	    	
@@ -1870,26 +1842,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	        return getValueAt(0, c).getClass();
 	    }
 	
-	    /*
-	     * Don't need to implement this method unless your table's
-	     * editable.
-	     */
 	    public boolean isCellEditable(int row, int col) {
-	        //Note that the data/cell address is constant,
-	        //no matter where the cell appears onscreen.
 	        if (col < 1) {
 	            return false;
 	        } else {
 	            return true;
 	        }
 	    }
-	    /*
-	     * Don't need to implement this method unless your table's
-	     * data can change.
-	     */
 	    public void setValueAt(Object value, int row, int col) {
 
-			//if(col == 0) SLL_outer.angles[row] = (double) value;
 			if(col == 1) antennaArray.amplitude[row] = (double) value;			
 	    	
 	        fireTableCellUpdated(row, col);
@@ -1938,26 +1899,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	        return getValueAt(0, c).getClass();
 	    }
 	
-	    /*
-	     * Don't need to implement this method unless your table's
-	     * editable.
-	     */
 	    public boolean isCellEditable(int row, int col) {
-	        //Note that the data/cell address is constant,
-	        //no matter where the cell appears onscreen.
 	        if (col < 1) {
 	            return false;
 	        } else {
 	            return true;
 	        }
 	    }
-	    /*
-	     * Don't need to implement this method unless your table's
-	     * data can change.
-	     */
 	    public void setValueAt(Object value, int row, int col) {
 
-			//if(col == 0) SLL_outer.angles[row] = (double) value;
 			if(col == 1) antennaArray.phase[row] = (double) value;
 	    	
 	        fireTableCellUpdated(row, col);
@@ -2006,26 +1956,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	        return getValueAt(0, c).getClass();
 	    }
 	
-	    /*
-	     * Don't need to implement this method unless your table's
-	     * editable.
-	     */
 	    public boolean isCellEditable(int row, int col) {
-	        //Note that the data/cell address is constant,
-	        //no matter where the cell appears onscreen.
 	        if (col < 1) {
 	            return false;
 	        } else {
 	            return true;
 	        }
 	    }
-	    /*
-	     * Don't need to implement this method unless your table's
-	     * data can change.
-	     */
 	    public void setValueAt(Object value, int row, int col) {
 
-			//if(col == 0) SLL_outer.angles[row] = (double) value;
 			if(col == 1) antennaArray.position[row] = (double) value;
 	    	
 	        fireTableCellUpdated(row, col);
@@ -2098,7 +2037,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (numberOfOuterMaskSegments > 0) {
 			for (int n = 0; n < numberOfOuterMaskSegments - 1; n++) {
 				outerMaskSegment = mask.outerMaskSegments.get(n);
-				// Check the first angle (0)
 				if (n == 0) {
 					if (outerMaskSegment.startAngle != 0)
 						gapExistency = true;
@@ -2108,7 +2046,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					gapExistency = true;
 				}
 			}
-			// Check the last angle (180)
 			if (mask.outerMaskSegments.get(numberOfOuterMaskSegments - 1).stopAngle != 180) {
 				gapExistency = true;
 			} 
@@ -2127,7 +2064,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (numberOfInnerMaskSegments > 0) {
 			for (int n = 0; n < numberOfInnerMaskSegments - 1; n++) {
 				innerMaskSegment = mask.innerMaskSegments.get(n);
-				// Check the first angle (0)
 				if (n == 0) {
 					if (innerMaskSegment.startAngle != 0)
 						gapExistency = true;
@@ -2137,7 +2073,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 					gapExistency = true;
 				}
 			}
-			// Check the last angle (180)
 			if (mask.innerMaskSegments.get(numberOfInnerMaskSegments - 1).stopAngle != 180) {
 				gapExistency = true;
 			} 
@@ -2157,7 +2092,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	}
 	
 	private void presentErrorMessages() {
-		// How many error messages are there?
 		int errors = messagesOfErrors.size();
 		
 		String tempMessage = null;
@@ -2385,12 +2319,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     }
 
 	protected void drawPlotWithInitialParameterValues() {
-
-		// it should not be a new implementation of AntennaArray class
-		// We don't want to use the same instance which the other thread uses
-		// This new instance can be another member function of this class
-		// Its name may be aAforPresentation;
-		// CONSIDER THIS!
 		
 		if(patternGraphResolution != -1 && patternGraphResolution != -2) {
 			antennaArray.createPattern();
@@ -2428,12 +2356,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	
 	protected void drawPlotOfPattern() {
 
-		// it should not be a new implementation of AntennaArray class
-		// We don't want to use the same instance which the other thread uses
-		// This new instance can be another member function of this class
-		// Its name may be aAforPresentation;
-		// CONSIDER THIS!
-		
 		int delta = 0;
 		if (amplitudeIsUsed) {
 			// this is for amplitudes	
@@ -2754,38 +2676,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	}
 	
 	private void createTemporaryMasks() {
-		
-//		mask.addNewOuterMaskSegments("SLL_01", 0, 20, 20, -24, 1);
-//		mask.addNewOuterMaskSegments("SLL_02", 20, 30, 10, -40, 1);
-//		mask.addNewOuterMaskSegments("SLL_03", 30, 79, 49, -20, 1);
-//		mask.addNewOuterMaskSegments("SLL_04", 79, 80, 5, -60, 1);
-//		mask.addNewOuterMaskSegments("SLL_05", 80, 100, 20, 0, 1);
-//		mask.addNewOuterMaskSegments("SLL_06", 100, 110, 10, -20, 1);
-//		mask.addNewOuterMaskSegments("SLL_07", 110, 115, 15, -40, 1);
-//		mask.addNewOuterMaskSegments("SLL_08", 115, 180, 65, -24, 1);		
-//
-//		mask.addNewInnerMaskSegments("SLL_01", 0, 40, 3, -95, 1);
-//		mask.addNewInnerMaskSegments("SLL_02", 40, 60, 30, -30, 1);
-//		mask.addNewInnerMaskSegments("SLL_03", 60, 70, 20, -35, 1);
-//		mask.addNewInnerMaskSegments("SLL_04", 70, 150, 81, -95, 1);
-//		mask.addNewInnerMaskSegments("SLL_05", 150, 160, 10, -4, 1);
-//		mask.addNewInnerMaskSegments("SLL_06", 160, 180, 3, -95, 1);
-
-		// simple mask
-//		mask.addNewOuterMaskSegments("SLL_01_out", 0, 83, 84, -35, 1);
-//		mask.addNewOuterMaskSegments("SLL_02_out", 83, 97, 3, 0, 1);
-//		mask.addNewOuterMaskSegments("SLL_03_out", 97, 180, 84, -35, 1);
-
-		// phase nulling
-//		mask.addNewOuterMaskSegments("SLL_01_out", 0, 14.999, 14, -24, 1);
-//		mask.addNewOuterMaskSegments("SLL_null_out", 14.9999, 15.0001, 3, -145.40, 10);
-//		mask.addNewOuterMaskSegments("SLL_ara_out", 15.001, 82, 70, -24, 1);	
-//		mask.addNewOuterMaskSegments("SLL_02_out", 82, 98, 3, 0, 1);
-//		mask.addNewOuterMaskSegments("SLL_03_out", 98, 180, 84, -24, 1);
-
-//		mask.addNewInnerMaskSegments("SLL_01_in", 0, 88, 2, -95, 1);
-//		mask.addNewInnerMaskSegments("SLL_02_in", 88, 92, 2, -3, 1);
-//		mask.addNewInnerMaskSegments("SLL_03_in", 92, 180, 2, -95, 1);
 		
 	}
 }
