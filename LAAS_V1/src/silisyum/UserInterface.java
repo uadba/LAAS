@@ -251,6 +251,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JLabel lblConfigurationFile;
 	private JLabel lblSvgImageExporting;
 	private Component verticalStrut_1;
+	private JPanel panel_1;
     
 	/**
 	 * Launch the application.
@@ -1587,6 +1588,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		});
 		fileOperationsPanel.add(exportConvergeCurve, "cell 1 8");
+		
+		panel_1 = new JPanel();
+		tabbedPaneForSettings.addTab("New tab", null, panel_1, null);
 		
 		refreshOuterMaskSegmentsList();
 		refreshInnerMaskSegmentsList();
