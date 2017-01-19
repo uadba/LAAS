@@ -86,6 +86,7 @@ import javax.swing.JProgressBar;
 import java.awt.Component;
 import javax.swing.Box;
 import java.awt.Font;
+import java.awt.Graphics;
 
 
 public class UserInterface extends JFrame implements ChartMouseListener{
@@ -251,7 +252,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JLabel lblConfigurationFile;
 	private JLabel lblSvgImageExporting;
 	private Component verticalStrut_1;
-	private JPanel panel_1;
+	private JPanel testField;
+	private JButton btnTestIt;
+	private JPanel drawingPanel;
     
 	/**
 	 * Launch the application.
@@ -1589,8 +1592,22 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		});
 		fileOperationsPanel.add(exportConvergeCurve, "cell 1 8");
 		
-		panel_1 = new JPanel();
-		tabbedPaneForSettings.addTab("New tab", null, panel_1, null);
+		testField = new JPanel();
+		tabbedPaneForSettings.addTab("Test Field", null, testField, null);
+		testField.setLayout(new MigLayout("", "[][grow]", "[grow]"));
+		
+		btnTestIt = new JButton("Test It!");
+		btnTestIt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Graphics gr = drawingPanel.getGraphics();
+				gr.drawLine(0, 0, 100, 100);
+			}
+		});
+		testField.add(btnTestIt, "cell 0 0");
+		
+		drawingPanel = new JPanel();
+		drawingPanel.setBackground(new Color(245, 255, 250));
+		testField.add(drawingPanel, "cell 1 0,grow");
 		
 		refreshOuterMaskSegmentsList();
 		refreshInnerMaskSegmentsList();
@@ -1607,6 +1624,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		drawOuterMask();
 		drawInnerMask();
 		drawPlotWithInitialParameterValues();		
+		
+		tabbedPaneForSettings.setSelectedIndex(6); // It is temporary line to make the test tab appeared.
 		
 		algorithmExecuter = new AlgorithmExecuter();
 		algorithmExecuter.execute();
