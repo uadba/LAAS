@@ -1600,7 +1600,27 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		btnTestIt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Graphics gr = drawingPanel.getGraphics();
-				gr.drawLine(0, 0, 100, 100);
+				double max = 500;
+				double min = 100;
+				int maxIt = 100;
+				int dots = 5;
+				double step;
+				double cumulativeStep = 0;
+				double length = (max-min);
+				
+				for(int it=0; it<maxIt; it+=1)
+				{
+					gr.drawLine((int) min, it*6, (int) max, it*6);
+					
+					step = length / (dots-1);
+					
+					for (int dot = 0; dot < dots; dot++) {						
+						gr.drawLine((int) (min + cumulativeStep), it * 6, (int) (min + cumulativeStep), it * 6 + 4);
+						cumulativeStep += step;
+					}
+					length = length / 1.05;
+					cumulativeStep = 0;
+				}
 			}
 		});
 		testField.add(btnTestIt, "cell 0 0");
