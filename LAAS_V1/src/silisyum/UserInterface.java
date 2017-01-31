@@ -255,8 +255,6 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JPanel testField;
 	private JButton btnTestIt;
 	private JPanel drawingPanel;
-	private JButton btnNewButton;
-	private JLabel lblNewLabel_3;
     
 	/**
 	 * Launch the application.
@@ -1625,17 +1623,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}
 			}
 		});
-		
-		btnNewButton = new JButton("New button");
-		testField.add(btnNewButton, "flowx,cell 0 0");
 		testField.add(btnTestIt, "cell 0 0");
 		
 		drawingPanel = new JPanel();
 		drawingPanel.setBackground(new Color(245, 255, 250));
 		testField.add(drawingPanel, "cell 1 0,grow");
-		
-		lblNewLabel_3 = new JLabel("New label");
-		testField.add(lblNewLabel_3, "cell 0 0");
 		
 		refreshOuterMaskSegmentsList();
 		refreshInnerMaskSegmentsList();
