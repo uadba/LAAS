@@ -8,6 +8,8 @@ public class AntennaArray {
 	public double[] amplitude;
 	public double[] position;
 	public double[] phase;
+	public double[] alpha;
+	public double delta;
 	public int numberofSamplePoints;
 	public double[] angle;
 	private double[] pattern;
@@ -32,6 +34,7 @@ public class AntennaArray {
 		numberofSamplePoints = _numberofSamplePoints;
 		numberofElements = _numberofElements;
 		mask = _mask;
+		delta = DefaultConfiguration.delta;
 		createArrays();
 		initializeArrays();
 
@@ -42,6 +45,7 @@ public class AntennaArray {
 		amplitude = new double[numberofElements];
 		position = new double[numberofElements];
 		phase = new double[numberofElements];
+		alpha = new double[numberofElements];
 		createAnlgeAndPatternArrays();
 	}
 	
@@ -56,6 +60,7 @@ public class AntennaArray {
 			amplitude[i] = DefaultConfiguration.amplitudeValue;
 			phase[i] = DefaultConfiguration.phaseValue;
 			position[i] = i*DefaultConfiguration.positionValue*lambda;
+			alpha[i] = DefaultConfiguration.alphaValue;
 		}
 	}
 

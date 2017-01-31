@@ -1645,7 +1645,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		drawInnerMask();
 		drawPlotWithInitialParameterValues();		
 		
-		tabbedPaneForSettings.setSelectedIndex(6); // It is temporary line to make the test tab appeared.
+		//tabbedPaneForSettings.setSelectedIndex(3);
 		
 		algorithmExecuter = new AlgorithmExecuter();
 		algorithmExecuter.execute();
