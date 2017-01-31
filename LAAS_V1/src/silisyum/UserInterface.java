@@ -255,6 +255,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JPanel testField;
 	private JButton btnTestIt;
 	private JPanel drawingPanel;
+	private JButton btnNewButton;
     
 	/**
 	 * Launch the application.
@@ -1623,6 +1624,9 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 				}
 			}
 		});
+		
+		btnNewButton = new JButton("New button");
+		testField.add(btnNewButton, "flowx,cell 0 0");
 		testField.add(btnTestIt, "cell 0 0");
 		
 		drawingPanel = new JPanel();
