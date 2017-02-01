@@ -111,8 +111,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
     
     private int numberOfElements = DefaultConfiguration.numberofElements;
     private int problemDimension;
-    private double[] L = new double[3]; // amplitude, phase, and position minimum limits
-    private double[] H = new double[3]; // amplitude, phase, and position maximum limits
+    private double[] L = new double[4]; // amplitude, phase, and position minimum limits
+    private double[] H = new double[4]; // amplitude, phase, and position maximum limits
     private boolean amplitudeIsUsed = DefaultConfiguration.amplitudeIsUsed;
     private boolean phaseIsUsed = DefaultConfiguration.phaseIsUsed;
     private boolean positionIsUsed = DefaultConfiguration.positionIsUsed;
@@ -277,7 +277,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	 * Create the frame.
 	 */
 	public UserInterface() {
-		for(int limit=0; limit<3; limit++) {
+		for(int limit=0; limit<4; limit++) {
 			L[limit] = DefaultConfiguration.L[limit];
 			H[limit] = DefaultConfiguration.H[limit];			
 		}
@@ -2349,6 +2349,10 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		if (amplitudeIsUsed) problemDimension = numberOfElements;		
 		if (phaseIsUsed) problemDimension += numberOfElements;		
 		if (positionIsUsed) problemDimension += numberOfElements;
+		if (amplitudeIsUsed==false && phaseIsUsed==false && positionIsUsed==false)
+		{
+			problemDimension = numberOfElements;
+		}
 	}
 	
 	private void createMainObjects() {		
@@ -2434,6 +2438,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			for (int index = 1; index < numberOfElements; index++) {
 				antennaArrayForPresentation.position[index] = antennaArray.position[index];
 			}
+		}
+		
+		if (amplitudeIsUsed==false && phaseIsUsed==false && positionIsUsed==false)
+		{
+			// this is for phases
+			for (int index = 0; index < numberOfElements; index++) {
+				antennaArrayForPresentation.alpha[index] = bestValues.valuesOfBestMember[index + delta];
+			}
+			delta += numberOfElements;			
 		}
 		
 		
@@ -2667,6 +2680,17 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		}
 		currentResults += "]";
+		
+		currentResults += "<br><br>alphas = [<br>";
+
+		// this is for alphas
+		for (int index = 0; index < numberOfElements; index++) {
+			currentResults += Double.toString(bestValues.valuesOfBestMember[index + delta]);
+			currentResults += "<br>";
+		}
+		delta += numberOfElements;
+
+		currentResults += "]";		
 		
 		sendMessageToPane(currentResults, false);
 		

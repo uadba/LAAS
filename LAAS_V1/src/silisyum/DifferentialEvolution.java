@@ -91,7 +91,14 @@ public class DifferentialEvolution {
 				Ls[e + delta] = L[2];
 				Hs[e + delta] = H[2];
 			}
-		}		
+		}
+		
+		if (amplitudeIsUsed==false && phaseIsUsed==false && positionIsUsed==false) {
+			for (int e = 0; e < numberofElements; e++) {
+				Ls[e + delta] = L[3];
+				Hs[e + delta] = H[3];
+			}
+		}
 		
 		Random r = new Random();
 		for (int m = 0; m < populationNumber; m++) {
