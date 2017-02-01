@@ -52,6 +52,15 @@ public class Cost {
 			} 
 		}
 		
+		if (amplitudeIsUsed==false && phaseIsUsed==false && positionIsUsed==false)
+		{
+			// this is for alpha
+			for (int index = 0; index < numberofElements; index++) {
+				aA.alpha[index] = theVector[index + delta];
+			}
+			delta += numberofElements;
+		}
+		
 		aA.createPatternForOptimization();
 
 		if (aA.numberOfSLLOuters > 0) {

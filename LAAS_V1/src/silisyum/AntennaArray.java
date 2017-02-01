@@ -9,7 +9,7 @@ public class AntennaArray {
 	public double[] position;
 	public double[] phase;
 	public double[] alpha;
-	public double delta;
+	public double rod;
 	public int numberofSamplePoints;
 	public double[] angle;
 	private double[] pattern;
@@ -34,7 +34,7 @@ public class AntennaArray {
 		numberofSamplePoints = _numberofSamplePoints;
 		numberofElements = _numberofElements;
 		mask = _mask;
-		delta = DefaultConfiguration.delta;
+		rod = DefaultConfiguration.delta;
 		createArrays();
 		initializeArrays();
 
@@ -73,8 +73,8 @@ public class AntennaArray {
 		{
 //			result_real = result_real + amplitude[e]*Math.cos(position[e]*beta*Math.cos((theta)/180*Math.PI - delta*Math.cos((alpha[e]-theta)/180*Math.PI)) + ((phase[e])/180*Math.PI));
 //			result_img = result_img + amplitude[e]*Math.sin(position[e]*beta*Math.cos((theta)/180*Math.PI - delta*Math.cos((alpha[e]-theta)/180*Math.PI)) + ((phase[e])/180*Math.PI));			
-			result_real = result_real + amplitude[e]*Math.cos(beta*(position[e]*Math.cos((theta)/180*Math.PI) - delta*Math.cos((alpha[e]-theta)/180*Math.PI)) + ((phase[e])/180*Math.PI));
-			result_img = result_img + amplitude[e]*Math.sin(beta*(position[e]*Math.cos((theta)/180*Math.PI) - delta*Math.cos((alpha[e]-theta)/180*Math.PI)) + ((phase[e])/180*Math.PI));			
+			result_real = result_real + amplitude[e]*Math.cos(beta*(position[e]*Math.cos((theta)/180*Math.PI) - rod*Math.cos((alpha[e]-theta)/180*Math.PI)) + ((phase[e])/180*Math.PI));
+			result_img = result_img + amplitude[e]*Math.sin(beta*(position[e]*Math.cos((theta)/180*Math.PI) - rod*Math.cos((alpha[e]-theta)/180*Math.PI)) + ((phase[e])/180*Math.PI));			
 		}
 		result = Math.sqrt(result_real*result_real + result_img*result_img);
 					

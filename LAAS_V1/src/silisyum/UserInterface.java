@@ -2168,11 +2168,11 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		boolean parametersAreValid = true;
 		
 		// Amplitude, phase and position values are evaluated.
-		if(amplitudeIsUsed == false && phaseIsUsed == false && positionIsUsed == false)
-		{
-			parametersAreValid = false;
-			messagesOfErrors.add("There is not any selected antenna parameters to optimize. At least one of them (amplitude, phase or position) must be selected.");
-		}
+//		if(amplitudeIsUsed == false && phaseIsUsed == false && positionIsUsed == false)
+//		{
+//			parametersAreValid = false;
+//			messagesOfErrors.add("There is not any selected antenna parameters to optimize. At least one of them (amplitude, phase or position) must be selected.");
+//		}
 		
 		// Amplitude value validation
 		if(amplitudeIsUsed) {
