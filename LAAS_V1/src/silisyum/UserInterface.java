@@ -2444,9 +2444,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		{
 			// this is for phases
 			for (int index = 0; index < numberOfElements; index++) {
-				antennaArrayForPresentation.alpha[index] = bestValues.valuesOfBestMember[index + delta];
-			}
-			delta += numberOfElements;			
+				antennaArrayForPresentation.alpha[index] = bestValues.valuesOfBestMember[index];
+			}						
 		}
 		
 		
