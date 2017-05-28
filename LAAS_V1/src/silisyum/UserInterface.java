@@ -1357,7 +1357,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 						for(int s=0; s<cc.amplitudeValues.length; s++) {
 							antennaArray.amplitude[s] = cc.amplitudeValues[s];
 							antennaArray.phase[s] = cc.phaseValues[s];
-							antennaArray.position[s] = cc.positionValues[s];
+//							antennaArray.position[s] = cc.positionValues[s];
 						}
 						
 						refreshForChckbxAmplitude();
