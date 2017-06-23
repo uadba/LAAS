@@ -13,7 +13,7 @@ public class DefaultConfiguration
 	public static double phaseValue = 0;
 	public static double positionValue = 0.5;
 	public static double alphaValue = 0;
-	public static double delta = 0.07;
+	public static double delta = 0.01;
 	
 	// For Outer Mask
 	public static String[] nameForOuter;
