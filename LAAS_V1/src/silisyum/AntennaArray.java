@@ -4,7 +4,7 @@ public class AntennaArray {
 	
 	double lambda = 1;
 	double beta = 2*Math.PI/lambda;
-	int numberofElements;
+	public int numberofElements;
 	public double[] amplitude;
 	public double[] position;
 	public double[] phase;
