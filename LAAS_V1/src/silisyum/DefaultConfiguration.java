@@ -11,9 +11,9 @@ public class DefaultConfiguration
 	public static boolean positionIsUsed = false;
 	public static double amplitudeValue = 1;
 	public static double phaseValue = 0;
-	public static double positionValue = 0.5;
+	public static double positionValue = 0.62;
 	public static double alphaValue = 0;
-	public static double delta = 0.07;
+	public static double delta = 0.06;
 	
 	// For Outer Mask
 	public static String[] nameForOuter;
