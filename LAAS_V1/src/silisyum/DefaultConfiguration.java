@@ -12,7 +12,7 @@ public class DefaultConfiguration
 	public static double amplitudeValue = 1;
 	public static double phaseValue = 0;
 	public static double positionValue = 0.66;
-	public static double alphaValue = 0;
+	public static double alphaValue = 90;
 	public static double delta = 0.08;
 	
 	// For Outer Mask
