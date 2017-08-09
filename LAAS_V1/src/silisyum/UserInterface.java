@@ -2698,8 +2698,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		}
 		currentResults += "]";
-		
-	
+			
 		currentResults += "<br><br>double _gecici_alpha[] = {<br>";
 
 		// this is for alphas
