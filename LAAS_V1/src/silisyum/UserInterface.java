@@ -1660,8 +1660,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		for (int e = 0; e< antennaArray.numberofElements; e++)
 		{
 //			System.out.println(antennaArray.alpha[e]);
-			double yatay = (antennaArray.position[e]+antennaArray.rod*Math.cos(antennaArray.alpha[e]/180*Math.PI))*0.69236;
-//			double yatay = antennaArray.position[e]*0.69236;
+//			double yatay = (antennaArray.position[e]+antennaArray.rod*Math.cos(antennaArray.alpha[e]/180*Math.PI))*0.69236;
+			double yatay = antennaArray.position[e]*0.69236;
 			
 			double dikey = (antennaArray.rod*Math.sin(antennaArray.alpha[e]/180*Math.PI))*0.69236;
 			System.out.println("GW\t"+(e+1)+"\t7\t" + yatay + "\tuzunluk\t" + dikey + "\t" + yatay + "\t0\t" + dikey + "\t1.e-3");
