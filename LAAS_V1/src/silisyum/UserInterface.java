@@ -255,6 +255,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JPanel testField;
 	private JButton btnTestIt;
 	private JPanel drawingPanel;
+	private UzunDizi uzunDizi;
     
 	/**
 	 * Launch the application.
@@ -275,12 +276,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 
 	/**
 	 * Create the frame.
+	 * @throws IOException 
 	 */
-	public UserInterface() {
+	public UserInterface() throws IOException {
 		for(int limit=0; limit<4; limit++) {
 			L[limit] = DefaultConfiguration.L[limit];
 			H[limit] = DefaultConfiguration.H[limit];			
 		}
+		
+		uzunDizi = new UzunDizi();
 		
 		setTitle("Linear Antenna Array Synthesizer");		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -424,7 +428,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		comboBoxNumberOfPoints.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 0) patternGraphResolution = 1441;
-				if(comboBoxNumberOfPoints.getSelectedIndex() == 1) patternGraphResolution = 721;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 1) patternGraphResolution = 1441; //16364; //1487; //721;
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 2) patternGraphResolution = 361;
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 3) patternGraphResolution = 181;
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 4) patternGraphResolution = -1;
@@ -2380,6 +2384,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
         container.revalidate();
     }
 
+
 	protected void drawPlotWithInitialParameterValues() {
 		
 		if(patternGraphResolution != -1 && patternGraphResolution != -2) {			
@@ -2388,7 +2393,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			
 			for(int x=0; x<antennaArray.angle.length; x++)
 			{				
-				seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
+				//seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
+				seriler.addOrUpdate(antennaArray.angle[x], uzunDizi.nec2icin[x]);
 			}
 			
 		} else {
