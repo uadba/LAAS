@@ -11,6 +11,9 @@ import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.awt.event.ActionEvent;
 
 public class Dosyadan_NEC_Oku extends JDialog {
@@ -49,9 +52,33 @@ public class Dosyadan_NEC_Oku extends JDialog {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
+				String butunDosya = "";
+				
+				File file = new File("Moxon.out");
+								
+				try {
+					
+					Scanner sc = new Scanner(file);
+					
+					butunDosya = sc.useDelimiter("\\Z").next();
+					
+					/*
+					
+			        while (sc.hasNextLine()) {
+			            String satir = sc.nextLine();
+			            butunDosya += satir;
+			            butunDosya += "\n";
+			        }
+			        */
+					
+			        sc.close();
+					
+				} catch (FileNotFoundException e) {					
+					e.printStackTrace();
+				}
 				
 				
-				kutu.setText("deneme");
+				kutu.setText(butunDosya);
 				
 			}
 		});
