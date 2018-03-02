@@ -4,7 +4,7 @@ public class AntennaArray {
 	
 	double lambda = 1;
 	double beta = 2*Math.PI/lambda;
-	int numberofElements;
+	public int numberofElements;
 	public double[] amplitude;
 	public double[] position;
 	public double[] phase;
@@ -54,12 +54,23 @@ public class AntennaArray {
 		pattern = new double[numberofSamplePoints];
 		pattern_dB = new double[numberofSamplePoints];
 	}
+	
+//	Single null - yeni 1
+//	double _gecici_alpha[] = { 138.24, 83.52, 68.4, 119.52, 132.84, 102.6, 71.28, 77.04, 99.0, 76.32, 69.12, 77.04, 78.48, 81.0, 79.2, 69.84, 84.96, 127.44, 118.44, 72.36};
 
+//	Symmetric double null - yeni 2
+//	double _gecici_alpha[] = {94.68, 70.92, 47.16, 91.8, 93.6, 58.68, 59.04, 72.72, 107.64, 99.72, 80.28, 72.36, 107.28, 120.96, 121.32, 86.4, 88.2, 132.84, 109.08, 85.32};
+		
+//	Multiple nulls - yeni 3
+//	double _gecici_alpha[] = { 124.92, 52.2, 16.2, 96.48, 72.0, 74.52, 125.28, 137.16, 106.2, 100.8, 101.16, 94.68, 69.48, 96.12, 129.24, 51.84, 21.6, 57.96, 156.96, 54.72};
 
-//	double _gecici_alpha[] = {108.72, 56.52, 72.0, 78.12, 117.0, 120.24, 115.2, 81.36, 72.72, 81.0, 96.84, 106.56, 100.44, 70.92, 55.44, 59.04, 90.36, 122.04, 68.4, 68.76 };
-//	double _gecici_alpha[] = {90.72, 96.48, 51.12, 109.08, 74.52, 42.84, 39.6, 60.12, 112.68, 108.72, 86.76, 76.68, 88.2, 90.72, 89.28, 83.88, 82.8, 90.36, 126.72, 52.92};
-//	double _gecici_alpha[] = {136.8, 90.0, 75.96, 112.32, 108.0, 146.16, 106.56, 91.44, 78.84, 64.8, 91.44, 105.48, 101.88, 80.28, 106.2, 90.36, 109.8, 92.88, 124.56, 86.76};
-//	double _gecici_amplitude[] = {0.32561, 0.28558, 0.39104, 0.50461, 0.62034, 0.73147, 0.83102, 0.91243, 0.97010, 1.00000, 1.00000, 0.97010, 0.91243, 0.83102, 0.73147, 0.62034, 0.50461, 0.39104, 0.28558, 0.32561};
+//	Wide null - yeni 4
+//	double _gecici_alpha[] = { 100.8, 0.72, 44.64, 137.16, 104.76, 87.84, 85.32, 90.72, 74.88, 73.8, 87.84, 92.88, 77.76, 63.72, 64.8, 45.36, 28.8, 68.76, 111.24, 0.36};
+	
+	
+	double _gecici_amplitude[] = {0.32561, 0.28558, 0.39104, 0.50461, 0.62034, 0.73147, 0.83102, 0.91243, 0.97010, 1.00000, 1.00000, 0.97010, 0.91243, 0.83102, 0.73147, 0.62034, 0.50461, 0.39104, 0.28558, 0.32561};
+
+	
 	public void initializeArrays() {
 		for (int i = 0; i < numberofElements; i++) {
 			amplitude[i] = DefaultConfiguration.amplitudeValue;
@@ -68,7 +79,7 @@ public class AntennaArray {
 			alpha[i] = DefaultConfiguration.alphaValue;
 			
 //			alpha[i] = _gecici_alpha[i];
-//			amplitude[i] = _gecici_amplitude[i];
+			amplitude[i] = _gecici_amplitude[i];
 		}
 	}
 
@@ -76,7 +87,13 @@ public class AntennaArray {
 	{
 		double result = 0;
 		double result_real = 0;
-		double result_img = 0;		
+		double result_img = 0;
+//		_SÝL SÝL SÝL
+//		for (int e = 0; e<numberofElements / 2; e++)
+//		{
+//			alpha[numberofElements - (1 + e)] = 180 - alpha[e];
+//		}
+//		_SÝL SÝL SÝL				
 		for (int e = 0; e<numberofElements; e++)
 		{
 //			result_real = result_real + amplitude[e]*Math.cos(position[e]*beta*Math.cos((theta)/180*Math.PI) + ((phase[e])/180*Math.PI));
@@ -88,7 +105,7 @@ public class AntennaArray {
 		
 		}
 		result = Math.sqrt(result_real*result_real + result_img*result_img);
-	
+		
 		return result;
 	}
 	

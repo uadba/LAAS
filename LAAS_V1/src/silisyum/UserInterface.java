@@ -255,6 +255,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 	private JPanel testField;
 	private JButton btnTestIt;
 	private JPanel drawingPanel;
+	private UzunDizi uzunDizi;
     
 	/**
 	 * Launch the application.
@@ -275,12 +276,15 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 
 	/**
 	 * Create the frame.
+	 * @throws IOException 
 	 */
-	public UserInterface() {
+	public UserInterface() throws IOException {
 		for(int limit=0; limit<4; limit++) {
 			L[limit] = DefaultConfiguration.L[limit];
 			H[limit] = DefaultConfiguration.H[limit];			
 		}
+		
+		uzunDizi = new UzunDizi();
 		
 		setTitle("Linear Antenna Array Synthesizer");		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -424,7 +428,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		comboBoxNumberOfPoints.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 0) patternGraphResolution = 1441;
-				if(comboBoxNumberOfPoints.getSelectedIndex() == 1) patternGraphResolution = 721;
+				if(comboBoxNumberOfPoints.getSelectedIndex() == 1) patternGraphResolution = 1441; //16364; //1487; //721;
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 2) patternGraphResolution = 361;
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 3) patternGraphResolution = 181;
 				if(comboBoxNumberOfPoints.getSelectedIndex() == 4) patternGraphResolution = -1;
@@ -1651,6 +1655,21 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 		algorithmExecuter.execute();
 		
 		comboBoxNumberOfPoints.setSelectedIndex(1); // This is here because it triggers addActionListener which runs algorithmExecuter
+		
+		koordinatlariVeri();
+
+	}
+	
+	void koordinatlariVeri() {
+		for (int e = 0; e< antennaArray.numberofElements; e++)
+		{
+//			System.out.println(antennaArray.alpha[e]);
+			double yatay = (antennaArray.position[e]+antennaArray.rod*Math.cos(antennaArray.alpha[e]/180*Math.PI))*0.69236;
+//			double yatay = antennaArray.position[e]*0.69236;
+			
+			double dikey = (antennaArray.rod*Math.sin(antennaArray.alpha[e]/180*Math.PI))*0.69236;
+			System.out.println("GW\t"+(e+1)+"\t7\t" + yatay + "\tuzunluk\t" + dikey + "\t" + yatay + "\t0\t" + dikey + "\t1.e-3");
+		}
 	}
 	
 	void exportChartAsSVG(JFreeChart chart, File svgFile) throws IOException {
@@ -2365,6 +2384,7 @@ public class UserInterface extends JFrame implements ChartMouseListener{
         container.revalidate();
     }
 
+
 	protected void drawPlotWithInitialParameterValues() {
 		
 		if(patternGraphResolution != -1 && patternGraphResolution != -2) {			
@@ -2373,7 +2393,8 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			
 			for(int x=0; x<antennaArray.angle.length; x++)
 			{				
-				seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
+				//seriler.addOrUpdate(antennaArray.angle[x], antennaArray.pattern_dB[x]);
+				seriler.addOrUpdate(antennaArray.angle[x], uzunDizi.nec2icin[x]);
 			}
 			
 		} else {
@@ -2683,17 +2704,17 @@ public class UserInterface extends JFrame implements ChartMouseListener{
 			}
 		}
 		currentResults += "]";
-		
-		currentResults += "<br><br>alphas = [<br>";
+			
+		currentResults += "<br><br>double _gecici_alpha[] = {<br>";
 
 		// this is for alphas
 		for (int index = 0; index < numberOfElements; index++) {
 			currentResults += Double.toString(Kuantala(bestValues.valuesOfBestMember[index + delta]));
-			currentResults += "<br>";
+			if(index != numberOfElements - 1) currentResults += ", ";
 		}
 		delta += numberOfElements;
 
-		currentResults += "]";		
+		currentResults += "};";		
 		
 		sendMessageToPane(currentResults, false);
 		
