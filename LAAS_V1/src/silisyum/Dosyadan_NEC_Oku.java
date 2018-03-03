@@ -12,8 +12,6 @@ import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -66,9 +64,19 @@ public class Dosyadan_NEC_Oku extends JDialog {
 						Scanner sc = new Scanner(butunDosya);
 						sc.useDelimiter("DEGREES[\r\n]+").next();						
 						sc.useDelimiter("\\s").next();
-						sc.useDelimiter("\\S").next();
-						sc.useDelimiter("\\s");
-						bizimVeriler = sc.next();						
+						
+						
+							sc.useDelimiter("\\S").next();
+							sc.useDelimiter("\\s");						
+							bizimVeriler += sc.next();
+							sc.useDelimiter("[\r\n]+").next();
+							bizimVeriler += "\n";
+							
+							sc.useDelimiter("\\S").next();
+							sc.useDelimiter("\\s");						
+							bizimVeriler += sc.next();
+							sc.useDelimiter("[\r\n]+").next();
+
 
 						sc.close();
 					} catch (IOException e) {
