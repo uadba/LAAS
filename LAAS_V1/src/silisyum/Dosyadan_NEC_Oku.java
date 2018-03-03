@@ -64,12 +64,11 @@ public class Dosyadan_NEC_Oku extends JDialog {
 					try {
 						butunDosya = new String(Files.readAllBytes(Paths.get("Moxon.out")));
 						Scanner sc = new Scanner(butunDosya);
-//						sc.useDelimiter("DEGREES").next();
-//						sc.useDelimiter("DEGREES").next();
-//						sc.useDelimiter("DEGREES").next();
-						sc.useDelimiter("DEGREES[\r\n]+").next();
-						bizimVeriler = sc.useDelimiter("[\r\n]+").next();
-						bizimVeriler = sc.useDelimiter("[\r\n]+").next();
+						sc.useDelimiter("DEGREES[\r\n]+").next();						
+						sc.useDelimiter("\\s").next();
+						sc.useDelimiter("\\S").next();
+						sc.useDelimiter("\\s");
+						bizimVeriler = sc.next();						
 
 						sc.close();
 					} catch (IOException e) {
