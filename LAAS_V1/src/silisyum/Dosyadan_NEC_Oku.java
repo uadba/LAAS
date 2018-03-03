@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
+import javax.swing.ScrollPaneConstants;
 
 public class Dosyadan_NEC_Oku extends JDialog {
 
@@ -24,6 +26,7 @@ public class Dosyadan_NEC_Oku extends JDialog {
 	private static final long serialVersionUID = 8269370798852929547L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextArea kutu;
+	private JScrollPane scroll;
 
 	/**
 	 * Launch the application.
@@ -88,7 +91,10 @@ public class Dosyadan_NEC_Oku extends JDialog {
 			kutu = new JTextArea();
 			kutu.setBorder(new LineBorder(new Color(0, 0, 0)));
 			kutu.setBounds(10, 11, 964, 431);
-			contentPanel.add(kutu);
+			scroll = new JScrollPane(kutu, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scroll.setLocation(0, 0);
+			scroll.setSize(984, 483);
+			contentPanel.add(scroll);
 		}
 		{
 			JPanel buttonPane = new JPanel();
