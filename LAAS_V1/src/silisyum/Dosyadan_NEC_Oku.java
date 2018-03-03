@@ -93,7 +93,7 @@ public class Dosyadan_NEC_Oku extends JDialog {
 			kutu.setBounds(10, 11, 964, 431);
 			scroll = new JScrollPane(kutu, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			scroll.setLocation(0, 0);
-			scroll.setSize(984, 483);
+			scroll.setSize(984, 484);
 			contentPanel.add(scroll);
 		}
 		{
