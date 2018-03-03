@@ -14,6 +14,9 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import javax.swing.ScrollPaneConstants;
@@ -56,32 +59,25 @@ public class Dosyadan_NEC_Oku extends JDialog {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				String butunDosya = "";
-				
-				File file = new File("Moxon.out");
-								
-				try {
+				String bizimVeriler = "";
 					
-					Scanner sc = new Scanner(file);
+					try {
+						butunDosya = new String(Files.readAllBytes(Paths.get("Moxon.out")));
+						Scanner sc = new Scanner(butunDosya);
+//						sc.useDelimiter("DEGREES").next();
+//						sc.useDelimiter("DEGREES").next();
+//						sc.useDelimiter("DEGREES").next();
+						sc.useDelimiter("DEGREES[\r\n]+").next();
+						bizimVeriler = sc.useDelimiter("[\r\n]+").next();
+						bizimVeriler = sc.useDelimiter("[\r\n]+").next();
+
+						sc.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
-					butunDosya = sc.useDelimiter("\\Z").next();
-					
-					/*
-					
-			        while (sc.hasNextLine()) {
-			            String satir = sc.nextLine();
-			            butunDosya += satir;
-			            butunDosya += "\n";
-			        }
-			        */
-					
-			        sc.close();
-					
-				} catch (FileNotFoundException e) {					
-					e.printStackTrace();
-				}
-				
-				
-				kutu.setText(butunDosya);
+				kutu.setText(bizimVeriler);
 				
 			}
 		});
