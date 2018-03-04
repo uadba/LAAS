@@ -65,17 +65,51 @@ public class Dosyadan_NEC_Oku extends JDialog {
 						sc.useDelimiter("DEGREES[\r\n]+").next();						
 						sc.useDelimiter("\\s").next();
 						
+						String blok = sc.useDelimiter("[\r\n]+[\r\n]+[\r\n]+").next();
+						//blok += ""; // Bitti
+						sc.close();
+						sc = new Scanner(blok);
 						
+						String devam_mi = "+"; // Devam
+						
+						while(devam_mi == "+") {
+						//for (int s=0; s<5; s++) {
+							// Theta
 							sc.useDelimiter("\\S").next();
 							sc.useDelimiter("\\s");						
 							bizimVeriler += sc.next();
-							sc.useDelimiter("[\r\n]+").next();
+							bizimVeriler += "\t";
+							
+							// Phi
+							sc.useDelimiter("\\S").next();
+							sc.useDelimiter("\\s");						
+							bizimVeriler += sc.next();
+							bizimVeriler += "\t";
+							
+							// Vertical ve Horizontali atla
+							sc.useDelimiter("\\S").next();
+							sc.useDelimiter("\\s").next();
+							sc.useDelimiter("\\S").next();
+							sc.useDelimiter("\\s").next();
+							
+							// Total dB
+							sc.useDelimiter("\\S").next();
+							sc.useDelimiter("\\s");						
+							bizimVeriler += sc.next();
 							bizimVeriler += "\n";
 							
-							sc.useDelimiter("\\S").next();
-							sc.useDelimiter("\\s");						
-							bizimVeriler += sc.next();
+							// Alt satira gec
 							sc.useDelimiter("[\r\n]+").next();
+							if(sc.hasNext() == false) break; // Bisey kalmamis birak gitsin.		
+							sc.useDelimiter("\\s").next();							
+
+						}
+							
+							// Sonraki satýr
+//							sc.useDelimiter("\\S").next();
+//							sc.useDelimiter("\\s");						
+//							bizimVeriler += sc.next();
+//							sc.useDelimiter("[\r\n]+").next();
 
 
 						sc.close();
@@ -88,7 +122,7 @@ public class Dosyadan_NEC_Oku extends JDialog {
 				
 			}
 		});
-		btnNewButton.setBounds(433, 494, 89, 23);
+		btnNewButton.setBounds(433, 504, 89, 23);
 		contentPanel.add(btnNewButton);
 		{
 			kutu = new JTextArea();
@@ -96,7 +130,7 @@ public class Dosyadan_NEC_Oku extends JDialog {
 			kutu.setBounds(10, 11, 964, 431);
 			scroll = new JScrollPane(kutu, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			scroll.setLocation(0, 0);
-			scroll.setSize(984, 179);
+			scroll.setSize(984, 476);
 			contentPanel.add(scroll);
 		}
 		{
