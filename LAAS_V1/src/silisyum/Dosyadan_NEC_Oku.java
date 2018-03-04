@@ -60,20 +60,18 @@ public class Dosyadan_NEC_Oku extends JDialog {
 				String bizimVeriler = "";
 					
 					try {
-						butunDosya = new String(Files.readAllBytes(Paths.get("Moxon.out")));
+						butunDosya = new String(Files.readAllBytes(Paths.get("yeni_dipol_03.out")));
 						Scanner sc = new Scanner(butunDosya);
 						sc.useDelimiter("DEGREES[\r\n]+").next();						
 						sc.useDelimiter("\\s").next();
 						
 						String blok = sc.useDelimiter("[\r\n]+[\r\n]+[\r\n]+").next();
-						//blok += ""; // Bitti
 						sc.close();
 						sc = new Scanner(blok);
 						
 						String devam_mi = "+"; // Devam
 						
 						while(devam_mi == "+") {
-						//for (int s=0; s<5; s++) {
 							// Theta
 							sc.useDelimiter("\\S").next();
 							sc.useDelimiter("\\s");						
@@ -105,12 +103,6 @@ public class Dosyadan_NEC_Oku extends JDialog {
 
 						}
 							
-							// Sonraki satýr
-//							sc.useDelimiter("\\S").next();
-//							sc.useDelimiter("\\s");						
-//							bizimVeriler += sc.next();
-//							sc.useDelimiter("[\r\n]+").next();
-
 
 						sc.close();
 					} catch (IOException e) {
