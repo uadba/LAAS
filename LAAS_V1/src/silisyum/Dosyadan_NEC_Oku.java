@@ -60,7 +60,7 @@ public class Dosyadan_NEC_Oku extends JDialog {
 				String bizimVeriler = "";
 					
 					try {
-						butunDosya = new String(Files.readAllBytes(Paths.get("yeni_dipol_03.out")));
+						butunDosya = new String(Files.readAllBytes(Paths.get("yeni_dipol_04.out")));
 						Scanner sc = new Scanner(butunDosya);
 						sc.useDelimiter("DEGREES[\r\n]+").next();						
 						sc.useDelimiter("\\s").next();
